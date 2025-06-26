@@ -1,4 +1,3 @@
-
 import { Router } from 'express'
 import prisma from '@/db/index'
 const router: Router = Router()
