@@ -8,8 +8,132 @@ datasource db {
 }
 
 model User {
-  id              String    @id 
-  email           String    @unique
+  id                   String                @id @default(uuid())
+  email                String                @unique
+  password             String
+  username             String                @unique
+  fullName             String?
+  location             String?
+  avatarUrl            String?
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  plants               Plant[]
+  plantIdentifications PlantIdentification[]
+  communityPosts       CommunityPost[]
+}
+
+model Plant {
+  id            String         @id @default(uuid())
+  name          String
+  description   String?
+  dateAcquired  DateTime?
+  locationType  String?
+  notes         String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  userId        String
+  user          User           @relation(fields: [userId], references: [id])
+  speciesId     String
+  species       PlantSpecies   @relation(fields: [speciesId], references: [id])
+  images        PlantImage[]
+  careSchedules CareSchedule[]
+  careLogs      CareLog[]
+  healthLogs    HealthLog[]
+}
+
+model PlantImage {
+  id         String   @id @default(uuid())
+  url        String
+  caption    String?
+  isPrimary  Boolean  @default(false)
+  uploadedAt DateTime @default(now())
+  plantId    String
+  plant      Plant    @relation(fields: [plantId], references: [id])
+}
+
+model PlantSpecies {
+  id                 String  @id @default(uuid())
+  commonName         String
+  scientificName     String
+  careDifficulty     String?
+  lightRequirements  String?
+  waterFrequencyDays Int?
+  humidityNeeds      String?
+  temperatureRange   String?
+  soilType           String?
+  growthSeason       String?
+  plants             Plant[]
+}
+
+model CareSchedule {
+  id              String    @id @default(uuid())
+  plantId         String
+  plant           Plant     @relation(fields: [plantId], references: [id])
+  careType        String
+  frequencyDays   Int
+  lastCompletedAt DateTime?
+  nextDueDate     DateTime?
+  isActive        Boolean   @default(true)
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
+  careLogs        CareLog[]
+}
+
+model CareLog {
+  id             String        @id @default(uuid())
+  plantId        String
+  plant          Plant         @relation(fields: [plantId], references: [id])
+  careType       String
+  completedAt    DateTime
+  notes          String?
+  imageUrl       String?
+  careScheduleId String?
+  careSchedule   CareSchedule? @relation(fields: [careScheduleId], references: [id])
+}
+
+model HealthLog {
+  id           String   @id @default(uuid())
+  plantId      String
+  plant        Plant    @relation(fields: [plantId], references: [id])
+  loggedAt     DateTime @default(now())
+  healthStatus String
+  heightCm     Float?
+  widthCm      Float?
+  issuesNoted  String?
+  notes        String?
+  imageUrl     String?
+}
+
+model PlantIdentification {
+  id                    String   @id @default(uuid())
+  userId                String
+  user                  User     @relation(fields: [userId], references: [id])
+  imageUrl              String
+  topSpeciesSuggestions String
+  confidenceScores      String
+  status                String
+  createdAt             DateTime @default(now())
+}
+
+model CommunityPost {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  postType  String
+  title     String
+  content   String
+  imageUrls String?
+  tags      String?
+  createdAt DateTime @default(now())
+}
+
+model PlantShop {
+  id              String   @id @default(uuid())
+  name            String
+  address         String
+  phone           String?
+  website         String?
+  servicesOffered String?
+  rating          Float?
+  createdAt       DateTime @default(now())
 }
