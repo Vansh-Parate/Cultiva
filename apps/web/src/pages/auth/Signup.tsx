@@ -6,6 +6,7 @@ import { CiMail } from "react-icons/ci";
 import { MdLockOutline } from "react-icons/md";
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Signup = () => {
 
@@ -13,10 +14,10 @@ const Signup = () => {
   return (
     <div className='bg-[#131316] min-h-screen flex items-center justify-center'>
       <div className='w-full max-w-md bg-[#131316] rounded-2xl shadow-xl p-8'>
-        <a className='text-md text-gray-400 hover:text-white mb-5 block flex justify-center items-center gap-1'>
+        <Link to="/" className="text-md text-gray-400 hover:text-white mb-5 block flex justify-center items-center gap-1 cursor-pointer">
           <IoMdArrowBack className="text-md" />
           Back to home
-        </a>
+        </Link>
         <h2 className='text-2xl font-bold mb-2 flex justify-center items-center'> Create Account</h2>
         <p className='text-sm text-gray-400 mb-6 flex justify-center items-center'>Join GreenCare and start your plant journey</p>
 
@@ -77,14 +78,14 @@ const Signup = () => {
               </div>
               <span className="text-xs text-gray-400">Must be at least 8 characters long</span>
             </div>
-            <button className="bg-[#4ccc2c] hover:bg-[#56e931] text-white rounded-md py-3 font-semibold w-full mt-2" type="submit">
+            <button className="bg-[#56e931] hover:bg-[#00ff08e6]  hover:scale-105 hover:shadow-2xl transition duration-200 text-black rounded-md py-3 font-semibold w-full mt-2" type="submit">
               Create account
             </button>
           </form>
 
           <p className="text-center text-gray-400 mt-8">
             Already have an account?{" "}
-            <a href="/login" className="text-[#4ccc2c] hover:underline font-medium">Sign in</a>
+            <Link to="/auth/signin" className="text-[#4ccc2c] hover:underline font-medium">Sign in</Link>
           </p>
         </div>
       </div> 
