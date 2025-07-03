@@ -38,6 +38,10 @@ const Signin = () => {
       }
   }
 
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:6969/api/v1/auth/google";
+  };
+
   return (
     <div className='bg-[#131316] min-h-screen flex items-center justify-center'>
       <div className='w-full max-w-md bg-[#131316] rounded-2xl shadow-xl p-8'>
@@ -50,7 +54,7 @@ const Signin = () => {
 
         <div className='w-full max-w-md bg-[#252525] rounded-2xl shadow-xl p-8'>
           <div className='flex flex-col mb-6'>
-            <button className='flex justify-center items-center gap-4 py-2 rounded-md bg-[#292929] text-white w-full'>
+            <button className='flex justify-center items-center gap-4 py-2 rounded-md bg-[#292929] text-white w-full' onClick={handleGoogleLogin}>
               <FcGoogle className='text-lg' />Continue with Google
             </button>
           </div>
