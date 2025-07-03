@@ -13,11 +13,12 @@ const app = express()
 
 app.use(express.json())
 app.use(cors())
-app.use('/api/v1/users', userRoute)
+
 app.use('/api/v1/auth', authRoutes);
 app.use(session({ secret:"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", resave: false, saveUninitialized: false}));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use('/api/v1/users', userRoute);
 
 app.get('/', (_req: Request, res: Response) => {
   res.status(200).json({
