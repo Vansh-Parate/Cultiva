@@ -1,16 +1,45 @@
 import React, { useState } from 'react'
 import { IoMdArrowBack } from "react-icons/io";
 import { FcGoogle } from "react-icons/fc";
-import { FaRegUser } from "react-icons/fa";
+import { FaRegUser, FaRegEye, FaRegEyeSlash} from "react-icons/fa";
 import { CiMail } from "react-icons/ci";
 import { MdLockOutline } from "react-icons/md";
-import { FaRegEye } from "react-icons/fa";
-import { FaRegEyeSlash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
+import axios from 'axios';
 
 const Signup = () => {
-
   const [showPassword, setShowPassword] = useState(false);
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleSignup = async(e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try{
+      const res = await axios.post("http://localhost:6969/api/v1/auth/signup",{
+        fullName,
+        email,
+        password
+      });
+      localStorage.setItem('token',res.data.token);
+
+      navigate('/auth/signin');
+    }catch(err){
+      if (axios.isAxiosError(err)){
+      setError(err.response?.data?.error || 'Signup failed');
+    } else{
+      setError('Signup failed');
+    } 
+  } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className='bg-[#131316] min-h-screen flex items-center justify-center'>
       <div className='w-full max-w-md bg-[#131316] rounded-2xl shadow-xl p-8'>
@@ -36,7 +65,7 @@ const Signup = () => {
              <hr className='flex-grow border-[#2A2A2A]'></hr>
           </div>
 
-          <form className='flex flex-col gap-4'>
+          <form className='flex flex-col gap-4' onSubmit={handleSignup}>
             <div>
               <label className='flex text-sm mb-1'>Full Name</label>
               <div className="relative">
@@ -44,6 +73,9 @@ const Signup = () => {
                 <input
                   className='w-full px-3 py-2 pl-10 placeholder-gray-400 bg-[#292929] rounded-sm placeholder:text-sm'
                   placeholder='Enter your full name'
+                  value={fullName}
+                  onChange={e => setFullName(e.target.value)}
+                  required
                 />
               </div>
             </div>  
@@ -55,6 +87,10 @@ const Signup = () => {
                 <input
                   className='w-full px-3 py-2 pl-10 placeholder-gray-400 bg-[#292929] rounded-md placeholder:text-sm'
                   placeholder='your.email@example.com'
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
+                  type='email'
                 />
               </div>
             </div>
@@ -66,6 +102,10 @@ const Signup = () => {
                 <input
                   className='w-full px-3 py-2 pl-10 placeholder-gray-400 bg-[#292929] rounded-md placeholder:text-sm'
                   placeholder='••••••••'
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+                  minLength={8}
                 />
                 <button
                   type="button"
@@ -79,7 +119,7 @@ const Signup = () => {
               <span className="text-xs text-gray-400">Must be at least 8 characters long</span>
             </div>
             <button className="bg-[#56e931] hover:bg-[#00ff08e6]  hover:scale-105 hover:shadow-2xl transition duration-200 text-black rounded-md py-3 font-semibold w-full mt-2" type="submit">
-              Create account
+            {loading ? "Creating account..." : "Create account"}
             </button>
           </form>
 

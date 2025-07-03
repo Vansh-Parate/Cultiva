@@ -12,6 +12,7 @@
   "dependencies": {
     "@hugeicons/core-free-icons": "^1.0.14",
     "@hugeicons/react": "^1.0.5",
+    "axios": "^1.10.0",
     "lucide-react": "^0.525.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -36,5 +37,10 @@
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1"
+  },
+  "eslintConfig": {
+    "rules": {
+      "no-unused-vars": "off"
+    }
   }
 }

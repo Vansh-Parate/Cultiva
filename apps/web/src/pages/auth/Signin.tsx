@@ -1,12 +1,42 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { IoMdArrowBack } from "react-icons/io";
 import { FcGoogle } from "react-icons/fc";
 import { CiMail } from "react-icons/ci";
 import { MdLockOutline } from "react-icons/md";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import { useNavigate, Link } from 'react-router-dom';
 
 const Signin = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const navigate = useNavigate();
+
+  const handleSignin = async(e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try{
+        const res = await axios.post("http://localhost:6969/api/v1/auth/signin",{
+            email,
+            password
+        });
+        localStorage.setItem('token',res.data.token);
+        navigate('/dashboard');
+    }catch(err){
+        if (axios.isAxiosError(err)){
+        setError(err.response?.data?.error || 'Signup failed');
+      } else{
+        setError('Signup failed');
+      } 
+    } finally {
+        setLoading(false);
+      }
+  }
 
   return (
     <div className='bg-[#131316] min-h-screen flex items-center justify-center'>
@@ -31,7 +61,7 @@ const Signin = () => {
             <hr className='flex-grow border-[#2A2A2A]' />
           </div>
 
-          <form className='flex flex-col gap-4'>
+          <form className='flex flex-col gap-4' onSubmit={handleSignin}>
             <div>
               <label className='flex text-sm mb-1'>Email Address</label>
               <div className="relative">
@@ -41,6 +71,9 @@ const Signin = () => {
                   placeholder='your.email@example.com'
                   type="email"
                   autoComplete="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
                 />
               </div>
             </div>
@@ -54,6 +87,9 @@ const Signin = () => {
                   placeholder='••••••••'
                   type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
                 />
                 <button
                   type="button"
@@ -68,14 +104,15 @@ const Signin = () => {
                 <a href="/forgot-password" className="text-xs text-[#4ccc2c] hover:underline font-medium mt-1">Forgot password?</a>
               </div>
             </div>
+            {error && <div className="text-red-500 text-sm">{error}</div>}
             <button className="bg-[#56e931] hover:bg-[#00ff08e6] hover:scale-105 hover:shadow-2xl transition duration-200 text-black rounded-md py-3 font-semibold w-full mt-2" type="submit">
-              Sign in
+              {loading ? "Signing in... " : "Sign in"}
             </button>
           </form>
 
           <p className="text-center text-gray-400 mt-8">
             Don&apos;t have an account?{" "}
-            <a href="/signup" className="text-[#4ccc2c] hover:underline font-medium">Sign up</a>
+            <Link to="/auth/signup" className="text-[#4ccc2c] hover:underline font-medium">Sign up</Link>
           </p>
         </div>
       </div>
