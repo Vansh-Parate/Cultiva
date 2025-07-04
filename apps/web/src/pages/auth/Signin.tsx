@@ -40,6 +40,7 @@ const Signin = () => {
 
   const handleGoogleLogin = () => {
     window.location.href = "http://localhost:6969/api/v1/auth/google";
+    navigate('/dashboard');
   };
 
   return (
