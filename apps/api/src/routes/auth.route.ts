@@ -74,7 +74,7 @@ router.get(
         const user = req.user as any;
         const token = jwt.sign({ userId: user.id}, process.env.JWT_SECRET!);
 
-        res.redirect(`http://localhost:5173/auth/google/success?token${token}`);
+        res.redirect(`http://localhost:5173/auth/google/success?token=${token}`);
     }
 );
 

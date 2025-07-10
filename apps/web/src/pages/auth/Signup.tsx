@@ -28,7 +28,7 @@ const Signup = () => {
       });
       localStorage.setItem('token',res.data.token);
 
-      navigate('/auth/signin');
+      navigate('/dashboard');
     }catch(err){
       if (axios.isAxiosError(err)){
       setError(err.response?.data?.error || 'Signup failed');
@@ -42,6 +42,7 @@ const Signup = () => {
 
   const handleGoogleLogin = () => {
     window.location.href = "http://localhost:6969/api/v1/auth/google";
+    navigate('/dashboard');
   };
 
   return (
