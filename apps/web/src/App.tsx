@@ -1,10 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Signup from './pages/auth/Signup.tsx'
-import Signin from './pages/auth/Signin.tsx';
-import GoogleSuccess from './pages/auth/GoogleSuccess.tsx';
-import ProtectedRoute from './components/ProtectedRoute.tsx';
-import Dashboard from './pages/Dashboard.tsx';
+import Signup from './pages/auth/Signup'
+import Signin from './pages/auth/Signin';
+import GoogleSuccess from './pages/auth/GoogleSuccess';
+import ProtectedRoute from './components/ProtectedRoute';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
