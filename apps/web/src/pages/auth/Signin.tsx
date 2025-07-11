@@ -21,7 +21,7 @@ const Signin = () => {
     setLoading(true);
 
     try{
-        const res = await axios.post("http://localhost:6969/api/v1/auth/signin",{
+        const res = await axios.post("https://greencare.onrender.com/api/v1/auth/signin",{
             email,
             password
         });
@@ -39,7 +39,7 @@ const Signin = () => {
   }
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:6969/api/v1/auth/google";
+    window.location.href = "https://greencare.onrender.com/api/v1/auth/google";
     navigate('/dashboard');
   };
 
