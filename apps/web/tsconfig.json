@@ -1,6 +1,5 @@
 {
   "exclude": ["node_modules"],
-  "extends": "@repo/typescript-config/vite.json",
   "compilerOptions": {
     "jsx": "react",
     "rootDir": ".",
