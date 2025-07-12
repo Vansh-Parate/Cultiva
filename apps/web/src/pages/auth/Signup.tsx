@@ -46,8 +46,8 @@ const Signup = () => {
   };
 
   return (
-    <div className='bg-[#131316] min-h-screen flex items-center justify-center'>
-      <div className='w-full max-w-md bg-[#131316] rounded-2xl shadow-xl p-8'>
+    <div className='min-h-screen flex items-center justify-center'>
+      <div className='w-full max-w-md bg-[#252525]/80 rounded-2xl shadow-xl p-8 backdrop-blur'>
         <Link to="/" className="text-md text-gray-400 hover:text-white mb-5 block flex justify-center items-center gap-1 cursor-pointer">
           <IoMdArrowBack className="text-md" />
           Back to home
@@ -55,9 +55,9 @@ const Signup = () => {
         <h2 className='text-2xl font-bold mb-2 flex justify-center items-center'> Create Account</h2>
         <p className='text-sm text-gray-400 mb-6 flex justify-center items-center'>Join GreenCare and start your plant journey</p>
 
-        <div className='w-full max-w-md bg-[#252525] backdrop-blur-sm rounded-2xl shadow-xl p-8'>
+        <div className='w-full max-w-md bg-[#252525]/80 rounded-2xl shadow-xl p-8 backdrop-blur'>
           <div className='flex flex-col mb-6'>
-             <button className='flex justify-center items-center gap-4 py-2 rounded-md backdrop-blur-sm bg-[#292929] text-white w-full' onClick={handleGoogleLogin}>
+             <button className='flex justify-center items-center gap-4 py-2 rounded-md backdrop-blur-sm bg-[#292929]/80 text-white w-full' onClick={handleGoogleLogin}>
               <FcGoogle className='text-lg'/>Continue with Google
              </button>
           </div>
