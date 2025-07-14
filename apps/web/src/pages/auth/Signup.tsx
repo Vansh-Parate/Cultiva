@@ -48,7 +48,7 @@ const Signup = () => {
   return (
     <div className='min-h-screen flex items-center justify-center'>
       <div className='w-full max-w-md bg-[#252525]/80 rounded-2xl shadow-xl p-8 backdrop-blur'>
-        <Link to="/" className="text-md text-gray-400 hover:text-white mb-5 block flex justify-center items-center gap-1 cursor-pointer">
+        <Link to="/" className="text-md text-gray-400 hover:text-white mb-5 flex justify-center items-center gap-1 cursor-pointer">
           <IoMdArrowBack className="text-md" />
           Back to home
         </Link>

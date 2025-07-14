@@ -1,7 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import Sidebar from "../components/Sidebar"; 
+import RightSidebar from "~/components/RightSidebar";
+import { demoFeaturedPlants } from "~/utils/demoPlant";
+import FeaturedPlantCard from "~/components/widgets/PlantCard";
 
 const Dashboard = () => {
+
+  const [selectedPlantId,setSelectPlantId] = useState(demoFeaturedPlants[0].id);
+  const selectedPlant = demoFeaturedPlants.find(p => p.id === selectedPlantId);
+
   return (
     <div className="min-h-screen w-full flex bg-[#e6efe6]">
       <aside className="w-64 flex-shrink-0">
@@ -26,7 +33,7 @@ const Dashboard = () => {
 
         <section>
           <div className="h-48 bg-white rounded-2xl shadow flex items-center justify-center text-gray-400">
-            Featured Plant Card (coming soon)
+            {selectedPlant && <FeaturedPlantCard plant={selectedPlant}/> }
           </div>
         </section>
 
@@ -40,14 +47,7 @@ const Dashboard = () => {
         </section>
       </main>
 
-      <aside className="w-80 flex-shrink-0 bg-[#22313f] p-8 flex flex-col">
-        <button className="bg-orange-400 hover:bg-orange-300 text-white font-bold py-3 rounded-xl shadow mb-8 transition">
-          + Add New Plant
-        </button>
-        <div className="flex-1 text-white opacity-60 flex items-center justify-center">
-          Plant List (coming soon)
-        </div>
-      </aside>
+      <RightSidebar plants={demoFeaturedPlants} selectedPlantId={selectedPlantId} onSelectPlant={setSelectPlantId}/>
     </div>
   );
 };

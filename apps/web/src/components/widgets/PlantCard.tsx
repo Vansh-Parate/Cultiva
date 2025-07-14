@@ -1,26 +1,26 @@
 import React from "react";
 import { Droplet, Thermometer, Sparkles } from "lucide-react";
-import { FeaturedPlant } from "./types";
+import { Plant } from "../../utils/types";
 
 const statPills = [
   {
     icon: <Droplet size={18} className="text-green-500" />,
     label: "Humidity",
-    value: (plant: FeaturedPlant) => `${plant.humidity}%`,
+    value: (plant: Plant) => `${plant.humidity}%`,
   },
   {
     icon: <Sparkles size={18} className="text-blue-400" />,
     label: "Water pH",
-    value: (plant: FeaturedPlant) => plant.waterPH,
+    value: (plant: Plant) => plant.waterPH,
   },
   {
     icon: <Thermometer size={18} className="text-yellow-500" />,
     label: "Temp",
-    value: (plant: FeaturedPlant) => plant.temperature,
+    value: (plant: Plant) => plant.temperature,
   },
 ];
 
-const FeaturedPlantCard: React.FC<{ plant: FeaturedPlant }> = ({ plant }) => (
+const FeaturedPlantCard: React.FC<{ plant: Plant }> = ({ plant }) => (
   <div className="relative bg-white/70 dark:bg-white/10 backdrop-blur-md rounded-3xl shadow-xl p-8 flex flex-col md:flex-row items-center gap-8">
     {/* Plant Image */}
     <div className="flex-shrink-0">
