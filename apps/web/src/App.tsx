@@ -6,6 +6,7 @@ import Signin from './pages/auth/Signin';
 import GoogleSuccess from './pages/auth/GoogleSuccess';
 import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './pages/Dashboard';
+import MyPlants from './pages/MyPlants';
 
 function App() {
   return (
@@ -22,6 +23,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/plants"
+          element={
+            <ProtectedRoute>
+              <MyPlants />
             </ProtectedRoute>
           }
         />   
