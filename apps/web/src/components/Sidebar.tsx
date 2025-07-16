@@ -1,12 +1,13 @@
 import React from 'react'
-import { HomeIcon, CalendarIcon, Cog6ToothIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
+import { HomeIcon, CalendarIcon, Cog6ToothIcon, QuestionMarkCircleIcon, IdentificationIcon } from '@heroicons/react/24/outline';
 import { LeafIcon } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 
 const navItems = [
   {label: 'Dashboard', icon: HomeIcon, route:'/dashboard'},
   {label: 'My Plants', icon:LeafIcon, route:'/plants'},
-  {label: 'Tasks', icon: CalendarIcon, route:'/tasks'}
+  {label: 'Tasks', icon: CalendarIcon, route:'/tasks'},
+  {label: 'Find Plant', icon: IdentificationIcon, route:'/find-plant'}
 ]
 
 const bottomItems = [

@@ -7,6 +7,7 @@ import GoogleSuccess from './pages/auth/GoogleSuccess';
 import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './pages/Dashboard';
 import MyPlants from './pages/MyPlants';
+import FindPlant from './pages/FindPlant';
 
 function App() {
   return (
@@ -33,7 +34,15 @@ function App() {
               <MyPlants />
             </ProtectedRoute>
           }
-        />   
+        />
+        <Route
+          path="/find-plant"
+          element={
+            <ProtectedRoute>
+              <FindPlant />
+            </ProtectedRoute>
+          }
+        />      
       </Routes>
     </BrowserRouter>
   )
