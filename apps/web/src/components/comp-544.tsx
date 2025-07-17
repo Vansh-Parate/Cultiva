@@ -1,8 +1,9 @@
 import { AlertCircleIcon, ImageUpIcon, XIcon } from "lucide-react"
+import React from "react"
 
 import { useFileUpload } from "~/hooks/use-file-upload"
 
-export default function Component() {
+export default function Component({onFileChange}) {
   const maxSizeMB = 5
   const maxSize = maxSizeMB * 1024 * 1024 // 5MB default
 
@@ -21,6 +22,12 @@ export default function Component() {
     accept: "image/*",
     maxSize,
   })
+
+  React.useEffect(() => {
+    if(onFileChange) {
+      onFileChange(files[0]?.file || null);
+    }
+  },[files,onFileChange])
 
   const previewUrl = files[0]?.preview || null
 
@@ -44,13 +51,13 @@ export default function Component() {
             aria-label="Upload file"
           />
           {previewUrl ? (
-            <div className="absolute inset-0">
-              <img
-                src={previewUrl}
-                alt={files[0]?.file?.name || "Uploaded image"}
-                className="size-full object-cover"
-              />
-            </div>
+            <div className="aspect-w-1 aspect-h-1 w-48">
+            <img
+              src={previewUrl}
+              alt={files[0]?.file?.name || 'Uploaded image'}
+              className="object-cover rounded-xl"
+            />
+          </div>
           ) : (
             <div className="flex flex-col items-center justify-center px-4 py-3 text-center">
               <div

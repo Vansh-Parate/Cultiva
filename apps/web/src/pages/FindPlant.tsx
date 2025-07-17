@@ -1,20 +1,69 @@
+import axios from 'axios';
 import React, { useState } from 'react'
 import Component from '~/components/comp-544'
 import Sidebar from '~/components/Sidebar'
 
+function fileToBase64(file){
+    return new Promise((res,rej) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          if (typeof reader.result === 'string') {
+            res(reader.result.split(',')[1]);
+          } else {
+            rej(new Error('FileReader result is not a string'));
+          }
+        };
+        reader.onerror = error => rej(error);
+    })
+}
+
 const FindPlant = () => {
-  // State to show results
+
   const [showResults, setShowResults] = useState(false);
-  // State for button loading micro-interaction
+
   const [loading, setLoading] = useState(false);
 
-  // Handler for Identify Plant button
-  const handleIdentify = () => {
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [apiResult,setApiResult] = useState(null);
+  const [error, setError] = useState(null);
+  // Add state to track which plant was added to collection
+  const [addedIdx, setAddedIdx] = useState(null);
+
+  const handleIdentify = async() => {
+    if(!uploadedFile) return;
+
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setShowResults(true);
-    }, 1500); // Simulate async work (1.5s)
+    setShowResults(false);
+    
+    try{
+        const base64 = await fileToBase64(uploadedFile);
+
+        const response = await axios.post('/api/identify-plant', {
+            base64,
+        });
+
+        setApiResult(response.data);
+        setShowResults(true);
+    }catch (err){
+        setError('Failed to identify plant. Please try again.')
+        console.log(err)
+    }finally{
+        setLoading(false);
+    }
+  };
+
+  // Handler for Add to Collection (mocked)
+  const handleAddToCollection = (idx) => {
+    setAddedIdx(idx);
+    setTimeout(() => setAddedIdx(null), 1500); // Show confirmation for 1.5s
+
+    try{
+      <div>Successfull</div>
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    }catch(error){
+      <div>UnSuccessful</div>
+    }
   };
 
   return (
@@ -28,7 +77,7 @@ const FindPlant = () => {
           <p className="text-sm text-gray-500 mb-6 text-center">
             Upload a photo of your plant to identify its species and get care tips.
           </p>
-          <Component />
+          <Component onFileChange={setUploadedFile} />
           <button
             className={`mt-6 w-full py-2 px-4 rounded-lg font-semibold text-white transition-colors shadow-lg bg-[#5d55ee] hover:bg-[#574fd6] cursor-pointer flex items-center justify-center`}
             onClick={handleIdentify}
@@ -40,16 +89,40 @@ const FindPlant = () => {
               "Identify Plant"
             )}
           </button>
-          {/* Placeholder for results section */}
-          {showResults && (
+          {showResults && apiResult && (
             <div className="mt-8 w-full">
-              {/* Results will be shown here in the next step */}
-              <div className="bg-[#F5E9DA] rounded-xl p-4 text-center text-gray-500 border border-dashed border-[#BFA2DB]">
-                [Identification results will appear here]
-              </div>
+              <h2 className='text-lg font-bold mb-4'>Top Matches</h2>
+              {Array.isArray(apiResult?.result?.classification?.suggestions) &&
+                apiResult.result.classification.suggestions.slice(0,3).map((s,idx) => (
+                  <div key={s.id || idx} className='mb-4 p-4 rounded-xl bg-[#F5E9DA] shadow flex flex-col md:flex-row items-center gap-4'>
+                    {s.similar_images?.[0]?.url_small && (
+                      <img 
+                        src={s.similar_images[0].url_small}
+                        alt={s.name}
+                        className='w-20 h-20 object-cover rounded-lg border'
+                      />
+                    )} 
+                    <div className='flex-1'>
+                      <div className='font-bold text-[#5d55ee] text-lg'>{s.name}</div>
+                      <div className='text-sm text-gray-700 mb-2'>
+                        Confidence: {(s.probability * 100).toFixed(1)}%
+                      </div>
+                      <button
+                        className={`mt-2 px-4 py-1 rounded-lg font-semibold text-white bg-[#5d55ee] hover:bg-[#574fd6] transition-colors shadow ${addedIdx === idx ? 'opacity-60 pointer-events-none' : ''}`}
+                        onClick={() => handleAddToCollection(idx)}
+                        disabled={addedIdx === idx}
+                      >
+                        {addedIdx === idx ? 'Added!' : 'Add to Collection'}
+                      </button>
+                    </div>
+                  </div>
+                ))
+              }
             </div>
           )}
-          {/* Loader CSS for micro-interaction */}
+          {error && (
+            <div className="mt-4 text-red-600">{error}</div>
+          )}
           <style>{`
             .loader {
               border: 2px solid #fff;
