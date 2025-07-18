@@ -78,7 +78,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen w-full flex bg-[#f7faf7] text-[#22313f]">
       {/* Sidebar */}
-      <aside className="w-64 flex-shrink-0">
+      <aside className="w-64 shrink-0">
         <Sidebar />
       </aside>
       {/* Main Content */}
@@ -96,7 +96,7 @@ const Dashboard = () => {
               <Award className="w-4 h-4 text-green-400" /> {user.badge}
             </span>
           </div>
-          <button className="ml-auto flex items-center gap-2 px-4 py-2 rounded-lg bg-white text-green-700 border border-green-300 hover:bg-green-50 hover:text-green-900 transition text-sm font-semibold shadow">
+          <button className="ml-auto flex items-center gap-2 px-4 py-2 rounded-lg bg-white text-green-700 border border-green-300 hover:bg-green-50 hover:text-green-900 transition text-sm font-semibold shadow-sm">
             <LogOut className="w-4 h-4" /> Sign out
           </button>
         </div>
@@ -111,7 +111,7 @@ const Dashboard = () => {
               {myPlants.map((plant, i) => (
                 <div
                   key={i}
-                  className="min-w-[160px] bg-white rounded-2xl shadow p-4 flex flex-col items-center border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1"
+                  className="min-w-[160px] bg-white rounded-2xl shadow-sm p-4 flex flex-col items-center border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1"
                 >
                   <img
                     src={plant.img}
@@ -119,7 +119,7 @@ const Dashboard = () => {
                     className="w-20 h-20 rounded-xl object-cover border-2 border-green-300 mb-2"
                   />
                   <div className="font-bold text-[#22313f] text-center mb-1 truncate w-full">{plant.name}</div>
-                  <span className={`px-2 py-1 text-xs rounded-full font-semibold shadow ${healthColors[plant.health]}`}>{plant.health}</span>
+                  <span className={`px-2 py-1 text-xs rounded-full font-semibold shadow-sm ${healthColors[plant.health]}`}>{plant.health}</span>
                 </div>
               ))}
             </div>
@@ -130,7 +130,7 @@ const Dashboard = () => {
           {stats.map((stat) => (
             <div
               key={stat.label}
-              className="bg-white rounded-2xl shadow p-6 flex flex-col items-center border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1"
+              className="bg-white rounded-2xl shadow-sm p-6 flex flex-col items-center border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1"
             >
               <div className="mb-2 text-green-500">{stat.icon}</div>
               <div className="text-2xl font-bold text-green-700">{stat.value}</div>
@@ -144,7 +144,7 @@ const Dashboard = () => {
           {/* Left Column */}
           <div className="flex flex-col gap-8">
             {/* Today's Tasks */}
-            <div className="bg-white rounded-2xl shadow p-8 border border-green-100 min-h-[260px] relative overflow-hidden hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
+            <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 min-h-[260px] relative overflow-hidden hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
               <div className="flex items-center gap-2 mb-4">
                 <CalendarCheck className="w-6 h-6 text-green-500" />
                 <span className="text-xl font-bold text-green-700">Today's Tasks</span>
@@ -152,7 +152,7 @@ const Dashboard = () => {
               {/* Progress Bar */}
               <div className="w-full h-2 bg-green-100 rounded-full mb-6">
                 <div
-                  className="h-2 rounded-full bg-gradient-to-r from-green-400 to-green-600 transition-all"
+                  className="h-2 rounded-full bg-linear-to-r from-green-400 to-green-600 transition-all"
                   style={{ width: `${progress}%` }}
                 ></div>
               </div>
@@ -173,7 +173,7 @@ const Dashboard = () => {
               </ul>
             </div>
             {/* Recent Activity */}
-            <div className="bg-white rounded-2xl shadow p-8 border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
+            <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
               <div className="text-xl font-bold text-green-700 mb-4 flex items-center gap-2">
                 <Sprout className="w-6 h-6 text-green-500" /> Recent Activity
               </div>
@@ -192,7 +192,7 @@ const Dashboard = () => {
           {/* Right Column */}
           <div className="flex flex-col gap-8">
             {/* Weather Tips */}
-            <div className="bg-white rounded-2xl shadow p-8 border border-green-100 flex flex-col items-center hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
+            <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 flex flex-col items-center hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
               <div className="flex items-center gap-2 mb-4">
                 <Sun className="w-6 h-6 text-yellow-400" />
                 <span className="text-xl font-bold text-green-700">Weather Tips</span>
@@ -215,7 +215,7 @@ const Dashboard = () => {
         {/* Charts Section (full width) */}
         <section className="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
           {/* Care Completion Rate Chart Placeholder */}
-          <div className="bg-white rounded-2xl shadow p-8 border border-green-100 flex flex-col items-center justify-center min-h-[220px] hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
+          <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 flex flex-col items-center justify-center min-h-[220px] hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
             <div className="flex items-center gap-2 mb-2">
               <BarChart3 className="w-6 h-6 text-green-500" />
               <span className="text-xl font-bold text-green-700">Care Completion Rate</span>
@@ -224,7 +224,7 @@ const Dashboard = () => {
             <div className="text-xs text-gray-400 mt-2">% of completed care tasks over the last 30 days</div>
           </div>
           {/* Plant Health Trend Chart Placeholder */}
-          <div className="bg-white rounded-2xl shadow p-8 border border-green-100 flex flex-col items-center justify-center min-h-[220px] hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
+          <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 flex flex-col items-center justify-center min-h-[220px] hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
             <div className="flex items-center gap-2 mb-2">
               <LineChart className="w-6 h-6 text-green-500" />
               <span className="text-xl font-bold text-green-700">Plant Health Trend</span>

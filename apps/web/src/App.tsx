@@ -13,36 +13,36 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<Layout children={''} />}>
+        <Route element={<Layout />}>
           <Route path="/" element={<Navigate to="/auth/signup" replace />} />
           <Route path="/auth/signup" element={<Signup />} />
           <Route path="/auth/signin" element={<Signin />} />
           <Route path="/auth/google/success" element={<GoogleSuccess />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/plants"
+            element={
+              <ProtectedRoute>
+                <MyPlants />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/find-plant"
+            element={
+              <ProtectedRoute>
+                <FindPlant />
+              </ProtectedRoute>
+            }
+          />
         </Route>
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/plants"
-          element={
-            <ProtectedRoute>
-              <MyPlants />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/find-plant"
-          element={
-            <ProtectedRoute>
-              <FindPlant />
-            </ProtectedRoute>
-          }
-        />      
       </Routes>
     </BrowserRouter>
   )

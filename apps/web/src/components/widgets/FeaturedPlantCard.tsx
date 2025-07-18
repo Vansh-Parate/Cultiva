@@ -16,7 +16,7 @@ const PlantStat = ({
   valueClass?: string;
 }) => (
   <div
-    className={`flex flex-col items-center justify-center rounded-2xl shadow ${bg} px-8 py-6 min-w-[140px]`}
+    className={`flex flex-col items-center justify-center rounded-2xl shadow-sm ${bg} px-8 py-6 min-w-[140px]`}
   >
     <div className="mb-3">{icon}</div>
     <div className={`text-2xl font-bold ${valueClass}`}>{value}</div>

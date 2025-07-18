@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useState } from 'react'
 import Component from '~/components/comp-544'
 import Sidebar from '~/components/Sidebar'
+import CustomToast from '~/components/CustomToast';
 
 function fileToBase64(file){
     return new Promise((res,rej) => {
@@ -21,14 +22,13 @@ function fileToBase64(file){
 const FindPlant = () => {
 
   const [showResults, setShowResults] = useState(false);
-
   const [loading, setLoading] = useState(false);
-
   const [uploadedFile, setUploadedFile] = useState(null);
   const [apiResult,setApiResult] = useState(null);
   const [error, setError] = useState(null);
   // Add state to track which plant was added to collection
   const [addedIdx, setAddedIdx] = useState(null);
+  const [toast, setToast] = useState({ show: false, title: '', message: '' });
 
   const handleIdentify = async() => {
     if(!uploadedFile) return;
@@ -58,10 +58,16 @@ const FindPlant = () => {
     setAddedIdx(idx);
     setTimeout(() => setAddedIdx(null), 1500); // Show confirmation for 1.5s
 
+    setToast({
+      show: true,
+      title: 'Added to Collection',
+      message: 'Plant added to your collection.',
+    });
+    setTimeout(() => setToast(t => ({ ...t, show: false })), 2500);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     try{
       <div>Successfull</div>
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    }catch(error){
+    }catch{
       <div>UnSuccessful</div>
     }
   };
@@ -72,7 +78,13 @@ const FindPlant = () => {
         <Sidebar />
       </aside>
       <div className='flex-1 flex justify-center items-center px-4 py-10'>
-        <div className='max-w-md w-full bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center'>
+        <div className="relative max-w-md w-full bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center">
+          <CustomToast
+            show={toast.show}
+            title={toast.title}
+            message={toast.message}
+            // onClose={() => setToast(t => ({ ...t, show: false }))}
+          />
           <h1 className="text-2xl flex items-center justify-center font-bold mb-2">Plant Identification</h1>
           <p className="text-sm text-gray-500 mb-6 text-center">
             Upload a photo of your plant to identify its species and get care tips.

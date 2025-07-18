@@ -28,7 +28,7 @@ const PlantCard: React.FC<PlantCardProps> = ({ plant, onClick }) => (
       />
       {/* Health status badge */}
       <span
-        className={`absolute -bottom-2 -right-2 flex items-center justify-center w-7 h-7 rounded-full border-2 border-white shadow ${statusColors[plant.healthStatus]}`}
+        className={`absolute -bottom-2 -right-2 flex items-center justify-center w-7 h-7 rounded-full border-2 border-white shadow-sm ${statusColors[plant.healthStatus]}`}
         title={plant.healthStatus}
       >
         <Droplet size={18} />
@@ -37,7 +37,7 @@ const PlantCard: React.FC<PlantCardProps> = ({ plant, onClick }) => (
     <div className="text-lg font-bold text-gray-800 text-center mb-1 truncate w-full">{plant.name}</div>
     <div className="text-xs text-green-700 text-center mb-2 truncate w-full">{plant.species}</div>
     <div className="flex items-center gap-2 mt-auto">
-      <span className={`px-2 py-1 text-xs rounded-full font-semibold shadow ${statusColors[plant.healthStatus]}`}>{plant.healthStatus}</span>
+      <span className={`px-2 py-1 text-xs rounded-full font-semibold shadow-sm ${statusColors[plant.healthStatus]}`}>{plant.healthStatus}</span>
       <span className="text-xs text-gray-400">•</span>
       <span className="text-xs text-gray-500">{plant.nextCare}</span>
     </div>

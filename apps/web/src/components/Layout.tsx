@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 
-const Layout: React.FC<{ children: React.ReactNode }> = () => (
+const Layout: React.FC<{ children?: React.ReactNode }> = () => (
   <div className="min-h-screen w-full bg-[#0f0f0f] relative text-white">
     {/* Diagonal Grid with Green Glow */}
     <div

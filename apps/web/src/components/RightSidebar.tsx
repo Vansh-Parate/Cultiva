@@ -10,8 +10,8 @@ const statusColors: Record<string, string> = {
 };
 
 const RightSidebar = ({ plants, selectedPlantId, onSelectPlant }) => (
-  <aside className="w-80 flex-shrink-0 bg-[#22313f] p-8 flex flex-col">
-    <button className="bg-orange-400 hover:bg-orange-300 text-white font-bold py-3 rounded-xl shadow mb-8 transition">
+  <aside className="w-80 shrink-0 bg-[#22313f] p-8 flex flex-col">
+    <button className="bg-orange-400 hover:bg-orange-300 text-white font-bold py-3 rounded-xl shadow-sm mb-8 transition">
       + Add New Plant
     </button>
     <div className="flex-1">
@@ -38,7 +38,7 @@ const RightSidebar = ({ plants, selectedPlantId, onSelectPlant }) => (
                   className="w-10 h-10 rounded-full border-2 border-green-400 object-cover"
                 />
                 {/* Water status badge (bottom right) */}
-                <span className={`absolute -bottom-1 -right-1 flex items-center justify-center w-5 h-5 rounded-full border-2 border-white shadow ${statusColors[plant.healthStatus]}`}>
+                <span className={`absolute -bottom-1 -right-1 flex items-center justify-center w-5 h-5 rounded-full border-2 border-white shadow-sm ${statusColors[plant.healthStatus]}`}>
                   <Droplet size={14} />
                 </span>
               </div>
@@ -47,7 +47,7 @@ const RightSidebar = ({ plants, selectedPlantId, onSelectPlant }) => (
                 <div className="text-xs text-green-200">{plant.species}</div>
               </div>
               {/* Water status pill */}
-              <span className={`px-2 py-1 text-xs rounded-full font-semibold shadow ${statusColors[plant.healthStatus]}`}>
+              <span className={`px-2 py-1 text-xs rounded-full font-semibold shadow-sm ${statusColors[plant.healthStatus]}`}>
                 {plant.healthStatus}
               </span>
             </li>

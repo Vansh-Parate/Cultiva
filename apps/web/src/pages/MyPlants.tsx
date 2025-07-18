@@ -11,7 +11,7 @@ const MyPlants = () => {
   return (
     <div className="min-h-screen w-full flex bg-[#e6efe6]">
       {/* Sidebar */}
-      <aside className="w-64 flex-shrink-0">
+      <aside className="w-64 shrink-0">
         <Sidebar />
       </aside>
 
@@ -36,10 +36,10 @@ const MyPlants = () => {
 
         {/* Charts and Widgets (placeholders) */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-white rounded-2xl shadow p-6 h-64 flex items-center justify-center text-gray-400">
+          <div className="bg-white rounded-2xl shadow-sm p-6 h-64 flex items-center justify-center text-gray-400">
             Plant Details Chart (coming soon)
           </div>
-          <div className="bg-white rounded-2xl shadow p-6 h-64 flex items-center justify-center text-gray-400">
+          <div className="bg-white rounded-2xl shadow-sm p-6 h-64 flex items-center justify-center text-gray-400">
             Water Level Chart (coming soon)
           </div>
         </section>
