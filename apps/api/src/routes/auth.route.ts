@@ -71,7 +71,7 @@ router.get(
     "/google/callback",
     passport.authenticate("google", {session:false, failureRedirect:"/"}),
     (req,res) => {
-        const user = req.user as any;
+        const user = (req as any).user;
         const token = jwt.sign({ userId: user.id}, process.env.JWT_SECRET!);
 
         res.redirect('https://green-care-gamma.vercel.app/auth/google/success?token=' + token);
