@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const router: express.Router = express.Router();
 
-router.post('/identify-plant', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const { base64 } = req.body;
     const response = await axios.post(

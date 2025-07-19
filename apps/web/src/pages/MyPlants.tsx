@@ -1,12 +1,54 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import RightSidebar from "../components/RightSidebar";
 import FeaturedPlantCard from "../components/widgets/FeaturedPlantCard";
-import { demoFeaturedPlants } from "../utils/demoPlant";
+import axios from "axios";
 
 const MyPlants = () => {
-  const [selectedPlantId, setSelectedPlantId] = useState(demoFeaturedPlants[0].id);
-  const selectedPlant = demoFeaturedPlants.find(p => p.id === selectedPlantId);
+  const [plants, setPlants] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPlants = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get('/api/v1/plants', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
+        // Map backend data to frontend shape
+        const mappedPlants = res.data.map(plant => ({
+          id: plant.id,
+          name: plant.name,
+          species: plant.species?.commonName || plant.speciesId || '', // fallback if missing
+          photoUrl: plant.images?.[0]?.url || '', // use first image or placeholder
+          healthStatus: plant.healthStatus || 'Good', // fallback/default
+          nextCare: plant.nextCare || 'N/A',
+          humidity: plant.humidity ?? 0,
+          waterPH: plant.waterPH ?? 0,
+          temperature: plant.temperature ?? '',
+        }));
+        setPlants(mappedPlants);
+      } catch (err) {
+        console.error('Failed to fetch plants:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchPlants();
+  }, []);
+
+  const [selectedPlantId, setSelectedPlantId] = useState(null);
+  const selectedPlant = plants.find(p => p.id === selectedPlantId);
+
+  useEffect(() => {
+    if (plants.length > 0 && !selectedPlantId) {
+      setSelectedPlantId(plants[0].id);
+    }
+  }, [plants, selectedPlantId])
+
+  if (loading) return <div className="flex items-center justify-center min-h-screen">Loading your plants...</div>;
 
   return (
     <div className="min-h-screen w-full flex bg-[#e6efe6]">
@@ -34,6 +76,11 @@ const MyPlants = () => {
           {selectedPlant && <FeaturedPlantCard plant={selectedPlant} />}
         </section>
 
+        {/* No plants message */}
+        {plants.length === 0 && (
+          <div className="text-center text-gray-500">No plants in your collection yet.</div>
+        )}
+
         {/* Charts and Widgets (placeholders) */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="bg-white rounded-2xl shadow-sm p-6 h-64 flex items-center justify-center text-gray-400">
@@ -47,7 +94,7 @@ const MyPlants = () => {
 
       {/* Right Sidebar */}
       <RightSidebar
-        plants={demoFeaturedPlants}
+        plants={plants}
         selectedPlantId={selectedPlantId}
         onSelectPlant={setSelectedPlantId}
       />

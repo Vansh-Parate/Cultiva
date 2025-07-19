@@ -6,6 +6,7 @@ import session from 'express-session';
 import passport from './auth/passport';
 import dotenv from 'dotenv'
 import plantIdentifyRouter from './routes/plantIdentify.route';
+import router from './routes/plant.route';
 
 dotenv.config({ path: '.env' })
 
@@ -15,7 +16,10 @@ const app = express()
 app.use(express.json({ limit: '10mb' })); // or higher if needed
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
+  origin: [
+    'http://localhost:5173',
+    'https://green-care-gamma.vercel.app'
+  ],
   credentials: true,
 }));
 
@@ -24,7 +28,8 @@ app.use(session({ secret:"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", resave: false, s
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/api/v1/users', userRoute);
-app.use('/api', plantIdentifyRouter);
+app.use('/api/identify-plant', plantIdentifyRouter);
+app.use('/api/v1/plants',router)
 
 app.get('/', (_req: Request, res: Response) => {
   res.status(200).json({
