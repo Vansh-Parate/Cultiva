@@ -1,12 +1,13 @@
 import cors from 'cors';
 import express, { Request, Response } from 'express'
-import { userRoute } from '@/routes/index'
 import authRoutes  from './routes/auth.route';
 import session from 'express-session';
 import passport from './auth/passport';
 import dotenv from 'dotenv'
 import plantIdentifyRouter from './routes/plantIdentify.route';
 import router from './routes/plant.route';
+import userRoute from './routes/user.route';
+import speciesRoute from './routes/species.route';
 
 dotenv.config({ path: '.env' })
 
@@ -29,7 +30,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use('/api/v1/users', userRoute);
 app.use('/api/identify-plant', plantIdentifyRouter);
-app.use('/api/v1/plants',router)
+app.use('/api/v1/plants',router);
+app.use('/api/v1/species',speciesRoute)
 
 app.get('/', (_req: Request, res: Response) => {
   res.status(200).json({

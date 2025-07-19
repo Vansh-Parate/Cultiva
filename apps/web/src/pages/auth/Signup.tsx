@@ -7,6 +7,8 @@ import { MdLockOutline } from "react-icons/md";
 import { Link, useNavigate} from "react-router-dom";
 import axios from 'axios';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:6969';
+
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [fullName, setFullName] = useState('');
@@ -21,7 +23,7 @@ const Signup = () => {
     e.preventDefault();
     setLoading(true);
     try{
-      const res = await axios.post("https://greencare.onrender.com/api/v1/auth/signup",{
+      const res = await axios.post(`${API_BASE_URL}/api/v1/auth/signup`,{
         fullName,
         email,
         password
@@ -41,7 +43,7 @@ const Signup = () => {
   }
 
   const handleGoogleLogin = () => {
-    window.location.href = "https://greencare.onrender.com/api/v1/auth/google";
+    window.location.href = `${API_BASE_URL}/api/v1/auth/google`;
     navigate('/dashboard');
   };
 
