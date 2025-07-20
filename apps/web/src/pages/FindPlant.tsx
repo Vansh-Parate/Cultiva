@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Component from '~/components/comp-544'
 import Sidebar from '~/components/Sidebar'
 import CustomToast from '~/components/CustomToast';
@@ -29,11 +29,6 @@ const FindPlant = () => {
   // Add state to track which plant was added to collection
   const [addedIdx, setAddedIdx] = useState(null);
   const [toast, setToast] = useState({ show: false, title: '', message: '' });
-  const [speciesList, setSpeciesList] = useState([]);
-
-  useEffect(() => {
-    axios.get('/api/v1/species').then(res => setSpeciesList(res.data));
-  }, []);
 
   const handleIdentify = async() => {
     if(!uploadedFile) return;
@@ -60,31 +55,13 @@ const FindPlant = () => {
 
   const handleAddToCollection = async (idx) => {
     setAddedIdx(idx);
-
     const suggestion = apiResult.result.classification.suggestions[idx];
-    const imageBase64 = uploadedFile; 
 
     const formData = new FormData();
     formData.append('name', suggestion.name);
-
-    // Find the species by name
-    const matchedSpecies = speciesList.find(
-      s => s.commonName.toLowerCase() === suggestion.name.toLowerCase()
-    );
-    const speciesId = matchedSpecies ? matchedSpecies.id : null;
-    if (!speciesId) {
-      setToast({
-        show: true,
-        title: 'Error',
-        message: 'Species not found in database.',
-      });
-      setAddedIdx(null);
-      return;
-    }
-
-    formData.append('speciesId', speciesId);
+    formData.append('speciesName', suggestion.name); // Always send speciesName
     formData.append('description', suggestion.details || '');
-    formData.append('image', uploadedFile); 
+    formData.append('image', uploadedFile);
 
     try {
       const token = localStorage.getItem('token');
@@ -101,7 +78,8 @@ const FindPlant = () => {
         message: 'Plant added to your collection.',
       });
       setTimeout(() => setToast(t => ({ ...t, show: false })), 2500);
-    } catch (err) {
+      window.dispatchEvent(new Event('plant-added'));
+    } catch {
       setToast({
         show: true,
         title: 'Error',

@@ -37,6 +37,13 @@ const MyPlants = () => {
       }
     }
     fetchPlants();
+
+    const handlePlantAdded = () => fetchPlants();
+    window.addEventListener('plant-added', handlePlantAdded);
+
+    return () => {
+      window.removeEventListener('plant-added', handlePlantAdded);
+    };
   }, []);
 
   const [selectedPlantId, setSelectedPlantId] = useState(null);

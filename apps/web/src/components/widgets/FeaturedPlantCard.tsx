@@ -39,6 +39,7 @@ const FeaturedPlantCard: React.FC<{ plant: Plant }> = ({ plant }) => (
       <img
         src={plant.photoUrl || "/placeholder-plant.png"}
         alt={plant.name}
+        onError={e => { e.currentTarget.src = '../plant-placeholder.avif'; }}
         className="w-24 h-24 rounded-full border-4 border-green-400 object-cover"
       />
       <div>
