@@ -4,6 +4,7 @@ import { uploadImageToS3 } from '@/s3';
 import { PrismaClient } from '@prisma/client';
 import { Router } from 'express';
 import { authenticateJWT } from '@/middleware/authMiddleware';
+import crypto from 'crypto';
 
 const router:Router = express.Router();
 const upload = multer();
@@ -26,21 +27,29 @@ router.post('/',
         where: { commonName: { equals: speciesName, mode: 'insensitive' } }
       });
       if (!species) {
+        // Use a more user-friendly common name
+        let commonName = speciesName;
+        if (commonName.length > 20) {
+          commonName = commonName.split(' ')[0]; // Use first word if name is long
+        }
+        commonName = commonName.charAt(0).toUpperCase() + commonName.slice(1);
         species = await prisma.plantSpecies.create({
           data: {
-            commonName: speciesName,
-            scientificName: '', 
+            commonName,
+            scientificName: speciesName, // fallback to original name
           }
         });
       }
 
+      const hash = crypto.createHash('sha256').update(file.buffer).digest('hex');
       const imageUrl = await uploadImageToS3(file.buffer, file.mimetype);
 
+      // Prevent duplicate plant images for the same user
       const existingPlant = await prisma.plant.findFirst({
         where: {
           userId,
           images: {
-            some: { url: imageUrl }
+            some: { hash }
           }
         }
       });
@@ -59,6 +68,7 @@ router.post('/',
               {
                 url: imageUrl,
                 isPrimary: true,
+                hash,
               }
             ]
           }

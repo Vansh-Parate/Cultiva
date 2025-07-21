@@ -19,9 +19,7 @@ export async function uploadImageToS3(buffer: Buffer, mimetype: string): Promise
       Key: key,
       Body: buffer,
       ContentType: mimetype,
-      ACL: 'private', // or 'public-read' if you want public images
     })
   );
-  // Return the S3 URL (adjust if you use a CDN or custom domain)
   return `https://${BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
 } 

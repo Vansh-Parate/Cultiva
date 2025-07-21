@@ -45,6 +45,7 @@ model PlantImage {
   id         String   @id @default(uuid())
   url        String
   caption    String?
+  hash       String?
   isPrimary  Boolean  @default(false)
   uploadedAt DateTime @default(now())
   plantId    String
