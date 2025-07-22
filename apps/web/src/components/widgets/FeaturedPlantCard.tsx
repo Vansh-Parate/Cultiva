@@ -26,6 +26,10 @@ const PlantStat = ({
   </div>
 );
 
+const Loader = () => (
+  <span className="inline-block w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin align-middle"></span>
+);
+
 const FeaturedPlantCard: React.FC<{ plant: Plant }> = ({ plant }) => {
   // Use weather hook: prefer plant.location, fallback to user's location
   const { weather, loading } = useWeather(plant.location);
@@ -67,8 +71,8 @@ const FeaturedPlantCard: React.FC<{ plant: Plant }> = ({ plant }) => {
           icon={<Droplet size={32} className="text-green-500" />}
           value={
             loading
-              ? 'Loading...'
-              : (weather.humidity ?? plant.humidity ?? '--') + '%'
+              ? <Loader />
+              : (weather.humidity ?? plant.humidity ?? <span className="text-gray-400">N/A</span>) + '%'
           }
           label="Humidity Percentage"
           bg="bg-[#1a2b23] text-white"
@@ -77,9 +81,13 @@ const FeaturedPlantCard: React.FC<{ plant: Plant }> = ({ plant }) => {
         <PlantStat
           icon={<Sparkles size={32} className="text-blue-400" />}
           value={
-            plant.waterPH !== undefined && plant.waterPH !== null && plant.waterPH !== 0
-              ? plant.waterPH.toString()
-              : phAdvice || '--'
+            loading
+              ? <Loader />
+              : plant.waterPH !== undefined && plant.waterPH !== null && plant.waterPH !== 0
+                ? plant.waterPH.toString()
+                : phAdvice && phAdvice !== 'No answer found'
+                  ? phAdvice
+                  : <span className="text-gray-400">N/A</span>
           }
           label="Daily Water pH"
           bg="bg-[#eaf6fb]"
