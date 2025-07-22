@@ -65,7 +65,7 @@ const MyPlants = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col px-10 py-8 space-y-8">
+      <main className="flex-1 flex flex-col px-10 py-8 space-y-8 ">
         {/* Header */}
         <header className="flex items-center justify-between">
           <div>

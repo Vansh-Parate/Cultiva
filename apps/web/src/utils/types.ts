@@ -8,4 +8,5 @@ export interface Plant {
     humidity: number; 
     waterPH: number;
     temperature: string;
+    location?: string; // Added for weather integration
   }

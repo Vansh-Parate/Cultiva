@@ -19,7 +19,7 @@ export default function Sidebar() {
   const location = useLocation();
 
   return (
-    <nav className='flex flex-col justify-between w-64 min-h-screen bg-white border-r border-gray-200 px-4 py-6'>
+    <nav className='flex flex-col justify-between w-64 min-h-screen bg-white border-r border-gray-200 px-4 py-6 fixed top-0 left-0 h-screen z-30'>
       <div>
         <div className='flex items-center mb-8'>
           <span className='text-2xl font-bold  text-green-600'>GreenCare</span>

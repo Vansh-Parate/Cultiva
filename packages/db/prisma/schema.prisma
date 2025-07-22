@@ -39,17 +39,21 @@ model Plant {
   careSchedules CareSchedule[]
   careLogs      CareLog[]
   healthLogs    HealthLog[]
+  humidity      Float?         
+  waterPH       Float?         
+  temperature   Float?         
+  location      String?        
 }
 
 model PlantImage {
   id         String   @id @default(uuid())
   url        String
   caption    String?
-  hash       String?
   isPrimary  Boolean  @default(false)
   uploadedAt DateTime @default(now())
   plantId    String
   plant      Plant    @relation(fields: [plantId], references: [id])
+  hash       String?  
 }
 
 model PlantSpecies {

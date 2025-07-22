@@ -23,6 +23,9 @@ router.post('/',
         return res.status(400).json({ error: 'Image file is required' });
       }
 
+      // Hash the image buffer
+      const hash = crypto.createHash('sha256').update(file.buffer).digest('hex');
+
       let species = await prisma.plantSpecies.findFirst({
         where: { commonName: { equals: speciesName, mode: 'insensitive' } }
       });
@@ -41,10 +44,7 @@ router.post('/',
         });
       }
 
-      const hash = crypto.createHash('sha256').update(file.buffer).digest('hex');
-      const imageUrl = await uploadImageToS3(file.buffer, file.mimetype);
-
-      // Prevent duplicate plant images for the same user
+      // Prevent duplicate plant images for the same user (by hash)
       const existingPlant = await prisma.plant.findFirst({
         where: {
           userId,
@@ -57,6 +57,8 @@ router.post('/',
         return res.status(409).json({ error: 'This plant image already exists in your collection.' });
       }
 
+      const imageUrl = await uploadImageToS3(file.buffer, file.mimetype);
+
       const plant = await prisma.plant.create({
         data: {
           name,
@@ -68,7 +70,7 @@ router.post('/',
               {
                 url: imageUrl,
                 isPrimary: true,
-                hash,
+                hash, // store the hash
               }
             ]
           }
