@@ -14,7 +14,7 @@ dotenv.config({ path: '.env' })
 const PORT = process.env.PORT || 6969
 const app = express()
 
-app.use(express.json({ limit: '10mb' })); // or higher if needed
+app.use(express.json({ limit: '10mb' })); 
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(cors({
   origin: [
@@ -25,7 +25,11 @@ app.use(cors({
 }));
 
 app.use('/api/v1/auth', authRoutes);
-app.use(session({ secret:"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", resave: false, saveUninitialized: false}));
+app.use(session({ 
+  secret: process.env.SESSION_SECRET || 'default-secret', 
+  resave: false, 
+  saveUninitialized: false
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/api/v1/users', userRoute);

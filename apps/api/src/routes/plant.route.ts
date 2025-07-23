@@ -5,6 +5,7 @@ import { PrismaClient } from '@prisma/client';
 import { Router } from 'express';
 import { authenticateJWT } from '@/middleware/authMiddleware';
 import crypto from 'crypto';
+import axios from 'axios';
 
 const router:Router = express.Router();
 const upload = multer();
@@ -23,28 +24,25 @@ router.post('/',
         return res.status(400).json({ error: 'Image file is required' });
       }
 
-      // Hash the image buffer
       const hash = crypto.createHash('sha256').update(file.buffer).digest('hex');
 
       let species = await prisma.plantSpecies.findFirst({
         where: { commonName: { equals: speciesName, mode: 'insensitive' } }
       });
       if (!species) {
-        // Use a more user-friendly common name
         let commonName = speciesName;
         if (commonName.length > 20) {
-          commonName = commonName.split(' ')[0]; // Use first word if name is long
+          commonName = commonName.split(' ')[0];
         }
         commonName = commonName.charAt(0).toUpperCase() + commonName.slice(1);
         species = await prisma.plantSpecies.create({
           data: {
             commonName,
-            scientificName: speciesName, // fallback to original name
+            scientificName: speciesName,
           }
         });
       }
 
-      // Prevent duplicate plant images for the same user (by hash)
       const existingPlant = await prisma.plant.findFirst({
         where: {
           userId,
@@ -70,7 +68,7 @@ router.post('/',
               {
                 url: imageUrl,
                 isPrimary: true,
-                hash, // store the hash
+                hash, 
               }
             ]
           }
@@ -100,6 +98,37 @@ router.get('/', authenticateJWT, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch plants' });
+  }
+});
+
+router.post('/:id/health-check', authenticateJWT, async (req, res) => {
+  try {
+    const plant = await prisma.plant.findUnique({
+      where: { id: req.params.id },
+      include: { images: true }
+    });
+    if (!plant || !plant.images[0]) {
+      return res.status(404).json({ error: 'No image found for this plant.' });
+    }
+
+    const imageUrl = plant.images[0].url;
+    const imageRes = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+    const imageBase64 = Buffer.from(imageRes.data, 'binary').toString('base64');
+
+    const plantIdRes = await axios.post('https://plant.id/api/v3/health_assessment', {
+      images: [`data:image/jpeg;base64,${imageBase64}`],
+      similar_images: true,
+    }, {
+      headers: {
+        'Api-Key': process.env.PLANT_ID_API_KEY,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    res.json(plantIdRes.data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to assess plant health.' });
   }
 });
 

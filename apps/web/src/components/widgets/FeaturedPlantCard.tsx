@@ -26,12 +26,11 @@ const PlantStat = ({
   </div>
 );
 
-const Loader = () => (
-  <span className="inline-block w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin align-middle"></span>
-);
+interface FeaturedPlantCardProps {
+  plant: Plant;
+}
 
-const FeaturedPlantCard: React.FC<{ plant: Plant }> = ({ plant }) => {
-  // Use weather hook: prefer plant.location, fallback to user's location
+const FeaturedPlantCard: React.FC<FeaturedPlantCardProps> = ({ plant }) => {
   const { weather, loading } = useWeather(plant.location);
   const [phAdvice, setPhAdvice] = useState<string | null>(null);
 
@@ -43,7 +42,6 @@ const FeaturedPlantCard: React.FC<{ plant: Plant }> = ({ plant }) => {
 
   return (
     <div className="relative w-full bg-white rounded-3xl shadow-2xl p-12 flex flex-col md:flex-row items-center gap-12 overflow-hidden">
-      {/* Decorative SVG/leaf (optional) */}
       <img
         src="/decorative-leaf.svg"
         alt=""
@@ -51,7 +49,6 @@ const FeaturedPlantCard: React.FC<{ plant: Plant }> = ({ plant }) => {
         style={{ zIndex: 1 }}
       />
 
-      {/* Plant Info */}
       <div className="flex flex-col items-center md:items-start gap-4 z-10">
         <img
           src={plant.photoUrl || "/placeholder-plant.png"}
@@ -65,14 +62,13 @@ const FeaturedPlantCard: React.FC<{ plant: Plant }> = ({ plant }) => {
         </div>
       </div>
 
-      {/* Stat Widgets */}
       <div className="flex-1 flex flex-row justify-center gap-8 z-10">
         <PlantStat
           icon={<Droplet size={32} className="text-green-500" />}
           value={
             loading
-              ? <Loader />
-              : (weather.humidity ?? plant.humidity ?? <span className="text-gray-400">N/A</span>) + '%'
+              ? 'Loading...'
+              : (weather.humidity ?? plant.humidity ?? 'N/A') + '%'
           }
           label="Humidity Percentage"
           bg="bg-[#1a2b23] text-white"
@@ -82,12 +78,12 @@ const FeaturedPlantCard: React.FC<{ plant: Plant }> = ({ plant }) => {
           icon={<Sparkles size={32} className="text-blue-400" />}
           value={
             loading
-              ? <Loader />
+              ? 'Loading...'
               : plant.waterPH !== undefined && plant.waterPH !== null && plant.waterPH !== 0
                 ? plant.waterPH.toString()
                 : phAdvice && phAdvice !== 'No answer found'
                   ? phAdvice
-                  : <span className="text-gray-400">N/A</span>
+                  : 'N/A'
           }
           label="Daily Water pH"
           bg="bg-[#eaf6fb]"
@@ -111,6 +107,7 @@ const FeaturedPlantCard: React.FC<{ plant: Plant }> = ({ plant }) => {
           valueClass="text-black"
         />
       </div>
+
     </div>
   );
 };
