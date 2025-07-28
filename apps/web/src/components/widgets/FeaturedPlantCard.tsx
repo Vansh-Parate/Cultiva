@@ -18,11 +18,11 @@ const PlantStat = ({
   valueClass?: string;
 }) => (
   <div
-    className={`flex flex-col items-center justify-center rounded-2xl shadow-sm ${bg} px-8 py-6 min-w-[140px]`}
+    className={`flex flex-col items-center justify-center rounded-2xl shadow-sm ${bg} px-4 sm:px-6 lg:px-8 py-4 sm:py-6 min-w-[120px] sm:min-w-[140px]`}
   >
-    <div className="mb-3">{icon}</div>
-    <div className={`text-2xl font-bold ${valueClass}`}>{value}</div>
-    <div className="text-sm text-gray-500 mt-2">{label}</div>
+    <div className="mb-2 sm:mb-3">{icon}</div>
+    <div className={`text-lg sm:text-xl lg:text-2xl font-bold ${valueClass}`}>{value}</div>
+    <div className="text-xs sm:text-sm text-gray-500 mt-1 sm:mt-2 text-center">{label}</div>
   </div>
 );
 
@@ -41,28 +41,28 @@ const FeaturedPlantCard: React.FC<FeaturedPlantCardProps> = ({ plant }) => {
   }, [plant.waterPH, plant.species, plant.location]);
 
   return (
-    <div className="relative w-full bg-white rounded-3xl shadow-2xl p-12 flex flex-col md:flex-row items-center gap-12 overflow-hidden">
+    <div className="relative w-full bg-white rounded-3xl shadow-2xl p-6 sm:p-8 lg:p-12 flex flex-col md:flex-row items-center gap-6 sm:gap-8 lg:gap-12 overflow-hidden">
       <img
         src="/decorative-leaf.svg"
         alt=""
-        className="absolute top-0 right-0 w-32 opacity-10 pointer-events-none"
+        className="absolute top-0 right-0 w-24 sm:w-32 opacity-10 pointer-events-none"
         style={{ zIndex: 1 }}
       />
 
-      <div className="flex flex-col items-center md:items-start gap-4 z-10">
+      <div className="flex flex-col items-center md:items-start gap-3 sm:gap-4 z-10">
         <img
           src={plant.photoUrl || "/placeholder-plant.png"}
           alt={plant.name}
-          className="w-24 h-24 rounded-full border-4 border-green-400 object-cover"
+          className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-green-400 object-cover"
           onError={e => { e.currentTarget.src = '/placeholder-plant.png'; }}
         />
-        <div>
-          <div className="text-2xl font-bold text-gray-800">{plant.name}</div>
-          <div className="text-base text-green-700">{plant.species}</div>
+        <div className="text-center md:text-left">
+          <div className="text-xl sm:text-2xl font-bold text-gray-800">{plant.name}</div>
+          <div className="text-sm sm:text-base text-green-700">{plant.species}</div>
         </div>
       </div>
 
-      <div className="flex-1 flex flex-row justify-center gap-8 z-10">
+      <div className="flex-1 flex flex-row justify-center gap-4 sm:gap-6 lg:gap-8 z-10">
         <PlantStat
           icon={<Droplet size={32} className="text-green-500" />}
           value={

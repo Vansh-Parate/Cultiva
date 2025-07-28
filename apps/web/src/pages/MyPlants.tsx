@@ -3,10 +3,12 @@ import Sidebar from "../components/Sidebar";
 import RightSidebar from "../components/RightSidebar";
 import FeaturedPlantCard from "../components/widgets/FeaturedPlantCard";
 import axios from "axios";
+import { ChevronDown, Leaf } from "lucide-react";
 
 const MyPlants = () => {
   const [plants, setPlants] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showMobilePlantSelector, setShowMobilePlantSelector] = useState(false);
 
   useEffect(() => {
     const fetchPlants = async () => {
@@ -143,14 +145,14 @@ const MyPlants = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex bg-[#e6efe6]">
+    <div className="min-h-screen w-full flex bg-[#e6efe6] overflow-hidden">
       {/* Sidebar */}
       <aside className="w-64 shrink-0">
         <Sidebar />
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col px-10 py-8 space-y-8 ">
+      <main className="flex-1 flex flex-col px-6 py-8 space-y-8 min-w-0">
         {/* Header */}
         <header className="flex items-center justify-between">
           <div>
@@ -163,9 +165,64 @@ const MyPlants = () => {
           </div>
         </header>
 
+        {/* Mobile Plant Selector - Only visible on small screens */}
+        <div className="lg:hidden">
+          <div className="bg-white rounded-xl p-4 shadow-sm">
+            <button
+              onClick={() => setShowMobilePlantSelector(!showMobilePlantSelector)}
+              className="w-full flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition"
+            >
+              <div className="flex items-center gap-3">
+                <Leaf className="w-5 h-5 text-green-600" />
+                <span className="font-medium">
+                  {selectedPlant ? selectedPlant.name : 'Select a plant'}
+                </span>
+              </div>
+              <ChevronDown className={`w-5 h-5 transition-transform ${showMobilePlantSelector ? 'rotate-180' : ''}`} />
+            </button>
+            
+            {showMobilePlantSelector && (
+              <div className="mt-3 space-y-2 max-h-60 overflow-y-auto">
+                {plants.map(plant => (
+                  <button
+                    key={plant.id}
+                    onClick={() => {
+                      setSelectedPlantId(plant.id);
+                      setShowMobilePlantSelector(false);
+                    }}
+                    className={`w-full flex items-center gap-3 p-3 rounded-lg transition ${
+                      selectedPlantId === plant.id 
+                        ? 'bg-green-100 border border-green-300' 
+                        : 'bg-gray-50 hover:bg-gray-100'
+                    }`}
+                  >
+                    <img
+                      src={plant.photoUrl}
+                      alt={plant.name}
+                      className="w-10 h-10 rounded-full border-2 border-green-400 object-cover"
+                      onError={e => { e.currentTarget.src = '/placeholder-plant.png'; }}
+                    />
+                    <div className="flex-1 text-left">
+                      <div className="font-medium text-gray-900">{plant.name}</div>
+                      <div className="text-sm text-gray-600">{plant.species}</div>
+                    </div>
+                    <span className={`px-2 py-1 text-xs rounded-full font-semibold ${
+                      plant.healthStatus === 'Good' || plant.healthStatus === 'Excellent'
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      {plant.healthStatus}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Featured Plant Card */}
         <section className="w-full flex justify-center">
-          <div className="flex flex-col items-center w-full">
+          <div className="flex flex-col items-center w-full max-w-4xl">
             {selectedPlant && <FeaturedPlantCard plant={selectedPlant} />}
             {selectedPlant && <HealthDashboard plant={selectedPlant} />}
           </div>
@@ -177,7 +234,7 @@ const MyPlants = () => {
         )}
 
         {/* Charts and Widgets (placeholders) */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto w-full">
           <div className="bg-white rounded-2xl shadow-sm p-6 h-64 flex items-center justify-center text-gray-400">
             Plant Details Chart (coming soon)
           </div>
@@ -187,12 +244,14 @@ const MyPlants = () => {
         </section>
       </main>
 
-      {/* Right Sidebar */}
-      <RightSidebar
-        plants={plants}
-        selectedPlantId={selectedPlantId}
-        onSelectPlant={setSelectedPlantId}
-      />
+      {/* Right Sidebar - Hidden on small screens to prevent overflow */}
+      <div className="hidden lg:block">
+        <RightSidebar
+          plants={plants}
+          selectedPlantId={selectedPlantId}
+          onSelectPlant={setSelectedPlantId}
+        />
+      </div>
     </div>
   );
 };
