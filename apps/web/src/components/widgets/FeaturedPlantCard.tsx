@@ -18,11 +18,11 @@ const PlantStat = ({
   valueClass?: string;
 }) => (
   <div
-    className={`flex flex-col items-center justify-center rounded-2xl shadow-sm ${bg} px-4 sm:px-6 lg:px-8 py-4 sm:py-6 min-w-[120px] sm:min-w-[140px]`}
+    className={`flex flex-col items-center justify-center rounded-2xl shadow-sm ${bg} px-3 sm:px-4 lg:px-6 py-3 sm:py-4 lg:py-6 flex-1 min-w-0`}
   >
     <div className="mb-2 sm:mb-3">{icon}</div>
-    <div className={`text-lg sm:text-xl lg:text-2xl font-bold ${valueClass}`}>{value}</div>
-    <div className="text-xs sm:text-sm text-gray-500 mt-1 sm:mt-2 text-center">{label}</div>
+    <div className={`text-base sm:text-lg lg:text-xl font-bold ${valueClass} text-center`}>{value}</div>
+    <div className="text-xs sm:text-sm text-gray-500 mt-1 sm:mt-2 text-center leading-tight">{label}</div>
   </div>
 );
 
@@ -41,41 +41,41 @@ const FeaturedPlantCard: React.FC<FeaturedPlantCardProps> = ({ plant }) => {
   }, [plant.waterPH, plant.species, plant.location]);
 
   return (
-    <div className="relative w-full bg-white rounded-3xl shadow-2xl p-6 sm:p-8 lg:p-12 flex flex-col md:flex-row items-center gap-6 sm:gap-8 lg:gap-12 overflow-hidden">
+    <div className="relative w-full bg-white rounded-3xl shadow-2xl p-4 sm:p-6 lg:p-8 flex flex-col lg:flex-row items-center gap-4 sm:gap-6 lg:gap-8 overflow-hidden">
       <img
         src="/decorative-leaf.svg"
         alt=""
-        className="absolute top-0 right-0 w-24 sm:w-32 opacity-10 pointer-events-none"
+        className="absolute top-0 right-0 w-20 sm:w-24 lg:w-32 opacity-10 pointer-events-none"
         style={{ zIndex: 1 }}
       />
 
-      <div className="flex flex-col items-center md:items-start gap-3 sm:gap-4 z-10">
+      <div className="flex flex-col items-center lg:items-start gap-3 sm:gap-4 z-10 flex-shrink-0">
         <img
           src={plant.photoUrl || "/placeholder-plant.png"}
           alt={plant.name}
-          className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-green-400 object-cover"
+          className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full border-4 border-green-400 object-cover"
           onError={e => { e.currentTarget.src = '/placeholder-plant.png'; }}
         />
-        <div className="text-center md:text-left">
-          <div className="text-xl sm:text-2xl font-bold text-gray-800">{plant.name}</div>
+        <div className="text-center lg:text-left">
+          <div className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800">{plant.name}</div>
           <div className="text-sm sm:text-base text-green-700">{plant.species}</div>
         </div>
       </div>
 
-      <div className="flex-1 flex flex-row justify-center gap-4 sm:gap-6 lg:gap-8 z-10">
+      <div className="flex-1 flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 lg:gap-6 z-10 min-w-0 w-full">
         <PlantStat
-          icon={<Droplet size={32} className="text-green-500" />}
+          icon={<Droplet size={24} className="text-green-500 sm:w-6 sm:h-6 lg:w-8 lg:h-8" />}
           value={
             loading
               ? 'Loading...'
               : (weather.humidity ?? plant.humidity ?? 'N/A') + '%'
           }
-          label="Humidity Percentage"
+          label="Humidity"
           bg="bg-[#1a2b23] text-white"
           valueClass="text-white"
         />
         <PlantStat
-          icon={<Sparkles size={32} className="text-blue-400" />}
+          icon={<Sparkles size={24} className="text-blue-400 sm:w-6 sm:h-6 lg:w-8 lg:h-8" />}
           value={
             loading
               ? 'Loading...'
@@ -85,12 +85,12 @@ const FeaturedPlantCard: React.FC<FeaturedPlantCardProps> = ({ plant }) => {
                   ? phAdvice
                   : 'N/A'
           }
-          label="Daily Water pH"
+          label="Water pH"
           bg="bg-[#eaf6fb]"
           valueClass="text-black"
         />
         <PlantStat
-          icon={<Sun size={32} className="text-yellow-400" />}
+          icon={<Sun size={24} className="text-yellow-400 sm:w-6 sm:h-6 lg:w-8 lg:h-8" />}
           value={
             loading
               ? 'Loading...'
@@ -102,7 +102,7 @@ const FeaturedPlantCard: React.FC<FeaturedPlantCardProps> = ({ plant }) => {
                       : '--'
                 )
           }
-          label="Today's Temperature"
+          label="Temperature"
           bg="bg-[#fff7e6]"
           valueClass="text-black"
         />

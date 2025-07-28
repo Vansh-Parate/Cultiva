@@ -221,8 +221,8 @@ const MyPlants = () => {
         </div>
 
         {/* Featured Plant Card */}
-        <section className="w-full flex justify-center">
-          <div className="flex flex-col items-center w-full max-w-4xl">
+        <section className="w-full flex justify-center px-4">
+          <div className="flex flex-col items-center w-full max-w-5xl">
             {selectedPlant && <FeaturedPlantCard plant={selectedPlant} />}
             {selectedPlant && <HealthDashboard plant={selectedPlant} />}
           </div>
@@ -246,11 +246,11 @@ const MyPlants = () => {
 
       {/* Right Sidebar - Hidden on small screens to prevent overflow */}
       <div className="hidden lg:block">
-        <RightSidebar
-          plants={plants}
-          selectedPlantId={selectedPlantId}
-          onSelectPlant={setSelectedPlantId}
-        />
+      <RightSidebar
+        plants={plants}
+        selectedPlantId={selectedPlantId}
+        onSelectPlant={setSelectedPlantId}
+      />
       </div>
     </div>
   );
