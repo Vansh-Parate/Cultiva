@@ -62,7 +62,7 @@ const getCareTips = (plantName) => {
     }
   }
 
-  // Default tips
+  // Default tips of
   return {
     water: 'Water when top inch of soil feels dry',
     light: 'Bright indirect light',
