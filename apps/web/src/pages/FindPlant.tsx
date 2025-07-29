@@ -27,31 +27,73 @@ const getCareTips = (plantName) => {
       water: 'Water sparingly, allow soil to dry between watering',
       light: 'Bright indirect light or direct sunlight',
       temperature: '60-75°F (15-24°C)',
-      tips: ['Drought tolerant', 'Good for beginners', 'Medicinal properties']
+      tips: ['Drought tolerant', 'Good for beginners', 'Medicinal properties', 'Avoid overwatering']
     },
     'snake plant': {
       water: 'Water every 2-3 weeks, very drought tolerant',
       light: 'Low to bright indirect light',
       temperature: '60-85°F (15-29°C)',
-      tips: ['Air purifying', 'Very low maintenance', 'Perfect for offices']
+      tips: ['Air purifying', 'Very low maintenance', 'Perfect for offices', 'Tolerates neglect']
     },
     'peace lily': {
       water: 'Keep soil consistently moist, not soggy',
       light: 'Medium to bright indirect light',
       temperature: '65-80°F (18-27°C)',
-      tips: ['Air purifying', 'Drooping leaves indicate thirst', 'Toxic to pets']
+      tips: ['Air purifying', 'Drooping leaves indicate thirst', 'Toxic to pets', 'Humidity loving']
     },
     'pothos': {
       water: 'Water when top inch of soil is dry',
       light: 'Low to bright indirect light',
       temperature: '65-85°F (18-29°C)',
-      tips: ['Trailing plant', 'Easy to propagate', 'Air purifying']
+      tips: ['Trailing plant', 'Easy to propagate', 'Air purifying', 'Great for hanging baskets']
     },
     'monstera': {
       water: 'Water when top 2-3 inches of soil is dry',
       light: 'Bright indirect light',
       temperature: '65-85°F (18-29°C)',
-      tips: ['Large leaves', 'Needs support to climb', 'Toxic to pets']
+      tips: ['Large leaves', 'Needs support to climb', 'Toxic to pets', 'Loves humidity']
+    },
+    'ficus': {
+      water: 'Water when top inch of soil is dry',
+      light: 'Bright indirect light',
+      temperature: '60-75°F (15-24°C)',
+      tips: ['Sensitive to drafts', 'Likes consistent care', 'Can drop leaves when stressed', 'Good air purifier']
+    },
+    'philodendron': {
+      water: 'Water when top inch of soil is dry',
+      light: 'Medium to bright indirect light',
+      temperature: '65-80°F (18-27°C)',
+      tips: ['Easy to care for', 'Trailing or climbing', 'Toxic to pets', 'Loves humidity']
+    },
+    'zz plant': {
+      water: 'Water every 2-3 weeks, very drought tolerant',
+      light: 'Low to bright indirect light',
+      temperature: '65-75°F (18-24°C)',
+      tips: ['Very low maintenance', 'Drought tolerant', 'Perfect for beginners', 'Slow growing']
+    },
+    'calathea': {
+      water: 'Keep soil consistently moist',
+      light: 'Medium to bright indirect light',
+      temperature: '65-80°F (18-27°C)',
+      tips: ['High humidity needed', 'Prayer plant movement', 'Sensitive to chemicals', 'Beautiful foliage']
+    },
+    'orchid': {
+      water: 'Water weekly, let roots dry between watering',
+      light: 'Bright indirect light',
+      temperature: '65-80°F (18-27°C)',
+      tips: ['Epiphytic roots', 'Loves humidity', 'Fertilize monthly', 'Repot every 2-3 years']
+    },
+    'cactus': {
+      water: 'Water sparingly, allow soil to dry completely',
+      light: 'Bright direct light',
+      temperature: '60-80°F (15-27°C)',
+      tips: ['Drought tolerant', 'Loves sunlight', 'Well-draining soil', 'Avoid overwatering']
+    },
+    'succulent': {
+      water: 'Water when soil is completely dry',
+      light: 'Bright direct light',
+      temperature: '60-80°F (15-27°C)',
+      tips: ['Drought tolerant', 'Well-draining soil', 'Avoid overwatering', 'Great for beginners']
     }
   };
 
@@ -62,12 +104,12 @@ const getCareTips = (plantName) => {
     }
   }
 
-  // Default tips of
+  // Default tips for unknown plants
   return {
     water: 'Water when top inch of soil feels dry',
     light: 'Bright indirect light',
     temperature: '65-75°F (18-24°C)',
-    tips: ['Start with moderate care', 'Observe plant response', 'Adjust care as needed']
+    tips: ['Start with moderate care', 'Observe plant response', 'Adjust care as needed', 'Research specific needs']
   };
 };
 
@@ -81,6 +123,10 @@ const FindPlant = () => {
   const [addedIdx, setAddedIdx] = useState(null);
   const [toast, setToast] = useState({ show: false, title: '', message: '' });
   const [selectedPlant, setSelectedPlant] = useState(null);
+  const [healthAssessment, setHealthAssessment] = useState(null);
+  const [healthLoading, setHealthLoading] = useState(false);
+  const [showReminderModal, setShowReminderModal] = useState(false);
+  const [reminderPlant, setReminderPlant] = useState(null);
 
   const handleIdentify = async() => {
     if(!uploadedFile) {
@@ -155,6 +201,73 @@ const FindPlant = () => {
 
   const handlePlantSelect = (plant, idx) => {
     setSelectedPlant({ ...plant, index: idx });
+    // Trigger health assessment when a plant is selected
+    if (uploadedFile) {
+      handleHealthAssessment(plant);
+    }
+  };
+
+  const handleHealthAssessment = async (plant) => {
+    setHealthLoading(true);
+    setHealthAssessment(null);
+    
+    try {
+      const base64 = await fileToBase64(uploadedFile);
+      const token = localStorage.getItem('token');
+      
+      const response = await axios.post('/api/v1/plants/health-assessment', {
+        image: base64,
+        plantName: plant.name,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+      setHealthAssessment(response.data);
+    } catch (err) {
+      console.error('Health assessment error:', err);
+      // Don't show error toast for health assessment failures
+    } finally {
+      setHealthLoading(false);
+    }
+  };
+
+  const handleSetReminder = (plant) => {
+    setReminderPlant(plant);
+    setShowReminderModal(true);
+  };
+
+  const handleCreateReminder = async (reminderData) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post('/api/v1/reminders', {
+        plantName: reminderPlant.name,
+        type: reminderData.type,
+        frequency: reminderData.frequency,
+        notes: reminderData.notes,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setToast({
+        show: true,
+        title: 'Reminder Set',
+        message: `Care reminder set for ${reminderPlant.name}`,
+      });
+      setTimeout(() => setToast(t => ({ ...t, show: false })), 2500);
+      setShowReminderModal(false);
+      setReminderPlant(null);
+    } catch (err) {
+      console.error('Failed to create reminder:', err);
+      setToast({
+        show: true,
+        title: 'Error',
+        message: 'Failed to set reminder. Please try again.',
+      });
+    }
   };
 
   return (
@@ -250,6 +363,15 @@ const FindPlant = () => {
                       >
                         {addedIdx === idx ? 'Added!' : 'Add to Collection'}
                       </button>
+                      <button
+                        className="mt-2 px-3 py-1 rounded-lg font-medium text-green-600 bg-green-50 hover:bg-green-100 transition-colors text-sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSetReminder(s);
+                        }}
+                      >
+                        Set Reminder
+                      </button>
                     </div>
                   </div>
                           </div>
@@ -310,6 +432,56 @@ const FindPlant = () => {
                         );
                       })()}
                     </div>
+                    
+                    {/* Health Assessment */}
+                    <div className="mt-6">
+                      <h4 className="text-md font-semibold mb-3 text-gray-800 flex items-center gap-2">
+                        <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                        Health Assessment
+                      </h4>
+                      {healthLoading ? (
+                        <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
+                          <div className="flex items-center gap-3">
+                            <div className="loader"></div>
+                            <span className="text-sm text-blue-700">Analyzing plant health...</span>
+                          </div>
+                        </div>
+                      ) : healthAssessment ? (
+                        <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="font-semibold text-gray-800">
+                              Health Score: {Math.round((healthAssessment.result?.is_healthy?.probability || 0) * 100)}%
+                            </span>
+                            <span className={`px-2 py-1 text-xs rounded-full font-semibold ${
+                              healthAssessment.result?.is_healthy?.binary 
+                                ? 'bg-green-100 text-green-800' 
+                                : 'bg-yellow-100 text-yellow-800'
+                            }`}>
+                              {healthAssessment.result?.is_healthy?.binary ? 'Healthy' : 'Needs Attention'}
+                            </span>
+                          </div>
+                          {!healthAssessment.result?.is_healthy?.binary && healthAssessment.result?.disease?.suggestions?.length > 0 && (
+                            <div className="mt-3">
+                              <div className="text-sm font-medium text-gray-700 mb-2">Potential Issues:</div>
+                              <div className="space-y-2">
+                                {healthAssessment.result.disease.suggestions.slice(0, 2).map((issue, idx) => (
+                                  <div key={idx} className="text-xs text-gray-600 bg-white rounded p-2">
+                                    <span className="font-medium">{issue.name}</span>
+                                    <span className="text-gray-500 ml-2">
+                                      ({(issue.probability * 100).toFixed(1)}% confidence)
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                          <span className="text-sm text-gray-600">Select a plant to see health assessment</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
@@ -339,6 +511,36 @@ const FindPlant = () => {
               to { transform: rotate(360deg); }
             }
           `}</style>
+
+          {/* Reminder Modal */}
+          {showReminderModal && reminderPlant && (
+            <div className="fixed inset-0 z-[9999] bg-black bg-opacity-50 flex items-center justify-center">
+              <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4">
+                <h3 className="text-lg font-bold mb-4">Set Care Reminder</h3>
+                <p className="text-gray-600 mb-4">Set up a care reminder for {reminderPlant.name}</p>
+                <div className="space-y-4">
+                  <button
+                    onClick={() => handleCreateReminder({ type: 'watering', frequency: 'weekly', notes: 'Water your plant' })}
+                    className="w-full p-3 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
+                  >
+                    Watering Reminder (Weekly)
+                  </button>
+                  <button
+                    onClick={() => handleCreateReminder({ type: 'fertilizing', frequency: 'monthly', notes: 'Fertilize your plant' })}
+                    className="w-full p-3 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors"
+                  >
+                    Fertilizing Reminder (Monthly)
+                  </button>
+                  <button
+                    onClick={() => setShowReminderModal(false)}
+                    className="w-full p-3 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
