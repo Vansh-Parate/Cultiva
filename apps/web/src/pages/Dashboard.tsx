@@ -1,74 +1,61 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
-import RightSidebar from "../components/RightSidebar";
-import Stats from "../components/widgets/Stats";
-import Feed from "../components/widgets/Feed";
-import TodaysTasks from "../components/widgets/TodaysTasks";
-import FeaturedPlantCard from "../components/widgets/FeaturedPlantCard";
-import PlantsGrid from "../components/widgets/PlantsGrid";
 import apiClient from "../lib/axios";
 import { useWeather } from "../hooks/useWeather";
-import { Leaf, CheckCircle, Sprout } from "lucide-react";
+import { Leaf, CalendarCheck, Sprout, Award, LogOut, CheckCircle, Sun, Droplet, Bell, ArrowRight, Scissors, Thermometer, Lightbulb } from "lucide-react";
 import NotificationCenter from "../components/NotificationCenter";
 import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
   // Dynamic user data - will be fetched from backend
-  const [user, setUser] = useState({
+  const [user] = useState({
     name: "User",
-  avatarUrl: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
+    avatarUrl: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
     badge: "Plant Enthusiast",
   });
 
   const [stats, setStats] = useState([
-  {
-    label: "Total Plants",
-    value: 0,
-    icon: <Leaf className="w-6 h-6" />,
-    desc: "Your growing collection",
-  },
-  {
-    label: "Healthy Plants",
-    value: 0,
-    icon: <CheckCircle className="w-6 h-6" />,
-    desc: "Thriving plants",
-  },
-  {
-    label: "Species Collected",
-    value: 0,
-    icon: <Sprout className="w-6 h-6" />,
-    desc: "Diverse collection",
-  },
-  {
-    label: "This Month",
-    value: "0 plants",
-    icon: <img src='/streak-flame.svg' alt='streak' className='w-6 h-6 inline' />,
-    desc: "New additions",
-  },
-]);
+    {
+      label: "Total Plants",
+      value: 0,
+      icon: <Leaf className="w-6 h-6" />,
+      desc: "Your growing collection",
+    },
+    {
+      label: "Healthy Plants",
+      value: 0,
+      icon: <CheckCircle className="w-6 h-6" />,
+      desc: "Thriving plants",
+    },
+    {
+      label: "Species Collected",
+      value: 0,
+      icon: <Sprout className="w-6 h-6" />,
+      desc: "Diverse collection",
+    },
+    {
+      label: "This Month",
+      value: "0 plants",
+      icon: <img src='/streak-flame.svg' alt='streak' className='w-6 h-6 inline' />,
+      desc: "New additions",
+    },
+  ]);
 
   const [myPlants, setMyPlants] = useState([]);
   const [recentActivity, setRecentActivity] = useState([]);
   const [loading, setLoading] = useState(true);
 
-const weather = {
-  temperature: "Loading...",
-  humidity: "Loading...",
-  tip: "Checking weather conditions...",
-};
-
-const healthColors = {
-  Excellent: "bg-green-200 text-green-800",
-  Good: "bg-blue-100 text-blue-800",
-  Fair: "bg-yellow-100 text-yellow-800",
-  Poor: "bg-orange-100 text-orange-800",
-  Critical: "bg-red-200 text-red-800",
+  const healthColors = {
+    Excellent: "bg-green-200 text-green-800",
+    Good: "bg-blue-100 text-blue-800",
+    Fair: "bg-yellow-100 text-yellow-800",
+    Poor: "bg-orange-100 text-orange-800",
+    Critical: "bg-red-200 text-red-800",
     Healthy: "bg-green-200 text-green-800",
     "Needs Attention": "bg-yellow-100 text-yellow-800",
   };
 
   const { weather: liveWeather, loading: weatherLoading } = useWeather();
-  const [userPlants, setUserPlants] = useState([]);
   const [userStats, setUserStats] = useState({
     totalPlants: 0,
     healthyPlants: 0,
@@ -88,7 +75,6 @@ const healthColors = {
         const plantsRes = await apiClient.get('/api/v1/plants');
 
         const plants = plantsRes.data;
-        setUserPlants(plants);
 
         // Calculate statistics
         const totalPlants = plants.length;
@@ -177,268 +163,248 @@ const healthColors = {
           : "Perfect conditions for plant care!",
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    window.location.href = '/auth/signin';
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen w-full flex bg-[#f7faf7] text-[#22313f]">
-        <aside className="w-64 shrink-0">
-          <Sidebar />
-        </aside>
-        <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
-            <p className="text-green-700">Loading your dashboard...</p>
-          </div>
-        </main>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen w-full flex bg-[#f7faf7] text-[#22313f]">
-      {/* Sidebar */}
-      <aside className="w-64 shrink-0">
-        <Sidebar />
-      </aside>
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col items-center px-0 py-10 space-y-10 bg-[#f7faf7]">
-        {/* Compact Profile Bar */}
-        <div className="w-full max-w-4xl mx-auto flex items-center gap-4 mb-6">
-          <img
-            src={user.avatarUrl}
-            alt={user.name}
-            className="w-12 h-12 rounded-full border-2 border-green-400 object-cover"
-          />
-          <div className="flex flex-col justify-center">
-            <span className="font-bold text-lg text-green-700">{user.name}</span>
-            <span className="flex items-center gap-1 text-xs text-green-600 font-semibold mt-1">
-              <Award className="w-4 h-4 text-green-400" /> {user.badge}
-            </span>
-          </div>
-          <div className="ml-auto flex items-center gap-2">
-            <button 
-              className="p-2 rounded-full hover:bg-green-100 relative"
-              onClick={() => setNotificationsOpen(true)}
-            >
-              <Bell className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
-            </button>
-            <button 
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white text-green-700 border border-green-300 hover:bg-green-50 hover:text-green-900 transition text-sm font-semibold shadow-sm"
-              onClick={() => {
-                localStorage.removeItem('token');
-                window.location.href = '/auth/signin';
-              }}
-            >
-            <LogOut className="w-4 h-4" /> Sign out
-          </button>
-          </div>
-        </div>
-        
-        {/* My Plants Carousel */}
-        <section className="w-full max-w-4xl mx-auto mb-4">
-          <div className="flex items-center gap-2 mb-3">
-            <Leaf className="w-6 h-6 text-green-500" />
-            <span className="text-lg font-bold text-green-700">My Plants</span>
-          </div>
-          {myPlants.length > 0 ? (
-          <div className="overflow-x-auto hide-scrollbar">
-            <div className="flex gap-6 pb-2">
-              {myPlants.map((plant, i) => (
-                <div
-                  key={i}
-                    className="min-w-[160px] bg-white rounded-2xl shadow-sm p-4 flex flex-col items-center border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1 cursor-pointer"
-                    onClick={() => window.location.href = '/plants'}
-                >
-                  <img
-                    src={plant.img}
-                    alt={plant.name}
-                    className="w-20 h-20 rounded-xl object-cover border-2 border-green-300 mb-2"
-                      onError={e => { e.currentTarget.src = '/placeholder-plant.png'; }}
-                  />
-                  <div className="font-bold text-[#22313f] text-center mb-1 truncate w-full">{plant.name}</div>
-                  <span className={`px-2 py-1 text-xs rounded-full font-semibold shadow-sm ${healthColors[plant.health]}`}>{plant.health}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-          ) : (
-            <div className="text-center py-8 text-gray-500">
-              <Sprout className="w-12 h-12 mx-auto mb-2 text-gray-400" />
-              <p>No plants yet. Start by identifying a plant!</p>
-              <button 
-                onClick={() => window.location.href = '/find-plant'}
-                className="mt-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-              >
-                Add Your First Plant
-              </button>
-            </div>
-          )}
-        </section>
-        
-        {/* Stats Row (full width) */}
-        <section className="w-full max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-4">
-          {stats.map((stat) => (
-            <div
-              key={stat.label}
-              className="bg-white rounded-2xl shadow-sm p-6 flex flex-col items-center border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1"
-            >
-              <div className="mb-2 text-green-500">{stat.icon}</div>
-              <div className="text-2xl font-bold text-green-700">{stat.value}</div>
-              <div className="text-sm text-green-600 mt-1">{stat.label}</div>
-              <div className="text-xs text-gray-400 mt-2 text-center">{stat.desc}</div>
-            </div>
-          ))}
-        </section>
-        
-        {/* 2-Column: Left (Today's Tasks + Recent Activity), Right (Weather Tips) */}
-        <section className="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Left Column */}
-          <div className="flex flex-col gap-8">
-            {/* Today's Tasks */}
-            <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                <CalendarCheck className="w-6 h-6 text-green-500" />
-                  <span className="text-xl font-bold text-green-700">Care Tasks</span>
-                </div>
-                <Link 
-                  to="/care"
-                  className="flex items-center gap-1 text-sm text-green-600 hover:text-green-700 font-medium"
-                >
-                  View All
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-              
-              {/* Quick Stats */}
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="text-center p-3 bg-green-50 rounded-lg">
-                  <div className="text-2xl font-bold text-green-700">3</div>
-                  <div className="text-xs text-green-600">Pending</div>
-                </div>
-                <div className="text-center p-3 bg-blue-50 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-700">1</div>
-                  <div className="text-xs text-blue-600">Due Today</div>
-                </div>
-              </div>
-              
-              {/* Quick Actions */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <span className="text-lg">💧</span>
-                    <div>
-                      <div className="font-medium text-gray-800">Water Peace Lily</div>
-                      <div className="text-xs text-gray-600">Due today</div>
-                    </div>
-                  </div>
-                  <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">High</span>
-                </div>
-                
-                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <span className="text-lg">🌱</span>
-                    <div>
-                      <div className="font-medium text-gray-800">Fertilize Snake Plant</div>
-                      <div className="text-xs text-gray-600">Due in 5 days</div>
-                    </div>
-                  </div>
-                  <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Low</span>
-                </div>
-              </div>
-              
-              <div className="mt-4 text-center">
-                <Link 
-                  to="/care"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
-                >
-                  Manage Care Tasks
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
+    <div className="flex h-screen bg-gray-50">
+      <Sidebar />
+      
+      <main className="flex-1 overflow-y-auto">
+        <div className="p-8">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-4">
+              <img 
+                src={user.avatarUrl} 
+                alt={user.name} 
+                className="w-12 h-12 rounded-full object-cover"
+              />
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Welcome back, {user.name}!</h1>
+                <p className="text-gray-600 flex items-center gap-2">
+                  <Award className="w-4 h-4" />
+                  {user.badge}
+                </p>
               </div>
             </div>
             
-            {/* Recent Activity */}
-            <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
-              <div className="text-xl font-bold text-green-700 mb-4 flex items-center gap-2">
-                <Sprout className="w-6 h-6 text-green-500" /> Recent Activity
-              </div>
-              {recentActivity.length > 0 ? (
-              <ul className="space-y-4">
-                {recentActivity.map((a, i) => (
-                  <li key={i} className="flex items-center gap-3">
-                      <img src={a.img} alt={a.plant} className="w-8 h-8 rounded-full border-2 border-green-200 object-cover" onError={e => { e.currentTarget.src = '/placeholder-plant.png'; }} />
-                    <span className="font-medium text-[#22313f]">{a.plant}</span>
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${a.color}`}>{a.action}</span>
-                    <span className="text-xs text-gray-400 ml-auto">{a.time}</span>
-                  </li>
-                ))}
-              </ul>
-              ) : (
-                <div className="text-center text-gray-500 py-4">
-                  <p>No recent activity</p>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setNotificationsOpen(true)}
+                className="p-2 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow"
+              >
+                <Bell className="w-5 h-5 text-gray-600" />
+              </button>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                Logout
+              </button>
+            </div>
+          </div>
+
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {stats.map((stat, index) => (
+              <div key={index} className="bg-white rounded-2xl shadow-sm p-6 border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">{stat.label}</p>
+                    <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                    <p className="text-xs text-gray-500">{stat.desc}</p>
+                  </div>
+                  <div className="text-green-500">
+                    {stat.icon}
+                  </div>
                 </div>
-              )}
-            </div>
-          </div>
-          
-          {/* Right Column */}
-          <div className="flex flex-col gap-8">
-            {/* Weather Tips */}
-            <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 flex flex-col items-center hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
-              <div className="flex items-center gap-2 mb-4">
-                <Sun className="w-6 h-6 text-yellow-400" />
-                <span className="text-xl font-bold text-green-700">Weather Tips</span>
               </div>
-              <div className="flex items-center gap-4 mb-2">
-                <span className="text-2xl font-bold text-green-700 flex items-center gap-1">
-                  <Sun className="w-5 h-5 inline text-yellow-400" /> {weatherDisplay.temperature}
-                </span>
-                <span className="text-2xl font-bold text-blue-700 flex items-center gap-1">
-                  <Droplet className="w-5 h-5 inline text-blue-400" /> {weatherDisplay.humidity}
-                </span>
+            ))}
+          </div>
+
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Left Column */}
+            <div className="lg:col-span-2 space-y-8">
+              {/* My Plants Carousel */}
+              <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold text-green-700">My Plants</h2>
+                  <Link to="/plants" className="flex items-center gap-1 text-sm text-green-600 hover:text-green-700 font-medium">
+                    View All <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+                {myPlants.length > 0 ? (
+                  <div className="flex gap-4 overflow-x-auto pb-4">
+                    {myPlants.map((plant, index) => (
+                      <div key={index} className="flex-shrink-0 w-48 bg-gray-50 rounded-lg p-4">
+                        <img src={plant.img} alt={plant.name} className="w-full h-32 object-cover rounded-lg mb-3" />
+                        <h3 className="font-semibold text-gray-900">{plant.name}</h3>
+                        <span className={`inline-block px-2 py-1 rounded-full text-xs ${healthColors[plant.health] || healthColors.Good}`}>
+                          {plant.health}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <Leaf className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                    <p>No plants yet. Start by identifying a plant!</p>
+                    <Link to="/find-plant" className="inline-block mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                      Find a Plant
+                    </Link>
+                  </div>
+                )}
               </div>
-              <div className="text-xs text-gray-400 mb-2">Today's temperature & humidity</div>
-              <div className="px-3 py-2 rounded-full bg-green-100 text-green-700 text-sm font-semibold text-center">
-                {weatherDisplay.tip}
+
+              {/* Care Tasks Overview */}
+              <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <CalendarCheck className="w-6 h-6 text-green-500" />
+                    <span className="text-xl font-bold text-green-700">Care Tasks</span>
+                  </div>
+                  <Link to="/care" className="flex items-center gap-1 text-sm text-green-600 hover:text-green-700 font-medium">
+                    View All <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  <div className="text-center p-4 bg-green-50 rounded-lg">
+                    <Droplet className="w-8 h-8 mx-auto mb-2 text-green-600" />
+                    <p className="font-semibold text-green-700">Watering</p>
+                    <p className="text-sm text-green-600">3 due today</p>
+                  </div>
+                  <div className="text-center p-4 bg-blue-50 rounded-lg">
+                    <Sun className="w-8 h-8 mx-auto mb-2 text-blue-600" />
+                    <p className="font-semibold text-blue-700">Fertilizing</p>
+                    <p className="text-sm text-blue-600">1 this week</p>
+                  </div>
+                  <div className="text-center p-4 bg-purple-50 rounded-lg">
+                    <Scissors className="w-8 h-8 mx-auto mb-2 text-purple-600" />
+                    <p className="font-semibold text-purple-700">Pruning</p>
+                    <p className="text-sm text-purple-600">2 overdue</p>
+                  </div>
+                </div>
+                
+                <div className="mt-4 text-center">
+                  <Link to="/care" className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium">
+                    Manage Care Tasks <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+
+              {/* Recent Activity */}
+              <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
+                <h2 className="text-xl font-bold text-green-700 mb-6">Recent Activity</h2>
+                {recentActivity.length > 0 ? (
+                  <div className="space-y-4">
+                    {recentActivity.map((activity, index) => (
+                      <div key={index} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+                        <img src={activity.img} alt={activity.plant} className="w-10 h-10 rounded-full object-cover" />
+                        <div className="flex-1">
+                          <p className="font-medium text-gray-900">{activity.plant}</p>
+                          <p className="text-sm text-gray-600">{activity.action}</p>
+                        </div>
+                        <span className="text-xs text-gray-500">{activity.time}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <p>No recent activity</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Right Column */}
+            <div className="space-y-8">
+              {/* Weather & Tips */}
+              <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
+                <h2 className="text-xl font-bold text-green-700 mb-6">Weather & Tips</h2>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <Thermometer className="w-5 h-5 text-blue-600" />
+                      <span className="text-sm font-medium">Temperature</span>
+                    </div>
+                    <span className="font-semibold text-blue-700">{weatherDisplay.temperature}</span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <Droplet className="w-5 h-5 text-green-600" />
+                      <span className="text-sm font-medium">Humidity</span>
+                    </div>
+                    <span className="font-semibold text-green-700">{weatherDisplay.humidity}</span>
+                  </div>
+                </div>
+                <div className="mt-6 p-4 bg-yellow-50 rounded-lg">
+                  <div className="flex items-start gap-2">
+                    <Lightbulb className="w-5 h-5 text-yellow-600 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium text-yellow-800">Today's Tip</p>
+                      <p className="text-sm text-yellow-700 mt-1">{weatherDisplay.tip}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Plant Health Overview */}
+              <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
+                <h2 className="text-xl font-bold text-green-700 mb-6">Plant Health Overview</h2>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Excellent</span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-24 bg-gray-200 rounded-full h-2">
+                        <div className="bg-green-500 h-2 rounded-full" style={{ width: `${(userStats.healthyPlants / Math.max(userStats.totalPlants, 1)) * 100}%` }}></div>
+                      </div>
+                      <span className="text-sm font-medium text-gray-900">{userStats.healthyPlants}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Needs Attention</span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-24 bg-gray-200 rounded-full h-2">
+                        <div className="bg-yellow-500 h-2 rounded-full" style={{ width: `${((userStats.totalPlants - userStats.healthyPlants) / Math.max(userStats.totalPlants, 1)) * 100}%` }}></div>
+                      </div>
+                      <span className="text-sm font-medium text-gray-900">{userStats.totalPlants - userStats.healthyPlants}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Collection Growth */}
+              <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
+                <h2 className="text-xl font-bold text-green-700 mb-6">Collection Growth</h2>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-green-600 mb-2">{userStats.monthlyAdditions}</div>
+                  <p className="text-sm text-gray-600">New plants this month</p>
+                  <div className="mt-4 w-full bg-gray-200 rounded-full h-2">
+                    <div className="bg-green-500 h-2 rounded-full" style={{ width: `${Math.min((userStats.monthlyAdditions / 10) * 100, 100)}%` }}></div>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">Goal: 10 plants/month</p>
+                </div>
               </div>
             </div>
           </div>
-        </section>
-        
-        {/* Charts Section (full width) */}
-        <section className="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-          {/* Care Completion Rate Chart Placeholder */}
-          <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 flex flex-col items-center justify-center min-h-[220px] hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
-            <div className="flex items-center gap-2 mb-2">
-              <BarChart3 className="w-6 h-6 text-green-500" />
-              <span className="text-xl font-bold text-green-700">Plant Health Overview</span>
-            </div>
-            <div className="w-full h-32 flex items-center justify-center text-green-400 text-2xl font-bold">
-              {userStats.healthyPlants}/{userStats.totalPlants} Healthy
-            </div>
-            <div className="text-xs text-gray-400 mt-2">Your plant health status</div>
-          </div>
-          
-          {/* Plant Health Trend Chart Placeholder */}
-          <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 flex flex-col items-center justify-center min-h-[220px] hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
-            <div className="flex items-center gap-2 mb-2">
-              <LineChart className="w-6 h-6 text-green-500" />
-              <span className="text-xl font-bold text-green-700">Collection Growth</span>
-            </div>
-            <div className="w-full h-32 flex items-center justify-center text-green-400 text-2xl font-bold">
-              {userStats.speciesCount} Species
-            </div>
-            <div className="text-xs text-gray-400 mt-2">Unique plant species in your collection</div>
-          </div>
-        </section>
+        </div>
       </main>
-      
-      {/* Notification Center */}
-      <NotificationCenter 
-        isOpen={notificationsOpen}
-        onClose={() => setNotificationsOpen(false)}
-      />
+
+      <NotificationCenter isOpen={notificationsOpen} onClose={() => setNotificationsOpen(false)} />
     </div>
   );
 };

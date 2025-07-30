@@ -255,7 +255,7 @@ const MyPlants = () => {
         {/* Featured Plant Card */}
         <section className="w-full flex justify-center px-4">
           <div className="flex flex-col items-center w-full max-w-5xl">
-            {selectedPlant && <FeaturedPlantCard plant={selectedPlant} />}
+          {selectedPlant && <FeaturedPlantCard plant={selectedPlant} />}
             {selectedPlant && <HealthDashboard plant={selectedPlant} />}
           </div>
         </section>
