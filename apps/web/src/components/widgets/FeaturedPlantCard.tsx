@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Droplet, Sparkles, Sun } from "lucide-react";
-import { Plant } from "../../utils/types";
+import { Plant } from "~/utils/types";
 import { useWeather } from '~/hooks/useWeather';
 import { getWaterPHFromGemini } from '~/lib/gemini';
 

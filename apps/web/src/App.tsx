@@ -8,6 +8,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './pages/Dashboard';
 import MyPlants from './pages/MyPlants';
 import FindPlant from './pages/FindPlant';
+import Care from './pages/Care';
 
 function App() {
   return (
@@ -31,6 +32,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <MyPlants />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/care"
+            element={
+              <ProtectedRoute>
+                <Care />
               </ProtectedRoute>
             }
           />

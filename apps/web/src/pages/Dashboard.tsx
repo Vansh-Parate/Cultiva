@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
-import { Leaf, CalendarCheck, Sprout, Award, LogOut, CheckCircle, Sun, Droplet, BarChart3, LineChart, Bell } from "lucide-react";
+import { Leaf, CalendarCheck, Sprout, Award, LogOut, CheckCircle, Sun, Droplet, BarChart3, LineChart, Bell, ArrowRight } from "lucide-react";
 import axios from "axios";
 import { useWeather } from '~/hooks/useWeather';
 import NotificationCenter from "../components/NotificationCenter";
+import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
   // Dynamic user data - will be fetched from backend
   const [user, setUser] = useState({
     name: "User",
-    avatarUrl: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
+  avatarUrl: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
     badge: "Plant Enthusiast",
   });
 
@@ -41,22 +42,21 @@ const Dashboard = () => {
 ]);
 
   const [myPlants, setMyPlants] = useState([]);
-  const [todaysTasks, setTodaysTasks] = useState([]);
   const [recentActivity, setRecentActivity] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const weather = {
+const weather = {
   temperature: "Loading...",
   humidity: "Loading...",
   tip: "Checking weather conditions...",
 };
 
-  const healthColors = {
-    Excellent: "bg-green-200 text-green-800",
-    Good: "bg-blue-100 text-blue-800",
-    Fair: "bg-yellow-100 text-yellow-800",
-    Poor: "bg-orange-100 text-orange-800",
-    Critical: "bg-red-200 text-red-800",
+const healthColors = {
+  Excellent: "bg-green-200 text-green-800",
+  Good: "bg-blue-100 text-blue-800",
+  Fair: "bg-yellow-100 text-yellow-800",
+  Poor: "bg-orange-100 text-orange-800",
+  Critical: "bg-red-200 text-red-800",
     Healthy: "bg-green-200 text-green-800",
     "Needs Attention": "bg-yellow-100 text-yellow-800",
   };
@@ -140,16 +140,6 @@ const Dashboard = () => {
         }));
         setMyPlants(plantCards);
 
-        // Generate today's tasks based on plant care needs
-        const tasks = plants.slice(0, 3).map((plant, index) => ({
-          task: `Check ${plant.name} health`,
-          due: "Today",
-          done: false,
-          plantImg: plant.images?.[0]?.url || "/placeholder-plant.png",
-          plantId: plant.id,
-        }));
-        setTodaysTasks(tasks);
-
         // Generate recent activity (simulated for now)
         const activities = plants.slice(0, 3).map(plant => ({
           plant: plant.name,
@@ -169,11 +159,6 @@ const Dashboard = () => {
 
     fetchUserData();
   }, []);
-
-  // Calculate progress for tasks
-  const completed = todaysTasks.filter(t => t.done).length;
-  const total = todaysTasks.length;
-  const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
 
   // Dynamic weather data
   const weatherDisplay = {
@@ -240,8 +225,8 @@ const Dashboard = () => {
                 window.location.href = '/auth/signin';
               }}
             >
-              <LogOut className="w-4 h-4" /> Sign out
-            </button>
+            <LogOut className="w-4 h-4" /> Sign out
+          </button>
           </div>
         </div>
         
@@ -252,26 +237,26 @@ const Dashboard = () => {
             <span className="text-lg font-bold text-green-700">My Plants</span>
           </div>
           {myPlants.length > 0 ? (
-            <div className="overflow-x-auto hide-scrollbar">
-              <div className="flex gap-6 pb-2">
-                {myPlants.map((plant, i) => (
-                  <div
-                    key={i}
+          <div className="overflow-x-auto hide-scrollbar">
+            <div className="flex gap-6 pb-2">
+              {myPlants.map((plant, i) => (
+                <div
+                  key={i}
                     className="min-w-[160px] bg-white rounded-2xl shadow-sm p-4 flex flex-col items-center border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1 cursor-pointer"
                     onClick={() => window.location.href = '/plants'}
-                  >
-                    <img
-                      src={plant.img}
-                      alt={plant.name}
-                      className="w-20 h-20 rounded-xl object-cover border-2 border-green-300 mb-2"
+                >
+                  <img
+                    src={plant.img}
+                    alt={plant.name}
+                    className="w-20 h-20 rounded-xl object-cover border-2 border-green-300 mb-2"
                       onError={e => { e.currentTarget.src = '/placeholder-plant.png'; }}
-                    />
-                    <div className="font-bold text-[#22313f] text-center mb-1 truncate w-full">{plant.name}</div>
-                    <span className={`px-2 py-1 text-xs rounded-full font-semibold shadow-sm ${healthColors[plant.health]}`}>{plant.health}</span>
-                  </div>
-                ))}
-              </div>
+                  />
+                  <div className="font-bold text-[#22313f] text-center mb-1 truncate w-full">{plant.name}</div>
+                  <span className={`px-2 py-1 text-xs rounded-full font-semibold shadow-sm ${healthColors[plant.health]}`}>{plant.health}</span>
+                </div>
+              ))}
             </div>
+          </div>
           ) : (
             <div className="text-center py-8 text-gray-500">
               <Sprout className="w-12 h-12 mx-auto mb-2 text-gray-400" />
@@ -306,40 +291,67 @@ const Dashboard = () => {
           {/* Left Column */}
           <div className="flex flex-col gap-8">
             {/* Today's Tasks */}
-            <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 min-h-[260px] relative overflow-hidden hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
-              <div className="flex items-center gap-2 mb-4">
+            <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
                 <CalendarCheck className="w-6 h-6 text-green-500" />
-                <span className="text-xl font-bold text-green-700">Today's Tasks</span>
-              </div>
-              {/* Progress Bar */}
-              <div className="w-full h-2 bg-green-100 rounded-full mb-6">
-                <div
-                  className="h-2 rounded-full bg-gradient-to-r from-green-400 to-green-600 transition-all"
-                  style={{ width: `${progress}%` }}
-                ></div>
-              </div>
-              {todaysTasks.length > 0 ? (
-                <ul className="mt-2 space-y-4">
-                  {todaysTasks.map((t, i) => (
-                    <li key={i} className="flex items-center gap-3">
-                      <span className="w-8 h-8 rounded-full bg-green-50 border-2 border-green-200 flex items-center justify-center">
-                        <Sprout className="w-5 h-5 text-green-500" />
-                      </span>
-                      <span className={`text-[#22313f] text-base ${t.done ? 'line-through opacity-60' : ''}`}>{t.task}</span>
-                      {t.done ? (
-                        <CheckCircle className="w-5 h-5 text-green-400 ml-auto" />
-                      ) : (
-                        <span className="ml-auto text-xs text-green-600">{t.due}</span>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <div className="text-center text-gray-500 py-8">
-                  <CalendarCheck className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                  <p>No tasks for today!</p>
+                  <span className="text-xl font-bold text-green-700">Care Tasks</span>
                 </div>
-              )}
+                <Link 
+                  to="/care"
+                  className="flex items-center gap-1 text-sm text-green-600 hover:text-green-700 font-medium"
+                >
+                  View All
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+              
+              {/* Quick Stats */}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="text-center p-3 bg-green-50 rounded-lg">
+                  <div className="text-2xl font-bold text-green-700">3</div>
+                  <div className="text-xs text-green-600">Pending</div>
+                </div>
+                <div className="text-center p-3 bg-blue-50 rounded-lg">
+                  <div className="text-2xl font-bold text-blue-700">1</div>
+                  <div className="text-xs text-blue-600">Due Today</div>
+                </div>
+              </div>
+              
+              {/* Quick Actions */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">💧</span>
+                    <div>
+                      <div className="font-medium text-gray-800">Water Peace Lily</div>
+                      <div className="text-xs text-gray-600">Due today</div>
+                    </div>
+                  </div>
+                  <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">High</span>
+                </div>
+                
+                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">🌱</span>
+                    <div>
+                      <div className="font-medium text-gray-800">Fertilize Snake Plant</div>
+                      <div className="text-xs text-gray-600">Due in 5 days</div>
+                    </div>
+                  </div>
+                  <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Low</span>
+                </div>
+              </div>
+              
+              <div className="mt-4 text-center">
+                <Link 
+                  to="/care"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+                >
+                  Manage Care Tasks
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
             </div>
             
             {/* Recent Activity */}
@@ -348,16 +360,16 @@ const Dashboard = () => {
                 <Sprout className="w-6 h-6 text-green-500" /> Recent Activity
               </div>
               {recentActivity.length > 0 ? (
-                <ul className="space-y-4">
-                  {recentActivity.map((a, i) => (
-                    <li key={i} className="flex items-center gap-3">
+              <ul className="space-y-4">
+                {recentActivity.map((a, i) => (
+                  <li key={i} className="flex items-center gap-3">
                       <img src={a.img} alt={a.plant} className="w-8 h-8 rounded-full border-2 border-green-200 object-cover" onError={e => { e.currentTarget.src = '/placeholder-plant.png'; }} />
-                      <span className="font-medium text-[#22313f]">{a.plant}</span>
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${a.color}`}>{a.action}</span>
-                      <span className="text-xs text-gray-400 ml-auto">{a.time}</span>
-                    </li>
-                  ))}
-                </ul>
+                    <span className="font-medium text-[#22313f]">{a.plant}</span>
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${a.color}`}>{a.action}</span>
+                    <span className="text-xs text-gray-400 ml-auto">{a.time}</span>
+                  </li>
+                ))}
+              </ul>
               ) : (
                 <div className="text-center text-gray-500 py-4">
                   <p>No recent activity</p>

@@ -20,6 +20,7 @@ model User {
   plants               Plant[]
   plantIdentifications PlantIdentification[]
   communityPosts       CommunityPost[]
+  careTasks            CareTask[]
 }
 
 model Plant {
@@ -141,4 +142,20 @@ model PlantShop {
   servicesOffered String?
   rating          Float?
   createdAt       DateTime @default(now())
+}
+
+model CareTask {
+  id          String   @id @default(uuid())
+  plantName   String
+  plantId     String?
+  type        String   
+  frequency   String   
+  dueDate     DateTime
+  completed   Boolean  @default(false)
+  notes       String?
+  priority    String   
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

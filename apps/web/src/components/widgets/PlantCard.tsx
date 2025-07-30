@@ -1,5 +1,5 @@
 import React from "react";
-import { Plant } from "../../utils/types";
+import { Plant } from "~/utils/types";
 import { Droplet } from "lucide-react";
 
 const statusColors: Record<string, string> = {
