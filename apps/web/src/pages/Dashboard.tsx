@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
-import { Leaf, CalendarCheck, Sprout, Award, LogOut, CheckCircle, Sun, Droplet, BarChart3, LineChart, Bell, ArrowRight } from "lucide-react";
-import axios from "axios";
-import { useWeather } from '~/hooks/useWeather';
+import RightSidebar from "../components/RightSidebar";
+import Stats from "../components/widgets/Stats";
+import Feed from "../components/widgets/Feed";
+import TodaysTasks from "../components/widgets/TodaysTasks";
+import FeaturedPlantCard from "../components/widgets/FeaturedPlantCard";
+import PlantsGrid from "../components/widgets/PlantsGrid";
+import apiClient from "../lib/axios";
+import { useWeather } from "../hooks/useWeather";
+import { Leaf, CheckCircle, Sprout } from "lucide-react";
 import NotificationCenter from "../components/NotificationCenter";
 import { Link } from 'react-router-dom';
 
@@ -79,9 +85,7 @@ const healthColors = {
         if (!token) return;
 
         // Fetch user's plants
-        const plantsRes = await axios.get('/api/v1/plants', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const plantsRes = await apiClient.get('/api/v1/plants');
 
         const plants = plantsRes.data;
         setUserPlants(plants);

@@ -2,23 +2,37 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import RightSidebar from "../components/RightSidebar";
 import FeaturedPlantCard from "../components/widgets/FeaturedPlantCard";
-import axios from "axios";
+import apiClient from "../lib/axios";
 import { ChevronDown, Leaf } from "lucide-react";
 
 const MyPlants = () => {
   const [plants, setPlants] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showMobilePlantSelector, setShowMobilePlantSelector] = useState(false);
 
   useEffect(() => {
     const fetchPlants = async () => {
       try {
+        setError(null);
         const token = localStorage.getItem('token');
-        const res = await axios.get('/api/v1/plants', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          }
-        });
+        
+        if (!token) {
+          setError('No authentication token found');
+          setLoading(false);
+          return;
+        }
+
+        const res = await apiClient.get('/api/v1/plants');
+
+        // Check if response data is an array
+        if (!Array.isArray(res.data)) {
+          console.error('API returned non-array data:', res.data);
+          setError('Invalid response from server');
+          setPlants([]);
+          return;
+        }
+
         // Map backend data to frontend shape
         const mappedPlants = res.data.map(plant => ({
           id: plant.id,
@@ -27,13 +41,15 @@ const MyPlants = () => {
           photoUrl: plant.images?.[0]?.url || '', // use first image or placeholder
           healthStatus: plant.healthStatus || 'Good', // fallback/default
           nextCare: plant.nextCare || 'N/A',
-          humidity: plant.humidity ?? 0,
-          waterPH: plant.waterPH ?? 0,
-          temperature: plant.temperature ?? '',
+          humidity: plant.humidity, // Changed from ?? 0
+          waterPH: plant.waterPH,   // Changed from ?? 0
+          temperature: plant.temperature, // Changed from ?? ''
         }));
         setPlants(mappedPlants);
       } catch (err) {
         console.error('Failed to fetch plants:', err);
+        setError(err.response?.data?.error || 'Failed to fetch plants');
+        setPlants([]);
       } finally {
         setLoading(false);
       }
@@ -59,6 +75,22 @@ const MyPlants = () => {
 
   if (loading) return <div className="flex items-center justify-center min-h-screen">Loading your plants...</div>;
 
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="text-red-500 mb-4">Error: {error}</div>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   // Minimalistic MVP Health Dashboard
   const HealthDashboard = ({ plant }) => {
     const [healthResult, setHealthResult] = useState(null);
@@ -72,7 +104,7 @@ const MyPlants = () => {
         setError(null);
         const token = localStorage.getItem('token');
         try {
-          const res = await axios.post(`/api/v1/plants/${plant.id}/health-check`, null, {
+          const res = await apiClient.post(`/api/v1/plants/${plant.id}/health-check`, null, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

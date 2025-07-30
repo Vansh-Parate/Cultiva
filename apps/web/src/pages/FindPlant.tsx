@@ -1,9 +1,9 @@
-import axios from 'axios';
 import React, { useState } from 'react'
 import Component from '~/components/comp-544'
 import Sidebar from '~/components/Sidebar'
 import CustomToast from '~/components/CustomToast';
 import { Leaf, Lightbulb, Droplet, Sun, Thermometer } from 'lucide-react';
+import apiClient from '../lib/axios';
 
 function fileToBase64(file){
     return new Promise((res,rej) => {
@@ -141,7 +141,7 @@ const FindPlant = () => {
     try{
         const base64 = await fileToBase64(uploadedFile);
 
-        const response = await axios.post('/api/identify-plant', {
+        const response = await apiClient.post('/api/identify-plant', {
             base64,
         });
 
@@ -172,10 +172,8 @@ const FindPlant = () => {
     formData.append('image', uploadedFile);
 
     try {
-      const token = localStorage.getItem('token');
-      await axios.post('/api/v1/plants', formData, {
+      await apiClient.post('/api/v1/plants', formData, {
         headers: {
-          Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
         },
       });
@@ -213,15 +211,10 @@ const FindPlant = () => {
     
     try {
       const base64 = await fileToBase64(uploadedFile);
-      const token = localStorage.getItem('token');
       
-      const response = await axios.post('/api/v1/plants/health-assessment', {
+      const response = await apiClient.post('/api/v1/plants/health-assessment', {
         image: base64,
         plantName: plant.name,
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       });
       
       setHealthAssessment(response.data);
@@ -240,16 +233,11 @@ const FindPlant = () => {
 
   const handleCreateReminder = async (reminderData) => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.post('/api/v1/reminders', {
+      await apiClient.post('/api/v1/reminders', {
         plantName: reminderPlant.name,
         type: reminderData.type,
         frequency: reminderData.frequency,
         notes: reminderData.notes,
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       });
 
       setToast({

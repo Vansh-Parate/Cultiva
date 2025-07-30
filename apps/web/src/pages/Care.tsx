@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import { Calendar, Clock, CheckCircle, AlertCircle, Plus, Filter, Search } from 'lucide-react';
 import axios from 'axios';
+import apiClient from "../lib/axios";
 
 interface CareTask {
   id: string;
@@ -36,10 +37,7 @@ const Care = () => {
 
   const fetchTasks = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('/api/v1/care-tasks', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await apiClient.get('/api/v1/care-tasks');
       setTasks(response.data);
     } catch (err) {
       console.error('Failed to fetch tasks:', err);
@@ -86,10 +84,7 @@ const Care = () => {
 
   const handleCompleteTask = async (taskId: string) => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.patch(`/api/v1/care-tasks/${taskId}/complete`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await apiClient.patch(`/api/v1/care-tasks/${taskId}/complete`);
       setTasks(tasks.map(task => 
         task.id === taskId ? { ...task, completed: true } : task
       ));
@@ -104,10 +99,7 @@ const Care = () => {
 
   const handleAddTask = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post('/api/v1/care-tasks', newTask, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await apiClient.post('/api/v1/care-tasks', newTask);
       setTasks([...tasks, response.data]);
       setShowAddModal(false);
       setNewTask({
