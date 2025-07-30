@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import apiClient from "../lib/axios";
 import { useWeather } from "../hooks/useWeather";
-import { Leaf, CalendarCheck, Sprout, Award, LogOut, CheckCircle, Sun, Droplet, Bell, ArrowRight, Scissors, Thermometer, Lightbulb } from "lucide-react";
+import { Leaf, CalendarCheck, Sprout, Award, LogOut, CheckCircle, Sun, Droplet, Bell, ArrowRight, Scissors, Thermometer, Lightbulb, Flame } from "lucide-react";
 import NotificationCenter from "../components/NotificationCenter";
 import { Link } from 'react-router-dom';
 
@@ -36,7 +36,7 @@ const Dashboard = () => {
     {
       label: "This Month",
       value: "0 plants",
-      icon: <img src='/streak-flame.svg' alt='streak' className='w-6 h-6 inline' />,
+      icon: <Flame className="w-6 h-6" />,
       desc: "New additions",
     },
   ]);
@@ -116,7 +116,7 @@ const Dashboard = () => {
           {
             label: "This Month",
             value: `${monthlyAdditions} plants`,
-            icon: <img src='/streak-flame.svg' alt='streak' className='w-6 h-6 inline' />,
+            icon: <Flame className="w-6 h-6" />,
             desc: "New additions",
           },
         ]);
@@ -180,7 +180,7 @@ const Dashboard = () => {
     <div className="flex h-screen bg-gray-50">
       <Sidebar />
       
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto ml-64">
         <div className="p-8">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
@@ -271,7 +271,7 @@ const Dashboard = () => {
 
               {/* Care Tasks Overview */}
               <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-2">
                     <CalendarCheck className="w-6 h-6 text-green-500" />
                     <span className="text-xl font-bold text-green-700">Care Tasks</span>
@@ -281,21 +281,45 @@ const Dashboard = () => {
                   </Link>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                  <div className="text-center p-4 bg-green-50 rounded-lg">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
                     <Droplet className="w-8 h-8 mx-auto mb-2 text-green-600" />
                     <p className="font-semibold text-green-700">Watering</p>
                     <p className="text-sm text-green-600">3 due today</p>
                   </div>
-                  <div className="text-center p-4 bg-blue-50 rounded-lg">
+                  <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
                     <Sun className="w-8 h-8 mx-auto mb-2 text-blue-600" />
                     <p className="font-semibold text-blue-700">Fertilizing</p>
                     <p className="text-sm text-blue-600">1 this week</p>
                   </div>
-                  <div className="text-center p-4 bg-purple-50 rounded-lg">
+                  <div className="text-center p-4 bg-purple-50 rounded-lg border border-purple-200">
                     <Scissors className="w-8 h-8 mx-auto mb-2 text-purple-600" />
                     <p className="font-semibold text-purple-700">Pruning</p>
                     <p className="text-sm text-purple-600">2 overdue</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                    <div className="flex items-center gap-3">
+                      <Droplet className="w-5 h-5 text-yellow-600" />
+                      <div>
+                        <div className="font-medium text-gray-800">Water Peace Lily</div>
+                        <div className="text-xs text-gray-600">Due today</div>
+                      </div>
+                    </div>
+                    <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">High</span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
+                    <div className="flex items-center gap-3">
+                      <Sun className="w-5 h-5 text-green-600" />
+                      <div>
+                        <div className="font-medium text-gray-800">Fertilize Snake Plant</div>
+                        <div className="text-xs text-gray-600">Due in 5 days</div>
+                      </div>
+                    </div>
+                    <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Low</span>
                   </div>
                 </div>
                 
@@ -336,14 +360,14 @@ const Dashboard = () => {
               <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
                 <h2 className="text-xl font-bold text-green-700 mb-6">Weather & Tips</h2>
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-200">
                     <div className="flex items-center gap-2">
                       <Thermometer className="w-5 h-5 text-blue-600" />
                       <span className="text-sm font-medium">Temperature</span>
                     </div>
                     <span className="font-semibold text-blue-700">{weatherDisplay.temperature}</span>
                   </div>
-                  <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
                     <div className="flex items-center gap-2">
                       <Droplet className="w-5 h-5 text-green-600" />
                       <span className="text-sm font-medium">Humidity</span>
@@ -351,7 +375,7 @@ const Dashboard = () => {
                     <span className="font-semibold text-green-700">{weatherDisplay.humidity}</span>
                   </div>
                 </div>
-                <div className="mt-6 p-4 bg-yellow-50 rounded-lg">
+                <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
                   <div className="flex items-start gap-2">
                     <Lightbulb className="w-5 h-5 text-yellow-600 mt-0.5" />
                     <div>

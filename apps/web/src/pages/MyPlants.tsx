@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
-import RightSidebar from "../components/RightSidebar";
 import FeaturedPlantCard from "../components/widgets/FeaturedPlantCard";
 import apiClient from "../lib/axios";
-import { ChevronDown, Leaf } from "lucide-react";
+import { ChevronDown, Leaf, Plus } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const MyPlants = () => {
   const [plants, setPlants] = useState([]);
@@ -130,159 +130,209 @@ const MyPlants = () => {
     return (
       <div className="mt-6 w-full max-w-xl flex flex-col gap-6">
         <div className="bg-white rounded-xl shadow p-6 flex items-center gap-6">
-          <div className="flex flex-col items-center justify-center">
-            <svg width="80" height="80" viewBox="0 0 40 40">
-              <circle cx="20" cy="20" r="18" fill="#f3f3f3" stroke="#e5e7eb" strokeWidth="2" />
-              <circle
-                cx="20" cy="20" r="18"
-                fill="none"
-                stroke={isHealthy ? '#22c55e' : '#f59e42'}
-                strokeWidth="3.5"
-                strokeDasharray={2 * Math.PI * 18}
-                strokeDashoffset={(1 - healthScore / 100) * 2 * Math.PI * 18}
-                strokeLinecap="round"
-              />
-              <text x="50%" y="54%" textAnchor="middle" fontSize="18" fill="#222" fontWeight="bold">{healthScore}</text>
-            </svg>
-            <div className={`mt-2 text-lg font-semibold ${isHealthy ? 'text-green-600' : 'text-yellow-600'}`}>{isHealthy ? 'Healthy' : 'Needs Attention'}</div>
-            <div className="text-xs text-gray-500 mt-1">Confidence: {healthScore}%</div>
-          </div>
           <div className="flex-1">
-            <div className="text-sm text-gray-700">Last checked: {healthResult.timestamp ? new Date(healthResult.timestamp).toLocaleString() : 'Just now'}</div>
-            {/* Add more quick stats here if needed */}
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Health Assessment</h3>
+            <div className="flex items-center gap-4">
+              <div className="text-center">
+                <div className={`text-2xl font-bold ${isHealthy ? 'text-green-600' : 'text-red-600'}`}>
+                  {healthScore}%
+                </div>
+                <div className="text-sm text-gray-600">Health Score</div>
+              </div>
+              <div className="flex-1">
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div 
+                    className={`h-2 rounded-full ${isHealthy ? 'bg-green-500' : 'bg-red-500'}`}
+                    style={{ width: `${healthScore}%` }}
+                  ></div>
+                </div>
+                <div className="text-sm text-gray-600 mt-1">
+                  {isHealthy ? 'Plant is healthy' : 'Plant needs attention'}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        {/* DiseaseDashboard: only if not healthy */}
-        {!isHealthy && (
-          <div className="bg-white rounded-xl shadow p-6">
-            <div className="font-bold mb-2">Detected Issues</div>
-            <ul className="space-y-2">
-              {healthResult.result.disease.suggestions.map(s => (
-                <li key={s.id} className="flex items-center gap-4">
-                  <div className="w-2 h-8 rounded bg-yellow-400" style={{ height: `${Math.max(8, s.probability * 40)}px` }}></div>
-                  <div className="flex-1">
-                    <div className="font-semibold">{s.name}</div>
-                    <div className="text-xs text-gray-500">Probability: {(s.probability * 100).toFixed(1)}%</div>
-                  </div>
-                  {s.similar_images?.[0]?.url_small && (
-                    <img src={s.similar_images[0].url_small} alt={s.name} width={36} height={36} className="rounded" />
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
       </div>
     );
   };
 
   return (
-    <div className="min-h-screen w-full flex bg-[#e6efe6] overflow-hidden">
-      {/* Sidebar */}
-      <aside className="w-64 shrink-0">
-        <Sidebar />
-      </aside>
+    <div className="flex h-screen bg-gray-50">
+      <Sidebar />
+      
+      <main className="flex-1 overflow-y-auto ml-64">
+        <div className="p-8">
+          {/* Header */}
+          <header className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">My Plants</h1>
+              <p className="text-gray-600">Manage your plant collection</p>
+            </div>
+            <div className="flex items-center gap-4">
+              <button className="p-2 rounded-full hover:bg-green-100">🔍</button>
+              <button className="p-2 rounded-full hover:bg-green-100">🔔</button>
+            </div>
+          </header>
 
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col px-6 py-8 space-y-8 min-w-0">
-        {/* Header */}
-        <header className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-800">Welcome Back, <span className="text-green-700">YourName</span>!</h1>
-            <div className="text-gray-500 text-sm mt-1">Saturday, 27 Jul 2022</div>
+          {/* Mobile Plant Selector - Only visible on small screens */}
+          <div className="lg:hidden">
+            <div className="bg-white rounded-xl p-4 shadow-sm">
+              <button
+                onClick={() => setShowMobilePlantSelector(!showMobilePlantSelector)}
+                className="w-full flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition"
+              >
+                <div className="flex items-center gap-3">
+                  <Leaf className="w-5 h-5 text-green-600" />
+                  <span className="font-medium">
+                    {selectedPlant ? selectedPlant.name : 'Select a plant'}
+                  </span>
+                </div>
+                <ChevronDown className={`w-5 h-5 transition-transform ${showMobilePlantSelector ? 'rotate-180' : ''}`} />
+              </button>
+              
+              {showMobilePlantSelector && (
+                <div className="mt-3 space-y-2 max-h-60 overflow-y-auto">
+                  {plants.map(plant => (
+                    <button
+                      key={plant.id}
+                      onClick={() => {
+                        setSelectedPlantId(plant.id);
+                        setShowMobilePlantSelector(false);
+                      }}
+                      className={`w-full flex items-center gap-3 p-3 rounded-lg transition ${
+                        selectedPlantId === plant.id 
+                          ? 'bg-green-100 border border-green-300' 
+                          : 'bg-gray-50 hover:bg-gray-100'
+                      }`}
+                    >
+                      <img
+                        src={plant.photoUrl}
+                        alt={plant.name}
+                        className="w-10 h-10 rounded-full border-2 border-green-400 object-cover"
+                        onError={e => { e.currentTarget.src = '/placeholder-plant.png'; }}
+                      />
+                      <div className="flex-1 text-left">
+                        <div className="font-medium text-gray-900">{plant.name}</div>
+                        <div className="text-sm text-gray-600">{plant.species}</div>
+                      </div>
+                      <span className={`px-2 py-1 text-xs rounded-full font-semibold ${
+                        plant.healthStatus === 'Good' || plant.healthStatus === 'Excellent'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {plant.healthStatus}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-          <div className="flex items-center gap-4">
-            <button className="p-2 rounded-full hover:bg-green-100">🔍</button>
-            <button className="p-2 rounded-full hover:bg-green-100">🔔</button>
-          </div>
-        </header>
 
-        {/* Mobile Plant Selector - Only visible on small screens */}
-        <div className="lg:hidden">
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <button
-              onClick={() => setShowMobilePlantSelector(!showMobilePlantSelector)}
-              className="w-full flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition"
-            >
-              <div className="flex items-center gap-3">
-                <Leaf className="w-5 h-5 text-green-600" />
-                <span className="font-medium">
-                  {selectedPlant ? selectedPlant.name : 'Select a plant'}
-                </span>
+          {/* Main Content */}
+          {plants.length > 0 ? (
+            <>
+              {/* Featured Plant Card */}
+              <section className="w-full flex justify-center px-4">
+                <div className="flex flex-col items-center w-full max-w-5xl">
+                  {selectedPlant && <FeaturedPlantCard plant={selectedPlant} />}
+                  {selectedPlant && <HealthDashboard plant={selectedPlant} />}
+                </div>
+              </section>
+
+              {/* Charts and Widgets (placeholders) */}
+              <section className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto w-full mt-8">
+                <div className="bg-white rounded-2xl shadow-sm p-6 h-64 flex items-center justify-center text-gray-400">
+                  Plant Details Chart (coming soon)
+                </div>
+                <div className="bg-white rounded-2xl shadow-sm p-6 h-64 flex items-center justify-center text-gray-400">
+                  Water Level Chart (coming soon)
+                </div>
+              </section>
+            </>
+          ) : (
+            /* Empty State */
+            <div className="text-center py-16">
+              <div className="max-w-md mx-auto">
+                <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Leaf className="w-12 h-12 text-green-600" />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">No plants yet</h2>
+                <p className="text-gray-600 mb-8">Start building your plant collection by identifying your first plant!</p>
+                <Link 
+                  to="/find-plant"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+                >
+                  <Plus className="w-5 h-5" />
+                  Add Your First Plant
+                </Link>
               </div>
-              <ChevronDown className={`w-5 h-5 transition-transform ${showMobilePlantSelector ? 'rotate-180' : ''}`} />
-            </button>
-            
-            {showMobilePlantSelector && (
-              <div className="mt-3 space-y-2 max-h-60 overflow-y-auto">
-                {plants.map(plant => (
-                  <button
-                    key={plant.id}
-                    onClick={() => {
-                      setSelectedPlantId(plant.id);
-                      setShowMobilePlantSelector(false);
-                    }}
-                    className={`w-full flex items-center gap-3 p-3 rounded-lg transition ${
-                      selectedPlantId === plant.id 
-                        ? 'bg-green-100 border border-green-300' 
-                        : 'bg-gray-50 hover:bg-gray-100'
-                    }`}
-                  >
-                    <img
-                      src={plant.photoUrl}
-                      alt={plant.name}
-                      className="w-10 h-10 rounded-full border-2 border-green-400 object-cover"
-                      onError={e => { e.currentTarget.src = '/placeholder-plant.png'; }}
-                    />
-                    <div className="flex-1 text-left">
-                      <div className="font-medium text-gray-900">{plant.name}</div>
-                      <div className="text-sm text-gray-600">{plant.species}</div>
-                    </div>
-                    <span className={`px-2 py-1 text-xs rounded-full font-semibold ${
-                      plant.healthStatus === 'Good' || plant.healthStatus === 'Excellent'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-yellow-100 text-yellow-800'
-                    }`}>
-                      {plant.healthStatus}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
-
-        {/* Featured Plant Card */}
-        <section className="w-full flex justify-center px-4">
-          <div className="flex flex-col items-center w-full max-w-5xl">
-          {selectedPlant && <FeaturedPlantCard plant={selectedPlant} />}
-            {selectedPlant && <HealthDashboard plant={selectedPlant} />}
-          </div>
-        </section>
-
-        {/* No plants message */}
-        {plants.length === 0 && (
-          <div className="text-center text-gray-500">No plants in your collection yet.</div>
-        )}
-
-        {/* Charts and Widgets (placeholders) */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto w-full">
-          <div className="bg-white rounded-2xl shadow-sm p-6 h-64 flex items-center justify-center text-gray-400">
-            Plant Details Chart (coming soon)
-          </div>
-          <div className="bg-white rounded-2xl shadow-sm p-6 h-64 flex items-center justify-center text-gray-400">
-            Water Level Chart (coming soon)
-          </div>
-        </section>
       </main>
 
       {/* Right Sidebar - Hidden on small screens to prevent overflow */}
-      <div className="hidden lg:block">
-      <RightSidebar
-        plants={plants}
-        selectedPlantId={selectedPlantId}
-        onSelectPlant={setSelectedPlantId}
-      />
+      <div className="hidden lg:block w-80 bg-white border-l border-gray-200">
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold text-gray-900">Plant List</h3>
+            <button className="text-sm text-green-600 hover:text-green-700 font-medium">
+              see all
+            </button>
+          </div>
+          
+          {plants.length > 0 ? (
+            <div className="space-y-3">
+              {plants.map(plant => (
+                <button
+                  key={plant.id}
+                  onClick={() => setSelectedPlantId(plant.id)}
+                  className={`w-full flex items-center gap-3 p-3 rounded-lg transition ${
+                    selectedPlantId === plant.id 
+                      ? 'bg-green-100 border border-green-300' 
+                      : 'bg-gray-50 hover:bg-gray-100'
+                  }`}
+                >
+                  <img
+                    src={plant.photoUrl}
+                    alt={plant.name}
+                    className="w-12 h-12 rounded-full border-2 border-green-400 object-cover"
+                    onError={e => { e.currentTarget.src = '/placeholder-plant.png'; }}
+                  />
+                  <div className="flex-1 text-left">
+                    <div className="font-medium text-gray-900">{plant.name}</div>
+                    <div className="text-sm text-gray-600">{plant.species}</div>
+                  </div>
+                  <span className={`px-2 py-1 text-xs rounded-full font-semibold ${
+                    plant.healthStatus === 'Good' || plant.healthStatus === 'Excellent'
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-yellow-100 text-yellow-800'
+                  }`}>
+                    {plant.healthStatus}
+                  </span>
+                </button>
+              ))}
+            </div>
+          ) : (
+            /* Empty State for Right Sidebar */
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Leaf className="w-8 h-8 text-gray-400" />
+              </div>
+              <h4 className="text-sm font-medium text-gray-900 mb-2">No plants yet</h4>
+              <p className="text-xs text-gray-500 mb-4">Your plant list will appear here</p>
+              <Link 
+                to="/find-plant"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+              >
+                <Plus className="w-4 h-4" />
+                Add Plant
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
