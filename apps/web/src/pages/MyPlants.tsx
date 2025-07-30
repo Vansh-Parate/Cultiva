@@ -3,7 +3,6 @@ import Sidebar from "../components/Sidebar";
 import FeaturedPlantCard from "../components/widgets/FeaturedPlantCard";
 import apiClient from "../lib/axios";
 import { ChevronDown, Leaf, Plus } from "lucide-react";
-import { Link } from "react-router-dom";
 
 const MyPlants = () => {
   const [plants, setPlants] = useState([]);
