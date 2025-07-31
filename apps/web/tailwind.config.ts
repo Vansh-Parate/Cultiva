@@ -11,6 +11,13 @@ const config: Pick<Config, "content" | "presets"> = {
     plugins: [require("tailwindcss-animate")],
     theme: {
     	extend: {
+    		fontFamily: {
+    			'museo': ['Museo Sans', 'sans-serif'],
+    			'museo-rounded': ['Museo Sans Rounded', 'sans-serif'],
+    			'sans': ['Museo Sans', 'sans-serif'],
+    			'body': ['Museo Sans', 'sans-serif'],
+    			'heading': ['Museo Sans', 'sans-serif'],
+    		},
     		borderRadius: {
     			lg: 'var(--radius)',
     			md: 'calc(var(--radius) - 2px)',

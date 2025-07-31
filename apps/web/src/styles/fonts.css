@@ -1,0 +1,183 @@
+/* Museo Sans Font Family */
+
+/* Museo Sans 100 - Thin */
+@font-face {
+  font-family: 'Museo Sans';
+  src: url('/fonts/fonnts.com-Museo_Sans_100.otf') format('opentype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Museo Sans 100 Italic - Thin Italic */
+@font-face {
+  font-family: 'Museo Sans';
+  src: url('/fonts/fonnts.com-Museo_Sans_100_Italic.otf') format('opentype');
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Museo Sans 300 - Light */
+@font-face {
+  font-family: 'Museo Sans';
+  src: url('/fonts/fonnts.com-Museo_Sans_300.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Museo Sans 300 Italic - Light Italic */
+@font-face {
+  font-family: 'Museo Sans';
+  src: url('/fonts/fonnts.com-Museo_Sans_300_Italic.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Museo Sans 500 - Medium */
+@font-face {
+  font-family: 'Museo Sans';
+  src: url('/fonts/fonnts.com-Museo_Sans_500.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Museo Sans 500 Italic - Medium Italic */
+@font-face {
+  font-family: 'Museo Sans';
+  src: url('/fonts/fonnts.com-Museo_Sans_500_Italic.otf') format('opentype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Museo Sans 700 - Bold */
+@font-face {
+  font-family: 'Museo Sans';
+  src: url('/fonts/fonnts.com-Museo_Sans_700.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Museo Sans 700 Italic - Bold Italic */
+@font-face {
+  font-family: 'Museo Sans';
+  src: url('/fonts/fonnts.com-Museo_Sans_700_Italic.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Museo Sans 900 - Black */
+@font-face {
+  font-family: 'Museo Sans';
+  src: url('/fonts/fonnts.com-Museo_Sans_900.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Museo Sans 900 Italic - Black Italic */
+@font-face {
+  font-family: 'Museo Sans';
+  src: url('/fonts/fonnts.com-Museo_Sans_900_Italic.otf') format('opentype');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Museo Sans Rounded Font Family */
+
+/* Museo Sans Rounded 100 - Thin Rounded */
+@font-face {
+  font-family: 'Museo Sans Rounded';
+  src: url('/fonts/fonnts.com-Museo_Sans_Rounded_100.otf') format('opentype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Museo Sans Rounded 100 Italic - Thin Rounded Italic */
+@font-face {
+  font-family: 'Museo Sans Rounded';
+  src: url('/fonts/fonnts.com-Museo_Sans_Rounded_100_Italic.otf') format('opentype');
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Museo Sans Rounded 300 - Light Rounded */
+@font-face {
+  font-family: 'Museo Sans Rounded';
+  src: url('/fonts/fonnts.com-Museo_Sans_Rounded_300.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Museo Sans Rounded 300 Italic - Light Rounded Italic */
+@font-face {
+  font-family: 'Museo Sans Rounded';
+  src: url('/fonts/fonnts.com-Museo_Sans_Rounded_300_Italic.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Museo Sans Rounded 500 - Medium Rounded */
+@font-face {
+  font-family: 'Museo Sans Rounded';
+  src: url('/fonts/fonnts.com-Museo_Sans_Rounded_500.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Museo Sans Rounded 500 Italic - Medium Rounded Italic */
+@font-face {
+  font-family: 'Museo Sans Rounded';
+  src: url('/fonts/fonnts.com-Museo_Sans_Rounded_500_Italic.otf') format('opentype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Museo Sans Rounded 700 - Bold Rounded */
+@font-face {
+  font-family: 'Museo Sans Rounded';
+  src: url('/fonts/fonnts.com-Museo_Sans_Rounded_700.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Museo Sans Rounded 700 Italic - Bold Rounded Italic */
+@font-face {
+  font-family: 'Museo Sans Rounded';
+  src: url('/fonts/fonnts.com-Museo_Sans_Rounded_700_Italic.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Museo Sans Rounded 900 - Black Rounded */
+@font-face {
+  font-family: 'Museo Sans Rounded';
+  src: url('/fonts/fonnts.com-Museo_Sans_Rounded_900.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Museo Sans Rounded 900 Italic - Black Rounded Italic */
+@font-face {
+  font-family: 'Museo Sans Rounded';
+  src: url('/fonts/fonnts.com-Museo_Sans_Rounded_900_Italic.otf') format('opentype');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+} 
