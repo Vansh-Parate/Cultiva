@@ -11,13 +11,13 @@ const statusColors: Record<string, string> = {
 
 const RightSidebar = ({ plants, selectedPlantId, onSelectPlant }) => (
   <aside className="w-72 shrink-0 bg-[#22313f] p-6 flex flex-col overflow-y-auto">
-    <button className="bg-orange-400 hover:bg-orange-300 text-white font-bold py-3 rounded-xl shadow-sm mb-6 transition">
-      + Add New Plant
+    <button className="bg-orange-400 hover:bg-orange-300 text-white font-black py-3 rounded-xl shadow-sm mb-6 transition">
+      Add New Plant
     </button>
     <div className="flex-1">
       <div className="flex items-center justify-between mb-4">
-        <span className="text-white font-semibold text-lg">Plant List</span>
-        <button className="text-xs text-orange-200 hover:underline">see all</button>
+        <span className="text-white font-black text-lg">Plant List</span>
+        <button className="text-xs text-orange-200 hover:underline font-black">see all</button>
       </div>
       <ul className="space-y-3">
         {plants.map(plant => {
@@ -44,11 +44,11 @@ const RightSidebar = ({ plants, selectedPlantId, onSelectPlant }) => (
                 </span>
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-white font-medium truncate">{plant.name}</div>
-                <div className="text-xs text-green-200 truncate">{plant.species}</div>
+                <div className="text-white font-black truncate">{plant.name}</div>
+                <div className="text-xs text-green-200 truncate font-black">{plant.species}</div>
               </div>
               {/* Water status pill */}
-              <span className={`px-2 py-1 text-xs rounded-full font-semibold shadow-sm flex-shrink-0 ${statusColors[plant.healthStatus]}`}>
+              <span className={`px-2 py-1 text-xs rounded-full font-black shadow-sm flex-shrink-0 ${statusColors[plant.healthStatus]}`}>
                 {plant.healthStatus}
               </span>
             </li>

@@ -55,7 +55,7 @@ const Signup = () => {
           Back to home
         </Link>
         <h2 className='text-2xl font-bold mb-2 flex justify-center items-center'> Create Account</h2>
-        <p className='text-sm text-gray-400 mb-6 flex justify-center items-center'>Join GreenCare and start your plant journey</p>
+        <p className='text-sm text-gray-400 mb-6 flex justify-center items-center'>Join Cultiva and start your plant journey</p>
 
         <div className='w-full max-w-md bg-[#252525]/80 rounded-2xl shadow-xl p-8 backdrop-blur-sm'>
           <div className='flex flex-col mb-6'>

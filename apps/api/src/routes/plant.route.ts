@@ -1,7 +1,7 @@
 import multer from 'multer';
 import express from 'express';
 import { uploadImageToS3 } from '@/s3';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/db';
 import { Router } from 'express';
 import { authenticateJWT } from '@/middleware/authMiddleware';
 import crypto from 'crypto';
@@ -9,14 +9,13 @@ import axios from 'axios';
 
 const router:Router = express.Router();
 const upload = multer();
-const prisma = new PrismaClient();
 
 router.post('/',
   authenticateJWT,
   upload.single('image'),
   async (req, res) => {
     try {
-      const { name, speciesName, description } = req.body;
+      const { name, speciesName } = req.body;
       const file = (req as any).file;
       const userId = (req as any).user?.userId;
 
@@ -60,13 +59,12 @@ router.post('/',
       const plant = await prisma.plant.create({
         data: {
           name,
-          description,
           userId,
           speciesId: species.id,
           images: {
             create: [
               {
-                url: imageUrl,
+                imageUrl: imageUrl,
                 isPrimary: true,
                 hash, 
               }
@@ -107,11 +105,27 @@ router.post('/:id/health-check', authenticateJWT, async (req, res) => {
       where: { id: req.params.id },
       include: { images: true }
     });
-    if (!plant || !plant.images[0]) {
-      return res.status(404).json({ error: 'No image found for this plant.' });
+    
+    if (!plant) {
+      return res.status(404).json({ error: 'Plant not found.' });
+    }
+    
+    if (!plant.images || plant.images.length === 0) {
+      return res.status(404).json({ error: 'No images found for this plant.' });
     }
 
-    const imageUrl = plant.images[0].url;
+    const imageUrl = plant.images[0]?.imageUrl;
+    if (!imageUrl) {
+      return res.status(404).json({ error: 'Image URL is undefined or invalid.' });
+    }
+
+    // Validate URL format
+    try {
+      new URL(imageUrl);
+    } catch (urlError) {
+      return res.status(400).json({ error: 'Invalid image URL format.' });
+    }
+
     const imageRes = await axios.get(imageUrl, { responseType: 'arraybuffer' });
     const imageBase64 = Buffer.from(imageRes.data, 'binary').toString('base64');
 
@@ -126,9 +140,18 @@ router.post('/:id/health-check', authenticateJWT, async (req, res) => {
     });
 
     res.json(plantIdRes.data);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to assess plant health.' });
+  } catch (err: any) {
+    console.error('Health check error:', err);
+    if (err.code === 'ERR_INVALID_URL') {
+      res.status(400).json({ error: 'Invalid image URL provided.' });
+    } else if (err.response) {
+      res.status(err.response.status).json({ 
+        error: 'External API error', 
+        details: err.response.data 
+      });
+    } else {
+      res.status(500).json({ error: 'Failed to assess plant health.' });
+    }
   }
 });
 

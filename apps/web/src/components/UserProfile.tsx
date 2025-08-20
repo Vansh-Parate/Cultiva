@@ -39,7 +39,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ onLogout }) => {
         // In a real app, you'd fetch this from your backend
         const userData = {
           name: 'Plant Lover',
-          email: 'plantlover@greencare.com',
+          email: 'plantlover@cultiva.com',
           avatarUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80',
           badge: 'Plant Enthusiast',
           joinDate: 'January 2024',

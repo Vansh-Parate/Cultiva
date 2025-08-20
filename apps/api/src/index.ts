@@ -9,6 +9,7 @@ import router from './routes/plant.route';
 import userRoute from './routes/user.route';
 import speciesRoute from './routes/species.route';
 import careTasksRoute from './routes/careTasks.route';
+import { prisma } from './db';
 
 dotenv.config({ path: '.env' })
 
@@ -39,12 +40,38 @@ app.use('/api/v1/plants',router);
 app.use('/api/v1/species',speciesRoute);
 app.use('/api/v1/care-tasks', careTasksRoute);
 
+// Health check endpoint
+app.get('/health', async (req: Request, res: Response) => {
+  try {
+    // Test database connection
+    await prisma.$connect();
+    const speciesCount = await prisma.plantSpecies.count();
+    
+    res.json({
+      status: 'OK',
+      timestamp: new Date().toISOString(),
+      database: 'connected',
+      speciesCount,
+      environment: process.env.NODE_ENV || 'development',
+      port: PORT
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      status: 'ERROR',
+      timestamp: new Date().toISOString(),
+      error: error.message,
+      database: 'disconnected'
+    });
+  }
+});
+
 app.get('/', (_req: Request, res: Response) => {
   res.status(200).json({
     success: true,
     message: 'Server working fine!!',
   })
 })
+
 app.listen(PORT, () => {
   console.log(`Server is running on port: ${PORT}`)
 })

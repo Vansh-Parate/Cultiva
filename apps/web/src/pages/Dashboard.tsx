@@ -10,27 +10,27 @@ const Dashboard = () => {
   // Dynamic user data - will be fetched from backend
   const [user] = useState({
     name: "User",
-    avatarUrl: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
+  avatarUrl: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
     badge: "Plant Enthusiast",
   });
 
   const [stats, setStats] = useState([
-    {
-      label: "Total Plants",
+  {
+    label: "Total Plants",
       value: 0,
-      icon: <Leaf className="w-6 h-6" />,
-      desc: "Your growing collection",
-    },
-    {
+    icon: <Leaf className="w-6 h-6" />,
+    desc: "Your growing collection",
+  },
+  {
       label: "Healthy Plants",
       value: 0,
       icon: <CheckCircle className="w-6 h-6" />,
       desc: "Thriving plants",
-    },
-    {
-      label: "Species Collected",
+  },
+  {
+    label: "Species Collected",
       value: 0,
-      icon: <Sprout className="w-6 h-6" />,
+    icon: <Sprout className="w-6 h-6" />,
       desc: "Diverse collection",
     },
     {
@@ -45,12 +45,12 @@ const Dashboard = () => {
   const [recentActivity, setRecentActivity] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const healthColors = {
-    Excellent: "bg-green-200 text-green-800",
-    Good: "bg-blue-100 text-blue-800",
-    Fair: "bg-yellow-100 text-yellow-800",
-    Poor: "bg-orange-100 text-orange-800",
-    Critical: "bg-red-200 text-red-800",
+const healthColors = {
+  Excellent: "bg-green-200 text-green-800",
+  Good: "bg-blue-100 text-blue-800",
+  Fair: "bg-yellow-100 text-yellow-800",
+  Poor: "bg-orange-100 text-orange-800",
+  Critical: "bg-red-200 text-red-800",
     Healthy: "bg-green-200 text-green-800",
     "Needs Attention": "bg-yellow-100 text-yellow-800",
   };
@@ -178,16 +178,16 @@ const Dashboard = () => {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      <Sidebar />
+        <Sidebar />
       
       <main className="flex-1 overflow-y-auto ml-64">
         <div className="p-8">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-4">
-              <img 
-                src={user.avatarUrl} 
-                alt={user.name} 
+          <img
+            src={user.avatarUrl}
+            alt={user.name}
                 className="w-12 h-12 rounded-full object-cover"
               />
               <div>
@@ -197,7 +197,7 @@ const Dashboard = () => {
                   {user.badge}
                 </p>
               </div>
-            </div>
+          </div>
             
             <div className="flex items-center gap-4">
               <button
@@ -212,8 +212,8 @@ const Dashboard = () => {
               >
                 <LogOut className="w-4 h-4" />
                 Logout
-              </button>
-            </div>
+          </button>
+        </div>
           </div>
 
           {/* Stats Grid */}
@@ -222,16 +222,16 @@ const Dashboard = () => {
               <div key={index} className="bg-white rounded-2xl shadow-sm p-6 border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">{stat.label}</p>
-                    <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                    <p className="text-xs text-gray-500">{stat.desc}</p>
+                    <p className="text-sm font-black text-gray-600">{stat.label}</p>
+                    <p className="text-2xl font-black text-gray-900">{stat.value}</p>
+                    <p className="text-xs font-black text-gray-500">{stat.desc}</p>
                   </div>
                   <div className="text-green-500">
                     {stat.icon}
                   </div>
                 </div>
-              </div>
-            ))}
+                </div>
+              ))}
           </div>
 
           {/* Main Content Grid */}
@@ -241,8 +241,8 @@ const Dashboard = () => {
               {/* My Plants Carousel */}
               <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-bold text-green-700">My Plants</h2>
-                  <Link to="/plants" className="flex items-center gap-1 text-sm text-green-600 hover:text-green-700 font-medium">
+                  <h2 className="text-xl font-black text-green-700">My Plants</h2>
+                  <Link to="/plants" className="flex items-center gap-1 text-sm text-green-600 hover:text-green-700 font-black">
                     View All <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
@@ -251,18 +251,18 @@ const Dashboard = () => {
                     {myPlants.map((plant, index) => (
                       <div key={index} className="flex-shrink-0 w-48 bg-gray-50 rounded-lg p-4">
                         <img src={plant.img} alt={plant.name} className="w-full h-32 object-cover rounded-lg mb-3" />
-                        <h3 className="font-semibold text-gray-900">{plant.name}</h3>
-                        <span className={`inline-block px-2 py-1 rounded-full text-xs ${healthColors[plant.health] || healthColors.Good}`}>
+                        <h3 className="font-black text-gray-900">{plant.name}</h3>
+                        <span className={`inline-block px-2 py-1 rounded-full text-xs font-black ${healthColors[plant.health] || healthColors.Good}`}>
                           {plant.health}
                         </span>
-                      </div>
-                    ))}
+            </div>
+          ))}
                   </div>
                 ) : (
                   <div className="text-center py-8 text-gray-500">
                     <Leaf className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                    <p>No plants yet. Start by identifying a plant!</p>
-                    <Link to="/find-plant" className="inline-block mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                    <p className="font-black">No plants yet. Start by identifying a plant!</p>
+                    <Link to="/find-plant" className="inline-block mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-black">
                       Find a Plant
                     </Link>
                   </div>
@@ -274,9 +274,9 @@ const Dashboard = () => {
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-2">
                     <CalendarCheck className="w-6 h-6 text-green-500" />
-                    <span className="text-xl font-bold text-green-700">Care Tasks</span>
+                    <span className="text-xl font-black text-green-700">Care Tasks</span>
                   </div>
-                  <Link to="/care" className="flex items-center gap-1 text-sm text-green-600 hover:text-green-700 font-medium">
+                  <Link to="/care" className="flex items-center gap-1 text-sm text-green-600 hover:text-green-700 font-black">
                     View All <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
@@ -284,18 +284,18 @@ const Dashboard = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                   <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
                     <Droplet className="w-8 h-8 mx-auto mb-2 text-green-600" />
-                    <p className="font-semibold text-green-700">Watering</p>
-                    <p className="text-sm text-green-600">3 due today</p>
+                    <p className="font-black text-green-700">Watering</p>
+                    <p className="text-sm font-black text-green-600">3 due today</p>
                   </div>
                   <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
                     <Sun className="w-8 h-8 mx-auto mb-2 text-blue-600" />
-                    <p className="font-semibold text-blue-700">Fertilizing</p>
-                    <p className="text-sm text-blue-600">1 this week</p>
+                    <p className="font-black text-blue-700">Fertilizing</p>
+                    <p className="text-sm font-black text-blue-600">1 this week</p>
                   </div>
                   <div className="text-center p-4 bg-purple-50 rounded-lg border border-purple-200">
                     <Scissors className="w-8 h-8 mx-auto mb-2 text-purple-600" />
-                    <p className="font-semibold text-purple-700">Pruning</p>
-                    <p className="text-sm text-purple-600">2 overdue</p>
+                    <p className="font-black text-purple-700">Pruning</p>
+                    <p className="text-sm font-black text-purple-600">2 overdue</p>
                   </div>
                 </div>
                 
@@ -304,51 +304,51 @@ const Dashboard = () => {
                     <div className="flex items-center gap-3">
                       <Droplet className="w-5 h-5 text-yellow-600" />
                       <div>
-                        <div className="font-medium text-gray-800">Water Peace Lily</div>
-                        <div className="text-xs text-gray-600">Due today</div>
+                        <div className="font-black text-gray-800">Water Peace Lily</div>
+                        <div className="text-xs font-black text-gray-600">Due today</div>
                       </div>
                     </div>
-                    <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">High</span>
+                    <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full font-black">High</span>
                   </div>
                   
                   <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
                     <div className="flex items-center gap-3">
                       <Sun className="w-5 h-5 text-green-600" />
                       <div>
-                        <div className="font-medium text-gray-800">Fertilize Snake Plant</div>
-                        <div className="text-xs text-gray-600">Due in 5 days</div>
+                        <div className="font-black text-gray-800">Fertilize Snake Plant</div>
+                        <div className="text-xs font-black text-gray-600">Due in 5 days</div>
                       </div>
                     </div>
-                    <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Low</span>
+                    <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-black">Low</span>
                   </div>
                 </div>
                 
                 <div className="mt-4 text-center">
-                  <Link to="/care" className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium">
+                  <Link to="/care" className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-black">
                     Manage Care Tasks <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
               </div>
 
-              {/* Recent Activity */}
-              <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
-                <h2 className="text-xl font-bold text-green-700 mb-6">Recent Activity</h2>
+            {/* Recent Activity */}
+            <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
+                <h2 className="text-xl font-black text-green-700 mb-6">Recent Activity</h2>
                 {recentActivity.length > 0 ? (
                   <div className="space-y-4">
                     {recentActivity.map((activity, index) => (
                       <div key={index} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
                         <img src={activity.img} alt={activity.plant} className="w-10 h-10 rounded-full object-cover" />
                         <div className="flex-1">
-                          <p className="font-medium text-gray-900">{activity.plant}</p>
-                          <p className="text-sm text-gray-600">{activity.action}</p>
+                          <p className="font-black text-gray-900">{activity.plant}</p>
+                          <p className="text-sm font-black text-gray-600">{activity.action}</p>
                         </div>
-                        <span className="text-xs text-gray-500">{activity.time}</span>
+                        <span className="text-xs font-black text-gray-500">{activity.time}</span>
                       </div>
                     ))}
                   </div>
                 ) : (
                   <div className="text-center py-8 text-gray-500">
-                    <p>No recent activity</p>
+                    <p className="font-black">No recent activity</p>
                   </div>
                 )}
               </div>
@@ -358,54 +358,54 @@ const Dashboard = () => {
             <div className="space-y-8">
               {/* Weather & Tips */}
               <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
-                <h2 className="text-xl font-bold text-green-700 mb-6">Weather & Tips</h2>
+                <h2 className="text-xl font-black text-green-700 mb-6">Weather & Tips</h2>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-200">
                     <div className="flex items-center gap-2">
                       <Thermometer className="w-5 h-5 text-blue-600" />
-                      <span className="text-sm font-medium">Temperature</span>
+                      <span className="text-sm font-black text-black">Temperature</span>
                     </div>
-                    <span className="font-semibold text-blue-700">{weatherDisplay.temperature}</span>
+                    <span className="font-black text-blue-700">{weatherDisplay.temperature}</span>
                   </div>
                   <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
                     <div className="flex items-center gap-2">
                       <Droplet className="w-5 h-5 text-green-600" />
-                      <span className="text-sm font-medium">Humidity</span>
+                      <span className="text-sm font-black text-black">Humidity</span>
                     </div>
-                    <span className="font-semibold text-green-700">{weatherDisplay.humidity}</span>
+                    <span className="font-black text-green-700">{weatherDisplay.humidity}</span>
                   </div>
                 </div>
                 <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
                   <div className="flex items-start gap-2">
                     <Lightbulb className="w-5 h-5 text-yellow-600 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium text-yellow-800">Today's Tip</p>
-                      <p className="text-sm text-yellow-700 mt-1">{weatherDisplay.tip}</p>
+                      <p className="text-sm font-black text-yellow-800">Today's Tip</p>
+                      <p className="text-sm font-black text-yellow-700 mt-1">{weatherDisplay.tip}</p>
                     </div>
-                  </div>
-                </div>
+            </div>
+          </div>
               </div>
 
               {/* Plant Health Overview */}
               <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
-                <h2 className="text-xl font-bold text-green-700 mb-6">Plant Health Overview</h2>
+                <h2 className="text-xl font-black text-green-700 mb-6">Plant Health Overview</h2>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Excellent</span>
+                    <span className="text-sm font-black text-gray-600">Excellent</span>
                     <div className="flex items-center gap-2">
                       <div className="w-24 bg-gray-200 rounded-full h-2">
                         <div className="bg-green-500 h-2 rounded-full" style={{ width: `${(userStats.healthyPlants / Math.max(userStats.totalPlants, 1)) * 100}%` }}></div>
                       </div>
-                      <span className="text-sm font-medium text-gray-900">{userStats.healthyPlants}</span>
+                      <span className="text-sm font-black text-gray-900">{userStats.healthyPlants}</span>
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Needs Attention</span>
+                    <span className="text-sm font-black text-gray-600">Needs Attention</span>
                     <div className="flex items-center gap-2">
                       <div className="w-24 bg-gray-200 rounded-full h-2">
                         <div className="bg-yellow-500 h-2 rounded-full" style={{ width: `${((userStats.totalPlants - userStats.healthyPlants) / Math.max(userStats.totalPlants, 1)) * 100}%` }}></div>
                       </div>
-                      <span className="text-sm font-medium text-gray-900">{userStats.totalPlants - userStats.healthyPlants}</span>
+                      <span className="text-sm font-black text-gray-900">{userStats.totalPlants - userStats.healthyPlants}</span>
                     </div>
                   </div>
                 </div>
@@ -413,19 +413,19 @@ const Dashboard = () => {
 
               {/* Collection Growth */}
               <div className="bg-white rounded-2xl shadow-sm p-8 border border-green-100 hover:shadow-lg transition-transform duration-200 hover:-translate-y-1">
-                <h2 className="text-xl font-bold text-green-700 mb-6">Collection Growth</h2>
+                <h2 className="text-xl font-black text-green-700 mb-6">Collection Growth</h2>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-green-600 mb-2">{userStats.monthlyAdditions}</div>
-                  <p className="text-sm text-gray-600">New plants this month</p>
+                  <div className="text-3xl font-black text-green-600 mb-2">{userStats.monthlyAdditions}</div>
+                  <p className="text-sm font-black text-gray-600">New plants this month</p>
                   <div className="mt-4 w-full bg-gray-200 rounded-full h-2">
                     <div className="bg-green-500 h-2 rounded-full" style={{ width: `${Math.min((userStats.monthlyAdditions / 10) * 100, 100)}%` }}></div>
                   </div>
-                  <p className="text-xs text-gray-500 mt-2">Goal: 10 plants/month</p>
+                  <p className="text-xs font-black text-gray-500 mt-2">Goal: 10 plants/month</p>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+          </div>
       </main>
 
       <NotificationCenter isOpen={notificationsOpen} onClose={() => setNotificationsOpen(false)} />

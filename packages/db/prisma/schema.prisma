@@ -1,3 +1,6 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,99 +11,128 @@ datasource db {
 }
 
 model User {
-  id                   String                @id @default(uuid())
-  email                String                @unique
-  password             String
-  username             String                @unique
-  fullName             String?
-  location             String?
-  avatarUrl            String?
-  createdAt            DateTime              @default(now())
-  updatedAt            DateTime              @updatedAt
-  plants               Plant[]
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String?
+  username  String?  @unique
+  fullName  String?
+  location  String?
+  experienceLevel String? @default("beginner")
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  plants    Plant[]
+  communityPosts CommunityPost[]
+  postLikes PostLike[]
+  postComments PostComment[]
+  shopReviews ShopReview[]
   plantIdentifications PlantIdentification[]
-  communityPosts       CommunityPost[]
-  careTasks            CareTask[]
-}
-
-model Plant {
-  id            String         @id @default(uuid())
-  name          String
-  description   String?
-  dateAcquired  DateTime?
-  locationType  String?
-  notes         String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  userId        String
-  user          User           @relation(fields: [userId], references: [id])
-  speciesId     String
-  species       PlantSpecies   @relation(fields: [speciesId], references: [id])
-  images        PlantImage[]
-  careSchedules CareSchedule[]
-  careLogs      CareLog[]
-  healthLogs    HealthLog[]
-  humidity      Float?         
-  waterPH       Float?         
-  temperature   Float?         
-  location      String?        
-}
-
-model PlantImage {
-  id         String   @id @default(uuid())
-  url        String
-  caption    String?
-  isPrimary  Boolean  @default(false)
-  uploadedAt DateTime @default(now())
-  plantId    String
-  plant      Plant    @relation(fields: [plantId], references: [id])
-  hash       String?  
+  careTasks CareTask[]
 }
 
 model PlantSpecies {
-  id                 String  @id @default(uuid())
-  commonName         String
-  scientificName     String
-  careDifficulty     String?
-  lightRequirements  String?
+  id                String   @id @default(cuid())
+  commonName        String
+  scientificName    String?
+  careDifficulty    String?  @default("beginner")
+  lightRequirements String?
   waterFrequencyDays Int?
-  humidityNeeds      String?
-  temperatureRange   String?
-  soilType           String?
-  growthSeason       String?
-  plants             Plant[]
+  humidityNeeds     String?
+  temperatureRange  String?
+  soilType          String?
+  growthSeason      String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  plants Plant[]
+}
+
+model Plant {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  speciesId   String?
+  variety     String?
+  dateAcquired DateTime?
+  locationType String? // Indoor/Outdoor/Balcony
+  primaryImageUrl String?
+  notes       String?
+  isActive    Boolean  @default(true)
+  humidity    Float?
+  waterPH     Float?
+  temperature Float?
+  location    String?
+  healthStatus String? @default("Good")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  species     PlantSpecies? @relation(fields: [speciesId], references: [id])
+  images      PlantImage[]
+  careLogs    CareLog[]
+  careSchedules CareSchedule[]
+  healthLogs  HealthLog[]
+
+  @@index([userId])
+  @@index([speciesId])
+}
+
+model PlantImage {
+  id        String   @id @default(cuid())
+  plantId   String
+  imageUrl  String
+  caption   String?
+  isPrimary Boolean  @default(false)
+  hash      String?
+  uploadedAt DateTime @default(now())
+
+  // Relations
+  plant     Plant      @relation(fields: [plantId], references: [id], onDelete: Cascade)
+
+  @@index([plantId])
 }
 
 model CareSchedule {
-  id              String    @id @default(uuid())
+  id              String   @id @default(cuid())
   plantId         String
-  plant           Plant     @relation(fields: [plantId], references: [id])
+  plant           Plant    @relation(fields: [plantId], references: [id], onDelete: Cascade)
   careType        String
   frequencyDays   Int
   lastCompletedAt DateTime?
   nextDueDate     DateTime?
-  isActive        Boolean   @default(true)
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  careLogs        CareLog[]
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  careLogs CareLog[]
+
+  @@index([plantId])
 }
 
 model CareLog {
-  id             String        @id @default(uuid())
+  id             String        @id @default(cuid())
   plantId        String
-  plant          Plant         @relation(fields: [plantId], references: [id])
+  plant          Plant         @relation(fields: [plantId], references: [id], onDelete: Cascade)
   careType       String
   completedAt    DateTime
   notes          String?
   imageUrl       String?
   careScheduleId String?
   careSchedule   CareSchedule? @relation(fields: [careScheduleId], references: [id])
+
+  @@index([plantId])
+  @@index([careScheduleId])
 }
 
 model HealthLog {
-  id           String   @id @default(uuid())
+  id           String   @id @default(cuid())
   plantId      String
-  plant        Plant    @relation(fields: [plantId], references: [id])
+  plant        Plant    @relation(fields: [plantId], references: [id], onDelete: Cascade)
   loggedAt     DateTime @default(now())
   healthStatus String
   heightCm     Float?
@@ -108,33 +140,69 @@ model HealthLog {
   issuesNoted  String?
   notes        String?
   imageUrl     String?
+
+  @@index([plantId])
 }
 
 model PlantIdentification {
-  id                    String   @id @default(uuid())
+  id                    String   @id @default(cuid())
   userId                String
-  user                  User     @relation(fields: [userId], references: [id])
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   imageUrl              String
   topSpeciesSuggestions String
   confidenceScores      String
   status                String
   createdAt             DateTime @default(now())
+
+  @@index([userId])
 }
 
 model CommunityPost {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   postType  String
   title     String
   content   String
   imageUrls String?
   tags      String?
   createdAt DateTime @default(now())
+
+  // Relations
+  likes     PostLike[]
+  comments  PostComment[]
+
+  @@index([userId])
+}
+
+model PostLike {
+  id        String   @id @default(cuid())
+  postId    String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([postId, userId])
+  @@index([postId])
+  @@index([userId])
+}
+
+model PostComment {
+  id        String   @id @default(cuid())
+  postId    String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  content   String
+  createdAt DateTime @default(now())
+
+  @@index([postId])
+  @@index([userId])
 }
 
 model PlantShop {
-  id              String   @id @default(uuid())
+  id              String   @id @default(cuid())
   name            String
   address         String
   phone           String?
@@ -142,10 +210,27 @@ model PlantShop {
   servicesOffered String?
   rating          Float?
   createdAt       DateTime @default(now())
+
+  // Relations
+  reviews ShopReview[]
+}
+
+model ShopReview {
+  id        String   @id @default(cuid())
+  shopId    String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shop      PlantShop @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+
+  @@index([shopId])
+  @@index([userId])
 }
 
 model CareTask {
-  id          String   @id @default(uuid())
+  id          String   @id @default(cuid())
   plantName   String
   plantId     String?
   type        String   
@@ -155,7 +240,9 @@ model CareTask {
   notes       String?
   priority    String   
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([userId])
 }

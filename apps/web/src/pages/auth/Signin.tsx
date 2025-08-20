@@ -53,7 +53,7 @@ const Signin = () => {
           Back to home
         </a>
         <h2 className='text-2xl font-bold mb-2 flex justify-center items-center'>Sign in</h2>
-        <p className='text-sm text-gray-400 mb-6 flex justify-center items-center'>Welcome back to GreenCare!</p>
+        <p className='text-sm text-gray-400 mb-6 flex justify-center items-center'>Welcome back to Cultiva!</p>
 
         <div className='w-full max-w-md bg-[#252525]/80 rounded-2xl shadow-xl p-8 backdrop-blur-sm'>
           <div className='flex flex-col mb-6'>
