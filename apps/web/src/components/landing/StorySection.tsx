@@ -205,8 +205,8 @@ const StorySection: React.FC<StorySectionProps> = ({ isDark }) => {
             </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
               <img className="h-28 w-full rounded-xl object-cover ring-1 ring-emerald-900/10" src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?q=80&w=800&auto=format&fit=crop" alt="Community plant 1" />
-              <img className="h-28 w-full rounded-xl object-cover ring-1 ring-emerald-900/10" src="https://images.unsplash.com/photo-1545249390-6bdfa286032f?q=80&w=800&auto=format&fit=crop" alt="Community plant 2" />
-              <img className="h-28 w-full rounded-xl object-cover ring-1 ring-emerald-900/10" src="https://images.unsplash.com/photo-1635151227785-429f420c6b9d?w=1080&q=80" alt="Community plant 3" />
+              <img className="h-28 w-full rounded-xl object-cover ring-1 ring-emerald-900/10" src="https://images.unsplash.com/photo-1697125453575-0376d00f6e1f?q=80&w=627&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Community plant 2" />
+              <img className="h-28 w-full rounded-xl object-cover ring-1 ring-emerald-900/10" src="https://images.unsplash.com/photo-1643730508670-9e4804f59eb9?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Community plant 3" />
             </div>
           </div>
         );

@@ -57,7 +57,7 @@ const HeroVisual: React.FC<HeroVisualProps> = ({ isDark }) => {
             <div className={`mt-4 overflow-hidden rounded-2xl border ${
               isDark ? 'border-slate-800' : 'border-emerald-900/10'
             }`}>
-              <img src="https://images.unsplash.com/photo-1621619856624-42fd193a0661?w=1080&q=80" alt="Monstera plant" className="h-56 w-full object-cover" />
+              <img src="https://images.unsplash.com/photo-1636525653613-2a3a05c00759?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Monstera plant" className="h-56 w-full object-cover" />
             </div>
             <div className="mt-4 grid grid-cols-3 gap-3">
               <div className={`rounded-xl border p-3 ${
@@ -124,7 +124,7 @@ const HeroVisual: React.FC<HeroVisualProps> = ({ isDark }) => {
               <div className={`h-10 w-10 overflow-hidden rounded-lg ring-1 ${
                 isDark ? 'ring-slate-800' : 'ring-emerald-900/10'
               }`}>
-                <img src="https://images.unsplash.com/photo-1642615835477-d303d7dc9ee9?w=1080&q=80" alt="Plant thumb" className="h-full w-full object-cover" />
+                <img src="https://images.unsplash.com/photo-1634803534299-56378af8fa70?q=80&w=1036&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Plant thumb" className="h-full w-full object-cover" />
               </div>
               <div>
                 <p className={`text-sm font-medium font-quicksand ${
@@ -159,7 +159,7 @@ const HeroVisual: React.FC<HeroVisualProps> = ({ isDark }) => {
             <div className={`mt-3 overflow-hidden rounded-lg ring-1 ${
               isDark ? 'ring-slate-800' : 'ring-emerald-900/10'
             }`}>
-              <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=800&auto=format&fit=crop" alt="Community post" className="h-24 w-full object-cover" />
+              <img src="https://images.unsplash.com/photo-1746468351409-62b0b29e1b12?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Community post" className="h-24 w-full object-cover" />
             </div>
             <div className={`mt-2 flex items-center justify-between text-[11px] font-quicksand ${
               isDark ? 'text-slate-400' : 'text-slate-600'
