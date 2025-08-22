@@ -67,7 +67,7 @@ const FinalCTASection: React.FC<FinalCTASectionProps> = ({ isDark }) => {
                     : 'border-emerald-900/10 bg-white'
                 }`}>
                   <div className="h-56 w-full">
-                    <img src="https://images.unsplash.com/photo-1621619856624-42fd193a0661?w=1080&q=80" alt="Green nook" className="h-full w-full object-cover" />
+                    <img src="https://images.unsplash.com/photo-1658535824284-713035fb8629?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTl8fGdyZWVuaG91c2V8ZW58MHwwfDB8fHww" alt="Green nook" className="h-full w-full object-cover" />
                   </div>
                   <div className="p-4">
                     <div className="flex items-center justify-between">

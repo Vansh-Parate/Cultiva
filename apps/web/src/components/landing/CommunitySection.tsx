@@ -38,9 +38,9 @@ const CommunitySection: React.FC<CommunitySectionProps> = ({ isDark }) => {
 
   const communityPhotos = [
     "https://images.unsplash.com/photo-1485955900006-10f4d324d411?q=80&w=1400&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1621619856624-42fd193a0661?w=1080&q=80",
-    "https://images.unsplash.com/photo-1642615835477-d303d7dc9ee9?w=1080&q=80",
-    "https://images.unsplash.com/photo-1635151227785-429f420c6b9d?w=1080&q=80"
+    "https://images.unsplash.com/photo-1728212837158-4e5126b8c2f5?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "https://images.unsplash.com/photo-1668426231244-1827c29ef8e1?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTIyfHxob21nZXJvd24lMjBwbGFudHxlbnwwfHwwfHx8MA%3D%3D",
+    "https://images.unsplash.com/photo-1748658061273-fe1f71f547c8?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
   ];
 
   return (

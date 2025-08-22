@@ -42,7 +42,7 @@ const StorySection: React.FC<StorySectionProps> = ({ isDark }) => {
           }`}>
             <div className="grid grid-cols-3 gap-2 p-3">
               <img className="h-24 w-full rounded-xl object-cover ring-1 ring-emerald-900/10" src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?q=80&w=800&auto=format&fit=crop" alt="Leaf close-up" />
-              <img className="h-24 w-full rounded-xl object-cover ring-1 ring-emerald-900/10" src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=800&auto=format&fit=crop" alt="Plant in room" />
+              <img className="h-24 w-full rounded-xl object-cover ring-1 ring-emerald-900/10" src="https://images.unsplash.com/photo-1654699878164-909de66be81c?q=80&w=627&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Plant in room" />
               <div className="relative h-24 w-full rounded-xl ring-1 ring-emerald-900/10">
                 <img className="h-full w-full rounded-xl object-cover" src="https://images.unsplash.com/photo-1635151227785-429f420c6b9d?w=1080&q=80" alt="Plant macro" />
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -69,7 +69,7 @@ const StorySection: React.FC<StorySectionProps> = ({ isDark }) => {
               <div className={`rounded-xl border p-3 ${
                 isDark ? 'border-slate-800' : 'border-emerald-900/10'
               }`}>
-                <img className="h-28 w-full rounded-lg object-cover ring-1 ring-emerald-900/10" src="https://images.unsplash.com/photo-1621619856624-42fd193a0661?w=1080&q=80" alt="Snake plant" />
+                <img className="h-28 w-full rounded-lg object-cover ring-1 ring-emerald-900/10" src="https://images.unsplash.com/photo-1687552212914-03a30c82053c?q=80&w=715&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Snake plant" />
                 <p className={`mt-2 text-sm font-medium font-quicksand ${
                   isDark ? 'text-emerald-100' : 'text-emerald-900'
                 }`}>Snake Plant</p>
@@ -91,7 +91,7 @@ const StorySection: React.FC<StorySectionProps> = ({ isDark }) => {
               <div className={`rounded-xl border p-3 ${
                 isDark ? 'border-slate-800' : 'border-emerald-900/10'
               }`}>
-                <img className="h-28 w-full rounded-lg object-cover ring-1 ring-emerald-900/10" src="https://images.unsplash.com/photo-1642615835477-d303d7dc9ee9?w=1080&q=80" alt="Pothos" />
+                <img className="h-28 w-full rounded-lg object-cover ring-1 ring-emerald-900/10" src="https://images.unsplash.com/photo-1632703471701-cb71604f5d58?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Pothos" />
                 <p className={`mt-2 text-sm font-medium font-quicksand ${
                   isDark ? 'text-emerald-100' : 'text-emerald-900'
                 }`}>Golden Pothos</p>
