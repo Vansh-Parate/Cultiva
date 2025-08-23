@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import Sidebar from '../components/Sidebar';
-import { Calendar, Clock, CheckCircle, AlertCircle, Plus, Filter, Search, Droplet, Sun, Scissors, Leaf, Thermometer, Sparkles } from 'lucide-react';
-import apiClient from "../lib/axios";
-import { useWeather } from "../hooks/useWeather";
+import { Plus, Search, Filter, Calendar, Droplet, Sun, Thermometer, Leaf, Sprout, Award, Check, Clock, AlertCircle } from 'lucide-react';
+import apiClient from '../lib/axios';
+import { useWeather } from '../hooks/useWeather';
 
 interface CareTask {
   id: string;
@@ -62,7 +61,7 @@ const Care = () => {
   });
 
   // Get real weather data
-  const { weather: liveWeather } = useWeather();
+  const { weather } = useWeather();
 
   useEffect(() => {
     fetchData();
@@ -263,8 +262,8 @@ const Care = () => {
     switch (type) {
       case 'watering': return <Droplet className="w-5 h-5" />;
       case 'fertilizing': return <Sun className="w-5 h-5" />;
-      case 'pruning': return <Scissors className="w-5 h-5" />;
-      case 'repotting': return <Leaf className="w-5 h-5" />;
+      case 'pruning': return <Leaf className="w-5 h-5" />;
+      case 'repotting': return <Sprout className="w-5 h-5" />;
       case 'pest-control': return <AlertCircle className="w-5 h-5" />;
       default: return <Calendar className="w-5 h-5" />;
     }
@@ -300,320 +299,171 @@ const Care = () => {
 
   if (loading) {
     return (
-      <div className="flex h-screen bg-gray-50">
-        <Sidebar />
-        <main className="flex-1 overflow-y-auto ml-64">
-          <div className="flex items-center justify-center min-h-screen">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-500"></div>
-          </div>
-        </main>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      <Sidebar />
-      
-      <main className="flex-1 overflow-y-auto ml-64">
-        <div className="p-8">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+    <div className="p-8">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Plant Care</h1>
+          <p className="text-gray-600">Manage your plant care tasks and schedules</p>
+        </div>
+        <button className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+          <Plus className="w-5 h-5" />
+          + Add Task
+        </button>
+      </div>
+
+      {/* Weather-Based Care Tips */}
+      <div className="bg-white rounded-2xl shadow-sm p-6 mb-8 border border-gray-200">
+        <h2 className="text-xl font-bold text-gray-900 mb-4">Weather-Based Care Tips</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg">
+            <Thermometer className="w-8 h-8 text-blue-600" />
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Plant Care</h1>
-              <p className="text-gray-600">Manage your plant care tasks and schedules</p>
+              <div className="text-lg font-semibold text-blue-900">
+                {weather?.temperature ? `${weather.temperature.toFixed(1)}°C` : '27.0°C'}
+              </div>
+              <div className="text-sm text-blue-700">Temperature</div>
             </div>
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+          </div>
+          <div className="flex items-center gap-3 p-4 bg-green-50 rounded-lg">
+            <Droplet className="w-8 h-8 text-green-600" />
+            <div>
+              <div className="text-lg font-semibold text-green-900">
+                {weather?.humidity ? `${weather.humidity}%` : '83%'}
+              </div>
+              <div className="text-sm text-green-700">Humidity</div>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 p-4 bg-yellow-50 rounded-lg">
+            <Sprout className="w-8 h-8 text-yellow-600" />
+            <div>
+              <div className="text-lg font-semibold text-yellow-900">
+                {weather?.temperature && weather.temperature > 25 ? 'Extra watering needed' : 'Normal care'}
+              </div>
+              <div className="text-sm text-yellow-700">Care Tip</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* AI Care Recommendations */}
+      <div className="bg-white rounded-2xl shadow-sm p-6 mb-8 border border-green-100">
+        <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <Award className="w-6 h-6 text-purple-600" />
+          AI Care Recommendations
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {tasks.slice(0, 3).map((task) => (
+            <div key={task.id} className="border border-gray-200 rounded-lg p-4">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  {getTaskIcon(task.type)}
+                  <span className="text-sm font-medium text-gray-900">{task.type}</span>
+                </div>
+                <span className={`px-2 py-1 text-xs rounded-full ${
+                  task.priority === 'high' ? 'bg-red-100 text-red-800' :
+                  task.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                  'bg-green-100 text-green-800'
+                }`}>
+                  {task.priority}
+                </span>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1">{task.plantName}</h3>
+              <p className="text-sm text-gray-600 mb-3">{task.notes}</p>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-gray-500">{task.dueDate}</span>
+                {task.completed ? (
+                  <div className="flex items-center gap-2 text-green-600">
+                    <Check className="w-5 h-5" />
+                    <span className="text-sm font-medium">Completed</span>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => handleCompleteTask(task.id)}
+                    className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition-colors"
+                  >
+                    Mark as Done
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Task Management */}
+      <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-200">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-4">
+            <Filter className="w-5 h-5 text-gray-600" />
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value as 'all' | 'pending' | 'completed')}
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
             >
-              <Plus className="w-5 h-5" />
-              Add Task
-            </button>
+              <option value="all">All Tasks</option>
+              <option value="pending">Pending</option>
+              <option value="completed">Completed</option>
+            </select>
           </div>
-
-          {/* Weather & Care Tips */}
-          {liveWeather && (
-            <div className="bg-white rounded-2xl shadow-sm p-6 mb-8 border border-green-100">
-              <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Thermometer className="w-6 h-6 text-blue-600" />
-                Weather-Based Care Tips
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg">
-                  <Thermometer className="w-8 h-8 text-blue-600" />
-                  <div>
-                    <div className="text-2xl font-bold text-blue-900">{liveWeather.temperature?.toFixed(1)}°C</div>
-                    <div className="text-sm text-blue-600">Temperature</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-4 bg-green-50 rounded-lg">
-                  <Droplet className="w-8 h-8 text-green-600" />
-                  <div>
-                    <div className="text-2xl font-bold text-green-900">{liveWeather.humidity}%</div>
-                    <div className="text-sm text-green-600">Humidity</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-4 bg-yellow-50 rounded-lg">
-                  <Sparkles className="w-8 h-8 text-yellow-600" />
-                  <div>
-                    <div className="text-lg font-semibold text-yellow-900">
-                      {liveWeather.temperature && liveWeather.temperature > 25 
-                        ? 'Extra watering needed'
-                        : liveWeather.humidity && liveWeather.humidity > 70
-                          ? 'Reduce watering'
-                          : 'Perfect conditions'
-                      }
-                    </div>
-                    <div className="text-sm text-yellow-600">Care Tip</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Plant Care Recommendations */}
-          {plants.length > 0 && (
-            <div className="bg-white rounded-2xl shadow-sm p-6 mb-8 border border-green-100">
-              <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Sparkles className="w-6 h-6 text-purple-600" />
-                AI Care Recommendations
-              </h2>
-              {loadingRecommendations ? (
-                <div className="animate-pulse space-y-4">
-                  {[...Array(3)].map((_, i) => (
-                    <div key={i} className="h-20 bg-gray-200 rounded-lg"></div>
-                  ))}
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {plants.slice(0, 6).map(plant => {
-                    const recommendations = careRecommendations[plant.id];
-                    return (
-                      <div key={plant.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                        <div className="flex items-center gap-3 mb-3">
-                          <img 
-                            src={plant.photoUrl} 
-                            alt={plant.name} 
-                            className="w-12 h-12 rounded-full object-cover"
-                          />
-                          <div>
-                            <div className="font-semibold text-gray-900">{plant.name}</div>
-                            <div className="text-sm text-gray-600">{plant.species}</div>
-                          </div>
-                        </div>
-                        {recommendations ? (
-                          <div className="space-y-2">
-                            {recommendations.watering && (
-                              <div className="flex items-center gap-2 text-sm">
-                                <Droplet className="w-4 h-4 text-blue-600" />
-                                <span className="text-gray-700">{recommendations.watering}</span>
-                              </div>
-                            )}
-                            {recommendations.light && (
-                              <div className="flex items-center gap-2 text-sm">
-                                <Sun className="w-4 h-4 text-yellow-600" />
-                                <span className="text-gray-700">{recommendations.light}</span>
-                              </div>
-                            )}
-                          </div>
-                        ) : (
-                          <div className="text-sm text-gray-500">Loading recommendations...</div>
-                        )}
-                        <button
-                          onClick={() => handleRecordCareAction(plant.id, 'watering', 'Watered based on AI recommendation')}
-                          className="mt-3 w-full px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition-colors"
-                        >
-                          Mark as Watered
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Filters and Search */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-6">
-            <div className="flex items-center gap-2">
-              <Filter className="w-5 h-5 text-gray-600" />
-              <select
-                value={filter}
-                onChange={(e) => setFilter(e.target.value as 'all' | 'pending' | 'completed')}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              >
-                <option value="all">All Tasks</option>
-                <option value="pending">Pending</option>
-                <option value="completed">Completed</option>
-              </select>
-            </div>
-            <div className="flex items-center gap-2 flex-1">
-              <Search className="w-5 h-5 text-gray-600" />
-              <input
-                type="text"
-                placeholder="Search tasks..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              />
-            </div>
-          </div>
-
-          {/* Tasks List */}
-          <div className="bg-white rounded-2xl shadow-sm border border-green-100">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-xl font-bold text-gray-900">Care Tasks</h2>
-            </div>
-            <div className="divide-y divide-gray-200">
-              {filteredTasks.length > 0 ? (
-                filteredTasks.map(task => {
-                  const dueStatus = getDueStatus(task.dueDate);
-                  return (
-                    <div key={task.id} className="p-6 hover:bg-gray-50 transition-colors">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className="flex items-center gap-2">
-                            {getTaskIcon(task.type)}
-                            <div>
-                              <div className="font-semibold text-gray-900">{task.plantName}</div>
-                              <div className="text-sm text-gray-600 capitalize">{task.type}</div>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Clock className="w-4 h-4 text-gray-400" />
-                            <span className={`text-sm ${dueStatus.color}`}>{dueStatus.status}</span>
-                          </div>
-                          <span className={`px-2 py-1 text-xs rounded-full font-semibold ${getPriorityColor(task.priority)}`}>
-                            {task.priority}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          {!task.completed ? (
-                            <button
-                              onClick={() => handleCompleteTask(task.id)}
-                              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
-                            >
-                              Complete
-                            </button>
-                          ) : (
-                            <div className="flex items-center gap-2 text-green-600">
-                              <CheckCircle className="w-5 h-5" />
-                              <span className="text-sm font-medium">Completed</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      {task.notes && (
-                        <div className="mt-3 text-sm text-gray-600">
-                          {task.notes}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="p-6 text-center text-gray-500">
-                  <Calendar className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                  <p>No tasks found</p>
-                </div>
-              )}
-            </div>
+          <div className="relative">
+            <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder="Search tasks..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            />
           </div>
         </div>
-      </main>
 
-      {/* Add Task Modal */}
-      {showAddModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-md mx-4">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Add Care Task</h3>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Plant Name</label>
-                <input
-                  type="text"
-                  value={newTask.plantName}
-                  onChange={(e) => setNewTask({ ...newTask, plantName: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Task Type</label>
-                <select
-                  value={newTask.type}
-                  onChange={(e) => setNewTask({ ...newTask, type: e.target.value as CareTask['type'] })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                >
-                  <option value="watering">Watering</option>
-                  <option value="fertilizing">Fertilizing</option>
-                  <option value="pruning">Pruning</option>
-                  <option value="repotting">Repotting</option>
-                  <option value="pest-control">Pest Control</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Frequency</label>
-                <select
-                  value={newTask.frequency}
-                  onChange={(e) => setNewTask({ ...newTask, frequency: e.target.value as CareTask['frequency'] })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                >
-                  <option value="daily">Daily</option>
-                  <option value="weekly">Weekly</option>
-                  <option value="bi-weekly">Bi-weekly</option>
-                  <option value="monthly">Monthly</option>
-                  <option value="quarterly">Quarterly</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
-                <input
-                  type="date"
-                  value={newTask.dueDate}
-                  onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-                <select
-                  value={newTask.priority}
-                  onChange={(e) => setNewTask({ ...newTask, priority: e.target.value as CareTask['priority'] })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                >
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-                <textarea
-                  value={newTask.notes}
-                  onChange={(e) => setNewTask({ ...newTask, notes: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  rows={3}
-                />
-              </div>
+        <div className="space-y-4">
+          {filteredTasks.length > 0 ? (
+            filteredTasks.map(task => {
+              const dueStatus = getDueStatus(task.dueDate);
+              return (
+                <div key={task.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-4">
+                    <button
+                      onClick={() => handleCompleteTask(task.id)}
+                      className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                        task.completed
+                          ? 'bg-green-600 border-green-600 text-white'
+                          : 'border-gray-300 hover:border-green-600'
+                      }`}
+                    >
+                      {task.completed && <Check className="w-3 h-3" />}
+                    </button>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">{task.plantName}</h3>
+                      <p className="text-sm text-gray-600 capitalize">{task.type}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <span className={`text-sm ${dueStatus.color}`}>{dueStatus.status}</span>
+                    <span className={`px-2 py-1 text-xs rounded-full ${getPriorityColor(task.priority)}`}>
+                      {task.priority}
+                    </span>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div className="p-6 text-center text-gray-500">
+              <Calendar className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+              <p>No tasks found</p>
             </div>
-            <div className="flex gap-3 mt-6">
-              <button
-                onClick={handleAddTask}
-                className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-              >
-                Add Task
-              </button>
-              <button
-                onClick={() => setShowAddModal(false)}
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };

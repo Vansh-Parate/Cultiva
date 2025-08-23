@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cultiva — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-emerald-50/60 via-white to-emerald-50/40 text-slate-900" style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;">
+  <!-- App Shell -->
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="hidden lg:flex w-72 flex-col border-r border-slate-200/80 bg-white/70 backdrop-blur">
+      <div class="flex items-center gap-3 px-6 h-16">
+        <div class="h-9 w-9 rounded-full bg-gradient-to-tr from-emerald-600 to-emerald-400 flex items-center justify-center shadow-sm">
+          <i data-lucide="sprout" class="text-white w-5 h-5"></i>
+        </div>
+        <div>
+          <p class="text-xl tracking-tight font-semibold text-slate-900">Cultiva</p>
+          <p class="text-xs text-slate-500">Your plant companion</p>
+        </div>
+      </div>
+      <nav class="mt-4 px-3 space-y-1">
+        <a href="#" class="group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-emerald-700 bg-emerald-50 ring-1 ring-emerald-100">
+          <span class="absolute left-0 top-0 h-full w-1.5 rounded-r-xl bg-emerald-500"></span>
+          <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+          <span class="font-medium">Dashboard</span>
+        </a>
+        <a href="#" class="group flex items-center gap-3 rounded px-3 py-2.5 hover:bg-slate-50 text-slate-700">
+          <i data-lucide="leaf" class="w-5 h-5 text-slate-500 group-hover:text-slate-700"></i>
+          <span class="font-medium">My Plants</span>
+        </a>
+        <a href="#" class="group flex items-center gap-3 rounded-xl px-3 py-2.5 hover:bg-slate-50 text-slate-700">
+          <i data-lucide="calendar-check-2" class="w-5 h-5 text-slate-500 group-hover:text-slate-700"></i>
+          <span class="font-medium">Care</span>
+        </a>
+        <a href="#" class="group flex items-center gap-3 rounded-xl px-3 py-2.5 hover:bg-slate-50 text-slate-700">
+          <i data-lucide="scan-line" class="w-5 h-5 text-slate-500 group-hover:text-slate-700"></i>
+          <span class="font-medium">Identify</span>
+        </a>
+        <a href="#" class="group flex items-center gap-3 rounded-xl px-3 py-2.5 hover:bg-slate-50 text-slate-700">
+          <i data-lucide="users" class="w-5 h-5 text-slate-500 group-hover:text-slate-700"></i>
+          <span class="font-medium">Community</span>
+        </a>
+      </nav>
+
+      <div class="mt-auto p-4 border-t border-slate-100">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs text-slate-500">Notifications</span>
+          <span class="inline-flex items-center gap-1 text-xs text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
+            <i data-lucide="bell" class="w-3.5 h-3.5"></i> 3
+          </span>
+        </div>
+        <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 cursor-pointer">
+          <img src="https://images.unsplash.com/photo-1544006659-f0b21884ce1d?q=80&w=300&auto=format&fit=crop" alt="Profile avatar" class="h-10 w-10 rounded-full object-cover">
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium truncate">Aisha</p>
+            <p class="text-xs text-slate-500 truncate">Grow mode: On</p>
+          </div>
+          <button class="p-2 rounded-lg hover:bg-slate-100" aria-label="Settings">
+            <i data-lucide="settings" class="w-5 h-5 text-slate-600"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1">
+      <!-- Top bar -->
+      <header class="sticky top-0 z-30 bg-white/70 backdrop-blur border-b border-slate-200/60">
+        <div class="flex items-center gap-3 px-4 md:px-6 h-16">
+          <button class="lg:hidden p-2 rounded-lg hover:bg-slate-100" aria-label="Open menu">
+            <i data-lucide="menu" class="w-6 h-6"></i>
+          </button>
+          <div class="relative flex-1 max-w-2xl">
+            <i data-lucide="search" class="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+            <input aria-label="Search" placeholder="Search plants, tasks, or tips"
+                   class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-emerald-200/80 focus:border-emerald-300 outline-none text-sm" />
+          </div>
+          <div class="hidden sm:flex items-center gap-2">
+            <div class="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 bg-white">
+              <i data-lucide="sun" class="w-4 h-4 text-amber-500"></i>
+              <span class="text-sm font-medium">72°F</span>
+              <span class="text-xs text-slate-500">Humid</span>
+              <span class="text-slate-300">•</span>
+              <i data-lucide="map-pin" class="w-4 h-4 text-slate-400"></i>
+              <span class="text-sm text-slate-600">Seattle</span>
+            </div>
+            <button class="relative p-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50" aria-label="Notifications">
+              <i data-lucide="bell" class="w-5 h-5"></i>
+              <span class="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-emerald-500 text-white text-[10px] flex items-center justify-center shadow">3</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <section class="px-4 md:px-6 py-6 md:py-8 space-y-6">
+        <!-- Greeting + Quick Actions -->
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+          <div>
+            <h1 class="text-3xl md:text-4xl tracking-tight font-semibold text-slate-900">Good morning, Aisha</h1>
+            <p class="text-slate-600 mt-1">Here’s a gentle plan for your plants today.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 transition">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              Add plant
+            </button>
+            <button class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-medium hover:bg-slate-50">
+              <i data-lucide="scan-line" class="w-4 h-4"></i>
+              Identify plant
+            </button>
+            <button class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-medium hover:bg-slate-50">
+              <i data-lucide="droplets" class="w-4 h-4"></i>
+              Log care
+            </button>
+          </div>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          <!-- Today's Snapshot -->
+          <div class="xl:col-span-1">
+            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div class="flex items-start justify-between">
+                <div>
+                  <h2 class="text-xl tracking-tight font-semibold">Today’s Snapshot</h2>
+                  <p class="text-sm text-slate-600">Keep your routine light and steady.</p>
+                </div>
+                <!-- Progress Ring -->
+                <div class="relative h-16 w-16">
+                  <div id="tasksRing" class="h-16 w-16 rounded-full"
+                       style="background: conic-gradient(#10b981 0% 62%, #e6f7ef 62% 100%);"></div>
+                  <div class="absolute inset-1 bg-white rounded-full flex items-center justify-center">
+                    <span class="text-sm font-semibold text-emerald-700" id="tasksPercent">62%</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tasks List -->
+              <ul class="mt-4 space-y-2">
+                <li class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:border-emerald-300/60 transition">
+                  <button class="h-5 w-5 rounded-md border border-slate-300 flex items-center justify-center shrink-0 bg-white"
+                          aria-label="Toggle task" data-check>
+                    <i data-lucide="check" class="w-4 h-4 text-emerald-600 opacity-0"></i>
+                  </button>
+                  <div class="flex-1">
+                    <p class="text-sm font-medium">Water Monstera</p>
+                    <p class="text-xs text-slate-500">Check soil moisture first</p>
+                  </div>
+                  <span class="text-xs px-2 py-1 rounded-full bg-emerald-50 text-emerald-700">Today</span>
+                </li>
+                <li class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:border-emerald-300/60 transition">
+                  <button class="h-5 w-5 rounded-md border border-slate-300 flex items-center justify-center shrink-0 bg-white"
+                          aria-label="Toggle task" data-check>
+                    <i data-lucide="check" class="w-4 h-4 text-emerald-600 opacity-0"></i>
+                  </button>
+                  <div class="flex-1">
+                    <p class="text-sm font-medium">Mist Ferns</p>
+                    <p class="text-xs text-slate-500">Boost humidity</p>
+                  </div>
+                  <span class="text-xs px-2 py-1 rounded-full bg-slate-100 text-slate-700">Later</span>
+                </li>
+                <li class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:border-emerald-300/60 transition">
+                  <button class="h-5 w-5 rounded-md border border-slate-300 flex items-center justify-center shrink-0 bg-white"
+                          aria-label="Toggle task" data-check>
+                    <i data-lucide="check" class="w-4 h-4 text-emerald-600 opacity-0"></i>
+                  </button>
+                  <div class="flex-1">
+                    <p class="text-sm font-medium">Rotate Snake Plant</p>
+                    <p class="text-xs text-slate-500">Encourage even growth</p>
+                  </div>
+                  <span class="text-xs px-2 py-1 rounded-full bg-slate-100 text-slate-700">This evening</span>
+                </li>
+              </ul>
+
+              <div class="mt-4 flex items-center justify-between">
+                <div class="flex items-center gap-2 text-emerald-700 text-sm">
+                  <i data-lucide="flame" class="w-4 h-4"></i>
+                  <span>Care streak: <span class="font-medium">7 days</span></span>
+                </div>
+                <button class="text-sm font-medium text-emerald-700 hover:text-emerald-800">View schedule</button>
+              </div>
+            </div>
+
+            <!-- Smart Insight -->
+            <div class="mt-6 rounded-2xl border border-emerald-200 bg-gradient-to-tr from-emerald-50 to-white p-5">
+              <div class="flex items-start gap-3">
+                <div class="h-9 w-9 rounded-xl bg-emerald-600/90 text-white flex items-center justify-center shadow">
+                  <i data-lucide="sparkles" class="w-5 h-5"></i>
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-lg tracking-tight font-semibold">Smart Insight</h3>
+                  <p class="text-sm text-slate-700">Higher humidity today. Water a little less for tropicals; mist instead to avoid soggy roots.</p>
+                  <div class="mt-3 flex flex-wrap gap-2">
+                    <span class="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-white border border-emerald-200 text-emerald-700">
+                      <i data-lucide="cloud-rain" class="w-3.5 h-3.5"></i> 84% humidity
+                    </span>
+                    <span class="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-white border border-emerald-200 text-emerald-700">
+                      <i data-lucide="wind" class="w-3.5 h-3.5"></i> Low airflow
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Plant Collection Preview -->
+          <div class="xl:col-span-2">
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="text-xl tracking-tight font-semibold">Your Collection</h2>
+              <button class="text-sm font-medium text-emerald-700 hover:text-emerald-800">See all plants</button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              <!-- Plant Card -->
+              <div class="group rounded-2xl border border-slate-200 bg-white overflow-hidden hover:shadow-md transition">
+                <div class="relative">
+                  <img src="https://images.unsplash.com/photo-1621619856624-42fd193a0661?w=1080&q=80" alt="Monstera deliciosa" class="h-40 w-full object-cover">
+                  <div class="absolute top-3 right-3 bg-white/90 backdrop-blur rounded-full px-2.5 py-1 text-xs text-emerald-700 border border-emerald-200">Healthy</div>
+                </div>
+                <div class="p-4">
+                  <div class="flex items-center justify-between">
+                    <p class="font-medium">Monstera</p>
+                    <div class="flex items-center gap-2 text-slate-500">
+                      <i data-lucide="sun" class="w-4 h-4"></i>
+                      <i data-lucide="droplet" class="w-4 h-4"></i>
+                    </div>
+                  </div>
+                  <div class="mt-2 flex items-center justify-between">
+                    <span class="text-xs text-slate-500">Water in 2 days</span>
+                    <span class="text-xs text-slate-500">Bright, indirect</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="group rounded-2xl border border-slate-200 bg-white overflow-hidden hover:shadow-md transition">
+                <div class="relative">
+                  <img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?q=80&w=900&auto=format&fit=crop" alt="Snake plant" class="h-40 w-full object-cover">
+                  <div class="absolute top-3 right-3 bg-white/90 backdrop-blur rounded-full px-2.5 py-1 text-xs text-amber-700 border border-amber-200">Drying</div>
+                </div>
+                <div class="p-4">
+                  <div class="flex items-center justify-between">
+                    <p class="font-medium">Snake Plant</p>
+                    <div class="flex items-center gap-2 text-slate-500">
+                      <i data-lucide="sun" class="w-4 h-4"></i>
+                      <i data-lucide="droplet" class="w-4 h-4"></i>
+                    </div>
+                  </div>
+                  <div class="mt-2 flex items-center justify-between">
+                    <span class="text-xs text-slate-500">Water in 5 days</span>
+                    <span class="text-xs text-slate-500">Low–medium light</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="group rounded-2xl border border-slate-200 bg-white overflow-hidden hover:shadow-md transition">
+                <div class="relative">
+                  <img src="https://images.unsplash.com/photo-1642615835477-d303d7dc9ee9?w=1080&q=80" alt="Fiddle leaf fig" class="h-40 w-full object-cover">
+                  <div class="absolute top-3 right-3 bg-white/90 backdrop-blur rounded-full px-2.5 py-1 text-xs text-emerald-700 border border-emerald-200">Thriving</div>
+                </div>
+                <div class="p-4">
+                  <div class="flex items-center justify-between">
+                    <p class="font-medium">Fiddle Leaf Fig</p>
+                    <div class="flex items-center gap-2 text-slate-500">
+                      <i data-lucide="sun" class="w-4 h-4"></i>
+                      <i data-lucide="droplet" class="w-4 h-4"></i>
+                    </div>
+                  </div>
+                  <div class="mt-2 flex items-center justify-between">
+                    <span class="text-xs text-slate-500">Water tomorrow</span>
+                    <span class="text-xs text-slate-500">Bright light</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="group rounded-2xl border border-slate-200 bg-white overflow-hidden hover:shadow-md transition">
+                <div class="relative">
+                  <img src="https://images.unsplash.com/photo-1635151227785-429f420c6b9d?w=1080&q=80" alt="Pothos" class="h-40 w-full object-cover">
+                  <div class="absolute top-3 right-3 bg-white/90 backdrop-blur rounded-full px-2.5 py-1 text-xs text-emerald-700 border border-emerald-200">Healthy</div>
+                </div>
+                <div class="p-4">
+                  <div class="flex items-center justify-between">
+                    <p class="font-medium">Pothos</p>
+                    <div class="flex items-center gap-2 text-slate-500">
+                      <i data-lucide="sun" class="w-4 h-4"></i>
+                      <i data-lucide="droplet" class="w-4 h-4"></i>
+                    </div>
+                  </div>
+                  <div class="mt-2 flex items-center justify-between">
+                    <span class="text-xs text-slate-500">Water in 3 days</span>
+                    <span class="text-xs text-slate-500">Medium light</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="group rounded-2xl border border-slate-200 bg-white overflow-hidden hover:shadow-md transition">
+                <div class="relative">
+                  <img src="https://images.unsplash.com/photo-1621619856624-42fd193a0661?w=1080&q=80" alt="Fern" class="h-40 w-full object-cover">
+                  <div class="absolute top-3 right-3 bg-white/90 backdrop-blur rounded-full px-2.5 py-1 text-xs text-amber-700 border border-amber-200">Thirsty</div>
+                </div>
+                <div class="p-4">
+                  <div class="flex items-center justify-between">
+                    <p class="font-medium">Boston Fern</p>
+                    <div class="flex items-center gap-2 text-slate-500">
+                      <i data-lucide="sun" class="w-4 h-4"></i>
+                      <i data-lucide="droplet" class="w-4 h-4"></i>
+                    </div>
+                  </div>
+                  <div class="mt-2 flex items-center justify-between">
+                    <span class="text-xs text-slate-500">Mist today</span>
+                    <span class="text-xs text-slate-500">Low–medium light</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="group rounded-2xl border border-slate-200 bg-white overflow-hidden hover:shadow-md transition">
+                <div class="relative">
+                  <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=900&auto=format&fit=crop" alt="Minimal planter" class="h-40 w-full object-cover">
+                  <div class="absolute top-3 right-3 bg-white/90 backdrop-blur rounded-full px-2.5 py-1 text-xs text-emerald-700 border border-emerald-200">Stable</div>
+                </div>
+                <div class="p-4">
+                  <div class="flex items-center justify-between">
+                    <p class="font-medium">ZZ Plant</p>
+                    <div class="flex items-center gap-2 text-slate-500">
+                      <i data-lucide="sun" class="w-4 h-4"></i>
+                      <i data-lucide="droplet" class="w-4 h-4"></i>
+                    </div>
+                  </div>
+                  <div class="mt-2 flex items-center justify-between">
+                    <span class="text-xs text-slate-500">Water in 10 days</span>
+                    <span class="text-xs text-slate-500">Low light</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Insights + Community -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+              <!-- Moisture Trend (Chart.js) -->
+              <div class="lg:col-span-2 rounded-2xl border border-slate-200 bg-white p-5">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h3 class="text-lg tracking-tight font-semibold">Soil Moisture — Monstera</h3>
+                    <p class="text-sm text-slate-600">Last 7 days</p>
+                  </div>
+                  <span="inline-flex items-center gap-1 text-xs bg-emerald-50 text-emerald-700 px-2 py-1 rounded border border-emerald-200">
+                    <i data-lucide="droplet" class="w-3.5 h-3.5"></i Optimal
+                  </span>
+                </div>
+                <!-- Important: canvas wrapped in a div to avoid layout bug -->
+                <div class="mt-3">
+                  <div class="h-44">
+                    <canvas id="moistureChart" class="w-full h-full"></canvas>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Community Peek -->
+              <div class="rounded-2xl border border-slate-200 bg-white p-5">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg tracking-tight font-semibold">Community Peek</h3>
+                  <button class="text-sm text-emerald-700 hover:text-emerald-800">Open</button>
+                </div>
+                <div class="mt-3 space-y-3">
+                  <article class="flex gap-3">
+                    <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop" alt="User post photo" class="h-10 w-10 rounded-full object-cover">
+                    <div class="flex-1">
+                      <p class="text-sm"><span class="font-medium">New leaf unfurled!</span> Monstera is loving the brighter spot.</p>
+                      <div class="mt-1 flex items-center gap-3 text-xs text-slate-500">
+                        <span class="inline-flex items-center gap-1"><i data-lucide="heart" class="w-3.5 h-3.5"></i>128</span>
+                        <span class="inline-flex items-center gap-1"><i data-lucide="message-circle" class="w-3.5 h-3.5"></i>18</span>
+                      </div>
+                    </div>
+                  </article>
+                  <article class="flex gap-3">
+                    <img src="https://images.unsplash.com/photo-1642615835477-d303d7dc9ee9?w=1080&q=80" alt="User post photo" class="h-10 w-10 rounded-full object-cover">
+                    <div class="flex-1">
+                      <p class="text-sm"><span class="font-medium">Tip:</span> Bottom watering saved my ferns during heatwaves.</p>
+                      <div class="mt-1 flex items-center gap-3 text-xs text-slate-500">
+                        <span class="inline-flex items-center gap-1"><i data-lucide="heart" class="w-3.5 h-3.5"></i>64</span>
+                        <span class="inline-flex items-center gap-1"><i data-lucide="message-circle" class="w-3.5 h-3.5"></i>9</span>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+                <div class="mt-4 p-3 rounded-xl bg-gradient-to-tr from-emerald-50 to-white border border-emerald-100">
+                  <div class="flex items-start gap-2">
+                    <i data-lucide="share-2" class="w-4 h-4 text-emerald-600 mt-0.5"></i>
+                    <p class="text-sm text-slate-700">Share a photo of your happiest plant today.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Initialize icons
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) lucide.createIcons();
+    });
+
+    // Simple check interaction to mark tasks complete and update ring
+    const checks = document.querySelectorAll('[data-check]');
+    let completed = 2; // pre-completed for the ring demo
+    const totalTasks = 3;
+
+    const updateRing = () => {
+      const percent = Math.round((completed / totalTasks) * 100);
+      const ring = document.getElementById('tasksRing');
+      const label = document.getElementById('tasksPercent');
+      if (ring) {
+        ring.style.background = `conic-gradient(#10b981 0% ${percent}%, #e6f7ef ${percent}% 100%)`;
+      }
+      if (label) label.textContent = percent + '%';
+    };
+
+    checks.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const icon = btn.querySelector('svg');
+        const active = icon.classList.contains('opacity-100');
+        if (active) {
+          icon.classList.remove('opacity-100');
+          icon.classList.add('opacity-0');
+          completed = Math.max(0, completed - 1);
+        } else {
+          icon.classList.remove('opacity-0');
+          icon.classList.add('opacity-100');
+          completed = Math.min(totalTasks, completed + 1);
+        }
+        updateRing();
+      });
+    });
+    updateRing();
+
+    // Moisture trend chart
+    const ctx = document.getElementById('moistureChart');
+    if (ctx) {
+      new Chart(ctx.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Today'],
+          datasets: [{
+            label: 'Moisture',
+            data: [64, 58, 55, 62, 68, 60, 63],
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16,185,129,0.15)',
+            fill: true,
+            tension: 0.35,
+            pointRadius: 3,
+            pointBackgroundColor: '#10b981',
+            pointBorderWidth: 0
+          }]
+        },
+        options: {
+          plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
+          scales: {
+            y: {
+              grid: { color: 'rgba(148,163,184,0.2)' },
+              ticks: { callback: v => v + '%' },
+              suggestedMin: 40, suggestedMax: 80
+            },
+            x: { grid: { display: false } }
+          },
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      });
+    }
+  </script>
+</body>
+</html>

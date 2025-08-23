@@ -1,24 +1,22 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
+import Sidebar from "./Sidebar";
 
-const Layout: React.FC<{ children?: React.ReactNode }> = () => (
-  <div className="min-h-screen w-full bg-[#0f0f0f] relative text-white">
-    {/* Diagonal Grid with Green Glow */}
-    <div
-      className="absolute inset-0 z-0 pointer-events-none"
-      style={{
-        backgroundImage: `
-          repeating-linear-gradient(45deg, rgba(0, 255, 128, 0.15) 0, rgba(0, 255, 128, 0.15) 1px, transparent 1px, transparent 20px),
-          repeating-linear-gradient(-45deg, rgba(0, 255, 128, 0.15) 0, rgba(0, 255, 128, 0.15) 1px, transparent 1px, transparent 20px)
-        `,
-        backgroundSize: "40px 40px",
-      }}
-    />
-    {/* Content */}
-    <div className="relative z-10">
-      <Outlet />
+const Layout: React.FC = () => {
+  const location = useLocation();
+  
+  // Define auth routes where sidebar should not appear
+  const authRoutes = ['/auth/signin', '/auth/signup', '/auth/google/success', '/'];
+  const isAuthRoute = authRoutes.includes(location.pathname);
+
+  return (
+    <div className="flex min-h-screen">
+      {!isAuthRoute && <Sidebar />}
+      <main className={`flex-1 ${!isAuthRoute ? '' : 'w-full'}`}>
+        <Outlet />
+      </main>
     </div>
-  </div>
-);
+  );
+};
 
 export default Layout;

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Sidebar from '../components/Sidebar';
-import { MessageCircle, Heart, Share2, Search, Filter, Plus, Users, MapPin, Star, Camera, ThumbsUp, MessageSquare, Bookmark } from 'lucide-react';
+import { MessageCircle, Heart, Share2, Search, Filter, Plus, MapPin, Star, Camera, MessageSquare, Bookmark } from 'lucide-react';
 import apiClient from "../lib/axios";
 
 interface CommunityPost {
@@ -205,268 +204,257 @@ const Community = () => {
 
   if (loading) {
     return (
-      <div className="flex h-screen bg-gray-50">
-        <Sidebar />
-        <main className="flex-1 overflow-y-auto ml-64">
-          <div className="flex items-center justify-center min-h-screen">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-500"></div>
-          </div>
-        </main>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      <Sidebar />
-      
-      <main className="flex-1 overflow-y-auto ml-64">
-        <div className="p-8">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Community</h1>
-              <p className="text-gray-600">Connect with fellow plant enthusiasts</p>
-            </div>
-            <button
-              onClick={() => setShowCreatePost(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-            >
-              <Plus className="w-5 h-5" />
-              Create Post
-            </button>
-          </div>
+    <div className="p-8">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Community</h1>
+          <p className="text-gray-600">Connect with fellow plant enthusiasts</p>
+        </div>
+        <button
+          onClick={() => setShowCreatePost(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+        >
+          <Plus className="w-5 h-5" />
+          Create Post
+        </button>
+      </div>
 
-          {/* Search and Filter */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-6">
-            <div className="flex items-center gap-2 flex-1">
-              <Search className="w-5 h-5 text-gray-600" />
-              <input
-                type="text"
-                placeholder="Search posts, tips, or questions..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              />
-            </div>
-            <div className="flex items-center gap-2">
-              <Filter className="w-5 h-5 text-gray-600" />
-              <select className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                <option value="recent">Most Recent</option>
-                <option value="popular">Most Popular</option>
-                <option value="nearby">Nearby</option>
-              </select>
-            </div>
-          </div>
+      {/* Search and Filter */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <div className="flex items-center gap-2 flex-1">
+          <Search className="w-5 h-5 text-gray-600" />
+          <input
+            type="text"
+            placeholder="Search posts, tips, or questions..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          <Filter className="w-5 h-5 text-gray-600" />
+          <select className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+            <option value="recent">Most Recent</option>
+            <option value="popular">Most Popular</option>
+            <option value="nearby">Nearby</option>
+          </select>
+        </div>
+      </div>
 
-          {/* Tab Navigation */}
-          <div className="flex space-x-1 bg-white rounded-lg p-1 mb-6 shadow-sm">
-            <button
-              onClick={() => setActiveTab('qa')}
-              className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                activeTab === 'qa' 
-                  ? 'bg-green-600 text-white' 
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <MessageCircle className="w-4 h-4 inline mr-2" />
-              Q&A
-            </button>
-            <button
-              onClick={() => setActiveTab('showcase')}
-              className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                activeTab === 'showcase' 
-                  ? 'bg-green-600 text-white' 
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <Camera className="w-4 h-4 inline mr-2" />
-              Showcase
-            </button>
-            <button
-              onClick={() => setActiveTab('tips')}
-              className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                activeTab === 'tips' 
-                  ? 'bg-green-600 text-white' 
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <Bookmark className="w-4 h-4 inline mr-2" />
-              Care Tips
-            </button>
-            <button
-              onClick={() => setActiveTab('shops')}
-              className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                activeTab === 'shops' 
-                  ? 'bg-green-600 text-white' 
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <MapPin className="w-4 h-4 inline mr-2" />
-              Local Shops
-            </button>
-          </div>
+      {/* Tab Navigation */}
+      <div className="flex space-x-1 bg-white rounded-lg p-1 mb-6 shadow-sm">
+        <button
+          onClick={() => setActiveTab('qa')}
+          className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+            activeTab === 'qa' 
+              ? 'bg-green-600 text-white' 
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          <MessageCircle className="w-4 h-4 inline mr-2" />
+          Q&A
+        </button>
+        <button
+          onClick={() => setActiveTab('showcase')}
+          className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+            activeTab === 'showcase' 
+              ? 'bg-green-600 text-white' 
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          <Camera className="w-4 h-4 inline mr-2" />
+          Showcase
+        </button>
+        <button
+          onClick={() => setActiveTab('tips')}
+          className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+            activeTab === 'tips' 
+              ? 'bg-green-600 text-white' 
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          <Bookmark className="w-4 h-4 inline mr-2" />
+          Care Tips
+        </button>
+        <button
+          onClick={() => setActiveTab('shops')}
+          className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+            activeTab === 'shops' 
+              ? 'bg-green-600 text-white' 
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          <MapPin className="w-4 h-4 inline mr-2" />
+          Local Shops
+        </button>
+      </div>
 
-          {/* Content */}
-          {activeTab === 'shops' ? (
-            /* Plant Shops Directory */
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {shops.map(shop => (
-                <div key={shop.id} className="bg-white rounded-2xl shadow-sm p-6 border border-green-100 hover:shadow-lg transition-shadow">
-                  <div className="flex items-start justify-between mb-4">
+      {/* Content */}
+      {activeTab === 'shops' ? (
+        /* Plant Shops Directory */
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {shops.map(shop => (
+            <div key={shop.id} className="bg-white rounded-2xl shadow-sm p-6 border border-green-100 hover:shadow-lg transition-shadow">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900">{shop.name}</h3>
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className="flex items-center">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className={`w-4 h-4 ${i < Math.floor(shop.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} />
+                      ))}
+                    </div>
+                    <span className="text-sm text-gray-600">({shop.reviewCount})</span>
+                  </div>
+                </div>
+                <span className="text-sm text-gray-500">{shop.distance}</span>
+              </div>
+              
+              <div className="space-y-3 mb-4">
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <MapPin className="w-4 h-4" />
+                  <span>{shop.address}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <MessageSquare className="w-4 h-4" />
+                  <span>{shop.phone}</span>
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <h4 className="text-sm font-semibold text-gray-900 mb-2">Services:</h4>
+                <div className="flex flex-wrap gap-1">
+                  {shop.services.map(service => (
+                    <span key={service} className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                      {service}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="flex gap-2">
+                <button className="flex-1 px-3 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors">
+                  Contact
+                </button>
+                <button className="px-3 py-2 border border-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-50 transition-colors">
+                  Directions
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        /* Community Posts */
+        <div className="space-y-6">
+          {filteredPosts.length > 0 ? (
+            filteredPosts.map(post => (
+              <div key={post.id} className="bg-white rounded-2xl shadow-sm p-6 border border-green-100 hover:shadow-lg transition-shadow">
+                {/* Post Header */}
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <img 
+                      src={post.userAvatar} 
+                      alt={post.userName} 
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
                     <div>
-                      <h3 className="text-lg font-bold text-gray-900">{shop.name}</h3>
-                      <div className="flex items-center gap-2 mt-1">
-                        <div className="flex items-center">
-                          {[...Array(5)].map((_, i) => (
-                            <Star key={i} className={`w-4 h-4 ${i < Math.floor(shop.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} />
-                          ))}
-                        </div>
-                        <span className="text-sm text-gray-600">({shop.reviewCount})</span>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-semibold text-gray-900">{post.userName}</h3>
+                        <span className={`px-2 py-1 text-xs rounded-full font-medium ${getPostTypeColor(post.postType)}`}>
+                          {post.postType}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+                        {post.location && (
+                          <>
+                            <span>•</span>
+                            <span>{post.location}</span>
+                          </>
+                        )}
                       </div>
                     </div>
-                    <span className="text-sm text-gray-500">{shop.distance}</span>
                   </div>
-                  
-                  <div className="space-y-3 mb-4">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <MapPin className="w-4 h-4" />
-                      <span>{shop.address}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <MessageSquare className="w-4 h-4" />
-                      <span>{shop.phone}</span>
-                    </div>
-                  </div>
-                  
+                  {getPostTypeIcon(post.postType)}
+                </div>
+
+                {/* Post Content */}
+                <div className="mb-4">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">{post.title}</h4>
+                  <p className="text-gray-700 leading-relaxed">{post.content}</p>
+                </div>
+
+                {/* Post Images */}
+                {post.imageUrls.length > 0 && (
                   <div className="mb-4">
-                    <h4 className="text-sm font-semibold text-gray-900 mb-2">Services:</h4>
-                    <div className="flex flex-wrap gap-1">
-                      {shop.services.map(service => (
-                        <span key={service} className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
-                          {service}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      {post.imageUrls.map((image, index) => (
+                        <img 
+                          key={index}
+                          src={image} 
+                          alt={`Post image ${index + 1}`}
+                          className="w-full h-48 object-cover rounded-lg"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Post Tags */}
+                {post.tags.length > 0 && (
+                  <div className="mb-4">
+                    <div className="flex flex-wrap gap-2">
+                      {post.tags.map(tag => (
+                        <span key={tag} className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
+                          #{tag}
                         </span>
                       ))}
                     </div>
                   </div>
-                  
-                  <div className="flex gap-2">
-                    <button className="flex-1 px-3 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors">
-                      Contact
+                )}
+
+                {/* Post Actions */}
+                <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                  <div className="flex items-center gap-4">
+                    <button 
+                      onClick={() => handleLike(post.id)}
+                      className="flex items-center gap-2 text-gray-600 hover:text-red-600 transition-colors"
+                    >
+                      <Heart className="w-5 h-5" />
+                      <span className="text-sm">{post.likes}</span>
                     </button>
-                    <button className="px-3 py-2 border border-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-50 transition-colors">
-                      Directions
+                    <button className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors">
+                      <MessageSquare className="w-5 h-5" />
+                      <span className="text-sm">{post.comments}</span>
+                    </button>
+                    <button className="flex items-center gap-2 text-gray-600 hover:text-green-600 transition-colors">
+                      <Share2 className="w-5 h-5" />
+                      <span className="text-sm">Share</span>
                     </button>
                   </div>
+                  <button className="text-gray-600 hover:text-yellow-600 transition-colors">
+                    <Bookmark className="w-5 h-5" />
+                  </button>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))
           ) : (
-            /* Community Posts */
-            <div className="space-y-6">
-              {filteredPosts.length > 0 ? (
-                filteredPosts.map(post => (
-                  <div key={post.id} className="bg-white rounded-2xl shadow-sm p-6 border border-green-100 hover:shadow-lg transition-shadow">
-                    {/* Post Header */}
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <img 
-                          src={post.userAvatar} 
-                          alt={post.userName} 
-                          className="w-10 h-10 rounded-full object-cover"
-                        />
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-semibold text-gray-900">{post.userName}</h3>
-                            <span className={`px-2 py-1 text-xs rounded-full font-medium ${getPostTypeColor(post.postType)}`}>
-                              {post.postType}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2 text-sm text-gray-500">
-                            <span>{new Date(post.createdAt).toLocaleDateString()}</span>
-                            {post.location && (
-                              <>
-                                <span>•</span>
-                                <span>{post.location}</span>
-                              </>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      {getPostTypeIcon(post.postType)}
-                    </div>
-
-                    {/* Post Content */}
-                    <div className="mb-4">
-                      <h4 className="text-lg font-semibold text-gray-900 mb-2">{post.title}</h4>
-                      <p className="text-gray-700 leading-relaxed">{post.content}</p>
-                    </div>
-
-                    {/* Post Images */}
-                    {post.imageUrls.length > 0 && (
-                      <div className="mb-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                          {post.imageUrls.map((image, index) => (
-                            <img 
-                              key={index}
-                              src={image} 
-                              alt={`Post image ${index + 1}`}
-                              className="w-full h-48 object-cover rounded-lg"
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Post Tags */}
-                    {post.tags.length > 0 && (
-                      <div className="mb-4">
-                        <div className="flex flex-wrap gap-2">
-                          {post.tags.map(tag => (
-                            <span key={tag} className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
-                              #{tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Post Actions */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-                      <div className="flex items-center gap-4">
-                        <button 
-                          onClick={() => handleLike(post.id)}
-                          className="flex items-center gap-2 text-gray-600 hover:text-red-600 transition-colors"
-                        >
-                          <Heart className="w-5 h-5" />
-                          <span className="text-sm">{post.likes}</span>
-                        </button>
-                        <button className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors">
-                          <MessageSquare className="w-5 h-5" />
-                          <span className="text-sm">{post.comments}</span>
-                        </button>
-                        <button className="flex items-center gap-2 text-gray-600 hover:text-green-600 transition-colors">
-                          <Share2 className="w-5 h-5" />
-                          <span className="text-sm">Share</span>
-                        </button>
-                      </div>
-                      <button className="text-gray-600 hover:text-yellow-600 transition-colors">
-                        <Bookmark className="w-5 h-5" />
-                      </button>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-12">
-                  <MessageCircle className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No posts found</h3>
-                  <p className="text-gray-600">Be the first to share something with the community!</p>
-                </div>
-              )}
+            <div className="text-center py-12">
+              <MessageCircle className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">No posts found</h3>
+              <p className="text-gray-600">Be the first to share something with the community!</p>
             </div>
           )}
         </div>
-      </main>
+      )}
 
       {/* Create Post Modal */}
       {showCreatePost && (

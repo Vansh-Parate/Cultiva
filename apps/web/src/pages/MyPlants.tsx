@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar";
+import React, { useState, useEffect } from "react";
+import { ChevronDown } from "lucide-react";
 import FeaturedPlantCard from "../components/widgets/FeaturedPlantCard";
 import apiClient from "../lib/axios";
-import { ChevronDown, Leaf, Plus } from "lucide-react";
 
 const MyPlants = () => {
   const [plants, setPlants] = useState([]);
@@ -173,177 +172,92 @@ const MyPlants = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex bg-[#e6efe6] overflow-hidden">
-      <aside className="w-64 shrink-0">
-        <Sidebar />
-      </aside>
-
-      <main className="flex-1 flex flex-col px-6 py-8 space-y-8 min-w-0">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-black text-gray-900">My Plants</h1>
-            <p className="text-gray-600 mt-1 font-black">Manage your plant collection</p>
-          </div>
-        </div>
-
-        {/* Mobile Plant Selector */}
-        <div className="lg:hidden">
-          <button
-            onClick={() => setShowMobilePlantSelector(!showMobilePlantSelector)}
-            className="w-full flex items-center justify-between p-4 bg-white rounded-lg shadow-sm border border-gray-200"
-          >
-            <span className="font-black text-gray-900">
-              {selectedPlant ? selectedPlant.name : 'Select a plant'}
-            </span>
-            <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${
-              showMobilePlantSelector ? 'rotate-180' : ''
-            }`} />
-          </button>
-          
-          {showMobilePlantSelector && (
-            <div className="mt-2 bg-white rounded-lg shadow-lg border border-gray-200 max-h-60 overflow-y-auto">
-              {plants.map(plant => (
-                <button
-                  key={plant.id}
-                  onClick={() => {
-                    setSelectedPlantId(plant.id);
-                    setShowMobilePlantSelector(false);
-                  }}
-                  className={`w-full flex items-center gap-3 p-3 rounded-lg transition ${
-                    selectedPlantId === plant.id 
-                      ? 'bg-green-100 border border-green-300' 
-                      : 'bg-gray-50 hover:bg-gray-100'
-                  }`}
-                >
-                  <img
-                    src={plant.photoUrl}
-                    alt={plant.name}
-                    className="w-10 h-10 rounded-full border-2 border-green-400 object-cover"
-                    onError={e => { e.currentTarget.src = '/placeholder-plant.png'; }}
-                  />
-                  <div className="flex-1 text-left">
-                    <div className="font-black text-gray-900">{plant.name}</div>
-                    <div className="text-sm font-black text-gray-600">{plant.species}</div>
-                  </div>
-                  <span className={`px-2 py-1 text-xs rounded-full font-black ${
-                    plant.healthStatus === 'Good' || plant.healthStatus === 'Excellent'
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-yellow-100 text-yellow-800'
-                  }`}>
-                    {plant.healthStatus}
-                  </span>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Main Content */}
-        {plants.length > 0 ? (
-          <>
-            {/* Featured Plant Card */}
-            <section className="w-full flex justify-center px-4">
-              <div className="flex flex-col items-center w-full max-w-5xl">
-                {selectedPlant && <FeaturedPlantCard plant={selectedPlant} />}
-                {selectedPlant && <HealthDashboard plant={selectedPlant} />}
-              </div>
-            </section>
-
-            {/* Charts and Widgets (placeholders) */}
-            <section className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto w-full">
-              <div className="bg-white rounded-2xl shadow-sm p-6 h-64 flex items-center justify-center text-gray-400 font-black">
-                Plant Details Chart (coming soon)
-              </div>
-              <div className="bg-white rounded-2xl shadow-sm p-6 h-64 flex items-center justify-center text-gray-400 font-black">
-                Water Level Chart (coming soon)
-              </div>
-            </section>
-          </>
-        ) : (
-          /* Empty State */
-          <div className="text-center text-gray-500 font-black">No plants in your collection yet.</div>
-        )}
-
-        {/* Charts and Widgets (placeholders) */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto w-full">
-          <div className="bg-white rounded-2xl shadow-sm p-6 h-64 flex items-center justify-center text-gray-400 font-black">
-            Plant Details Chart (coming soon)
-          </div>
-          <div className="bg-white rounded-2xl shadow-sm p-6 h-64 flex items-center justify-center text-gray-400 font-black">
-            Water Level Chart (coming soon)
-          </div>
-        </section>
-      </main>
-
-      {/* Right Sidebar - Extended when no plants */}
-      <div className="hidden lg:block w-80 bg-[#1e293b] text-white">
-        <div className="p-6">
-          <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-black py-3 px-4 rounded-lg mb-6 flex items-center justify-center gap-2">
-            <Plus className="w-5 h-5" />
-            + Add New Plant
-          </button>
-          
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-black">Plant List</h3>
-            <button className="text-sm text-blue-300 hover:text-blue-200 font-black">
-              see all
-            </button>
-          </div>
-          
-          {plants.length > 0 ? (
-            <div className="space-y-3">
-              {plants.map(plant => (
-                <button
-                  key={plant.id}
-                  onClick={() => setSelectedPlantId(plant.id)}
-                  className={`w-full flex items-center gap-3 p-3 rounded-lg transition ${
-                    selectedPlantId === plant.id 
-                      ? 'bg-blue-600 border border-blue-500' 
-                      : 'bg-gray-700 hover:bg-gray-600'
-                  }`}
-                >
-                  <img
-                    src={plant.photoUrl}
-                    alt={plant.name}
-                    className="w-12 h-12 rounded-full border-2 border-green-400 object-cover"
-                    onError={e => { e.currentTarget.src = '/placeholder-plant.png'; }}
-                  />
-                  <div className="flex-1 text-left">
-                    <div className="font-black text-white">{plant.name}</div>
-                    <div className="text-sm font-black text-gray-300">{plant.species}</div>
-                  </div>
-                  <span className={`px-2 py-1 text-xs rounded-full font-black ${
-                    plant.healthStatus === 'Good' || plant.healthStatus === 'Excellent'
-                      ? 'bg-green-600 text-white'
-                      : 'bg-yellow-600 text-white'
-                  }`}>
-                    {plant.healthStatus}
-                  </span>
-                </button>
-              ))}
-            </div>
-          ) : (
-            /* Empty State for Right Sidebar - Extended to fill space */
-            <div className="space-y-4">
-              <div className="text-center py-8">
-                <div className="w-16 h-16 bg-gray-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Leaf className="w-8 h-8 text-gray-400" />
-                </div>
-                <h4 className="text-sm font-black text-gray-300 mb-2">No plants yet</h4>
-                <p className="text-xs font-black text-gray-400 mb-4">Your plant list will appear here</p>
-              </div>
-              
-              {/* Additional empty space to fill the sidebar */}
-              <div className="space-y-3">
-                {[...Array(6)].map((_, i) => (
-                  <div key={i} className="h-16 bg-gray-700 rounded-lg opacity-30"></div>
-                ))}
-              </div>
-            </div>
-          )}
+    <div className="flex flex-col px-6 py-8 space-y-8 min-w-0">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-black text-gray-900">My Plants</h1>
+          <p className="text-gray-600 mt-1 font-black">Manage your plant collection</p>
         </div>
       </div>
+
+      {/* Mobile Plant Selector */}
+      <div className="lg:hidden">
+        <button
+          onClick={() => setShowMobilePlantSelector(!showMobilePlantSelector)}
+          className="w-full flex items-center justify-between p-4 bg-white rounded-lg shadow-sm border border-gray-200"
+        >
+          <span className="font-black text-gray-900">
+            {selectedPlant ? selectedPlant.name : 'Select a plant'}
+          </span>
+          <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${
+            showMobilePlantSelector ? 'rotate-180' : ''
+          }`} />
+        </button>
+        
+        {showMobilePlantSelector && (
+          <div className="mt-2 bg-white rounded-lg shadow-lg border border-gray-200 max-h-60 overflow-y-auto">
+            {plants.map(plant => (
+              <button
+                key={plant.id}
+                onClick={() => {
+                  setSelectedPlantId(plant.id);
+                  setShowMobilePlantSelector(false);
+                }}
+                className={`w-full flex items-center gap-3 p-3 rounded-lg transition ${
+                  selectedPlantId === plant.id 
+                    ? 'bg-green-100 border border-green-300' 
+                    : 'bg-gray-50 hover:bg-gray-100'
+                }`}
+              >
+                <img
+                  src={plant.photoUrl}
+                  alt={plant.name}
+                  className="w-10 h-10 rounded-full border-2 border-green-400 object-cover"
+                  onError={e => { e.currentTarget.src = '/placeholder-plant.png'; }}
+                />
+                <div className="flex-1 text-left">
+                  <div className="font-black text-gray-900">{plant.name}</div>
+                  <div className="text-sm font-black text-gray-600">{plant.species}</div>
+                </div>
+                <span className={`px-2 py-1 text-xs rounded-full font-black ${
+                  plant.healthStatus === 'Good' || plant.healthStatus === 'Excellent'
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-yellow-100 text-yellow-800'
+                }`}>
+                  {plant.healthStatus}
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Main Content */}
+      {plants.length > 0 ? (
+        <>
+          {/* Featured Plant Card */}
+          <section className="w-full flex justify-center px-4">
+            <div className="flex flex-col items-center w-full max-w-5xl">
+              {selectedPlant && <FeaturedPlantCard plant={selectedPlant} />}
+              {selectedPlant && <HealthDashboard plant={selectedPlant} />}
+            </div>
+          </section>
+
+          {/* Charts and Widgets (placeholders) */}
+          <section className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto w-full">
+            <div className="bg-white rounded-2xl shadow-sm p-6 h-64 flex items-center justify-center text-gray-400 font-black">
+              Plant Details Chart (coming soon)
+            </div>
+            <div className="bg-white rounded-2xl shadow-sm p-6 h-64 flex items-center justify-center text-gray-400 font-black">
+              Water Level Chart (coming soon)
+            </div>
+          </section>
+        </>
+      ) : (
+        /* Empty State */
+        <div className="text-center text-gray-500 font-black">No plants in your collection yet.</div>
+      )}
     </div>
   );
 };

@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import Component from '~/components/comp-544'
-import Sidebar from '~/components/Sidebar'
 import CustomToast from '~/components/CustomToast';
 import { Leaf, Lightbulb, Droplet, Sun, Thermometer } from 'lucide-react';
 import apiClient from '../lib/axios';
@@ -260,9 +259,6 @@ const FindPlant = () => {
 
   return (
     <div className='min-h-screen w-full flex bg-[#F5E9DA] text-[#2D2D2D]'>
-      <aside className="w-64 flex-shrink-0">
-        <Sidebar />
-      </aside>
       <div className='flex-1 flex justify-center items-center px-4 py-10'>
         <div className="relative max-w-4xl w-full bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center">
           <CustomToast
