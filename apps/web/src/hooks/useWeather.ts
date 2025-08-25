@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 export function useWeather(location?: string) {
-  const [weather, setWeather] = useState<{ humidity?: number; temperature?: number }>({});
+  const [weather, setWeather] = useState<{ humidity?: number; temperature?: number; name?: string }>({});
   const [loading, setLoading] = useState(false);
   const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null);
 
@@ -18,7 +18,7 @@ export function useWeather(location?: string) {
             });
             setLoading(false);
           },
-          (error) => {
+          () => {
             setLoading(false);
             // Optionally handle error (user denied, etc.)
           }
@@ -41,6 +41,7 @@ export function useWeather(location?: string) {
         setWeather({
           humidity: data.main?.humidity,
           temperature: data.main?.temp,
+          name: data.name,
         });
       })
       .catch(() => setWeather({}))

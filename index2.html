@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Cultiva — My Plants</title>
+<meta name="description" content="Manage your plant collection in Cultiva: search, filter, track care, and quickly log actions." />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script></head>
+  <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased selection:bg-emerald-400/30 selection:text-emerald-950 dark:selection:text-emerald-50 font-[Inter]">
+    <a href="#content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-emerald-600 focus:px-3 focus:py-2 focus:text-white">Skip to content</a>
+
+    <!-- Page Container -->
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <!-- Header Bar -->
+      <header class="sticky top-0 z-40 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-3 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-slate-900/60">
+        <div class="flex flex-col gap-3 rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 shadow-sm">
+          <!-- Top row -->
+          <div class="flex flex-col lg:flex-row lg:items-center gap-3 p-3">
+            <div class="flex items-center gap-2 flex-1 min-w-0">
+              <div class="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-600 text-white ring-1 ring-emerald-500/30">
+                <span class="text-sm font-semibold tracking-tight" style="font-family: 'Plus Jakarta Sans', Inter, ui-sans-serif, system-ui;">CV</span>
+              </div>
+              <h1 class="truncate text-2xl sm:text-3xl tracking-tight font-medium text-slate-900 dark:text-slate-50" style="font-family: 'Plus Jakarta Sans', Inter, ui-sans-serif, system-ui;">My Plants</h1>
+            </div>
+
+            <!-- Search -->
+            <div class="flex-1 min-w-0">
+              <label class="sr-only" for="search">Search plants</label>
+              <div class="relative">
+                <i data-lucide="search" class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400"></i>
+                <input id="search" type="text" placeholder="Search by name, species, or tag…" class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/70 pl-9 pr-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-400 dark:placeholder:text-slate-500" />
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-2">
+              <!-- View toggle -->
+              <div class="inline-flex rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 p-1" role="tablist" aria-label="View toggle">
+                <button id="viewGridBtn" class="group inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-sm text-slate-700 dark:text-slate-200 aria-selected:bg-emerald-600 aria-selected:text-white" role="tab" aria-selected="true" aria-controls="collection">
+                  <i data-lucide="grid-3x3" class="h-4 w-4 text-slate-500 group-aria-selected:text-white"></i>
+                  <span class="hidden sm:inline">Grid</span>
+                </button>
+                <button id="viewListBtn" class="group inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-sm text-slate-700 dark:text-slate-200" role="tab" aria-selected="false" aria-controls="collection">
+                  <i data-lucide="list" class="h-4 w-4 text-slate-500 group-aria-selected:text-white"></i>
+                  <span class="hidden sm:inline">List</span>
+                </button>
+              </div>
+
+              <!-- Theme toggle -->
+              <button id="themeToggle" class="inline-flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 p-2 text-slate-700 dark:text-slate-200 hover:text-emerald-600 dark:hover:text-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40" aria-label="Toggle theme">
+                <i data-lucide="sun" class="theme-icon-sun h-5 w-5"></i>
+                <i data-lucide="moon" class="theme-icon-moon h-5 w-5 hidden"></i>
+              </button>
+
+              <!-- Add Plant -->
+              <button id="addPlantBtn" class="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm ring-1 ring-emerald-500/30 hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50">
+                <i data-lucide="plus" class="h-4 w-4"></i>
+                Add plant
+              </button>
+            </div>
+          </div>
+
+          <!-- Filters Bar -->
+          <div class="px-3 pb-3">
+            <div class="flex flex-col md:flex-row md:items-center gap-2">
+              <!-- Filter dropdowns -->
+              <div class="flex flex-1 flex-wrap items-center gap-2">
+                <div class="relative" data-filter="location">
+                  <button class="filter-btn inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 px-3 py-1.5 text-sm text-slate-700 dark:text-slate-200 hover:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40" aria-haspopup="listbox" aria-expanded="false">
+                    <i data-lucide="map-pin" class="h-4 w-4 text-slate-500"></i>
+                    Location
+                    <i data-lucide="chevron-down" class="h-4 w-4 text-slate-400"></i>
+                  </button>
+                  <div class="filter-menu absolute z-20 mt-1 hidden w-56 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl" role="menu" aria-label="Location">
+                    <ul class="max-h-64 overflow-auto py-1 text-sm">
+                      <li><button data-value="Living room" class="filter-option block w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-800">Living room</button></li>
+                      <li><button data-value="Bedroom" class="filter-option block w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-800">Bedroom</button></li>
+                      <li><button data-value="Kitchen" class="filter-option block w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-800">Kitchen</button></li>
+                      <li><button data-value="Hallway" class="filter-option block w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-800">Hallway</button></li>
+                      <li><button data-value="Balcony" class="filter-option block w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-800">Balcony</button></li>
+                      <li><button data-value="Office" class="filter-option block w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-800">Office</button></li>
+                    </ul>
+                    <div class="border-t border-slate-200 dark:border-slate-800 p-2">
+                      <button class="filter-clear text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-200">Clear</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="relative" data-filter="light">
+                  <button class="filter-btn inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 px-3 py-1.5 text-sm text-slate-700 dark:text-slate-200 hover:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40" aria-haspopup="listbox" aria-expanded="false">
+                    <i data-lucide="sun" class="h-4 w-4 text-slate-500"></i>
+                    Light
+                    <i data-lucide="chevron-down" class="h-4 w-4 text-slate-400"></i>
+                  </button>
+                  <div class="filter-menu absolute z-20 mt-1 hidden w-56 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl" role="menu" aria-label="Light">
+                    <ul class="max-h-64 overflow-auto py-1 text-sm">
+                      <li><button data-value="Low" class="filter-option block w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-800">Low</button></li>
+                      <li><button data-value="Medium" class="filter-option block w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-800">Medium</button></li>
+                      <li><button data-value="Bright indirect" class="filter-option block w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-800">Bright indirect</button></li>
+                      <li><button data-value="Direct" class="filter-option block w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-800">Direct</button></li>
+                    </ul>
+                    <div class="border-t border-slate-200 dark:border-slate-800 p-2">
+                      <button class="filter-clear text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-200">Clear</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="relative" data-filter="status">
+                  <button class="filter-btn inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 px-3 py-1.5 text-sm text-slate-700 dark:text-slate-200 hover:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40" aria-haspopup="listbox" aria-expanded="false">
+                    <i data-lucide="activity" class="h-4 w-4 text-slate-500"></i>
+                    Status
+                    <i data-lucide="chevron-down" class="h-4 w-4 text-slate-400"></i>
+                  </button>
+                  <div class="filter-menu absolute z-20 mt-1 hidden w-56 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl" role="menu" aria-label="Status">
+                    <ul class="max-h-64 overflow-auto py-1 text-sm">
+                      <li><button data-value="Healthy" class="filter-option block w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-800">Healthy</button></li>
+                      <li><button data-value="Warning" class="filter-option block w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-800">Warning</button></li>
+                      <li><button data-value="Alert" class="filter-option block w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-800">Alert</button></li>
+                    </ul>
+                    <div class="border-t border-slate-200 dark:border-slate-800 p-2">
+                      <button class="filter-clear text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-200">Clear</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="relative" data-filter="difficulty">
+                  <button class="filter-btn inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 px-3 py-1.5 text-sm text-slate-700 dark:text-slate-200 hover:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40" aria-haspopup="listbox" aria-expanded="false">
+                    <i data-lucide="sparkles" class="h-4 w-4 text-slate-500"></i>
+                    Difficulty
+                    <i data-lucide="chevron-down" class="h-4 w-4 text-slate-400"></i>
+                  </button>
+                  <div class="filter-menu absolute z-20 mt-1 hidden w-56 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl" role="menu" aria-label="Difficulty">
+                    <ul class="max-h-64 overflow-auto py-1 text-sm">
+                      <li><button data-value="Easy" class="filter-option block w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-800">Easy</button></li>
+                      <li><button data-value="Moderate" class="filter-option block w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-800">Moderate</button></li>
+                      <li><button data-value="Challenging" class="filter-option block w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-800">Challenging</button></li>
+                    </ul>
+                    <div class="border-t border-slate-200 dark:border-slate-800 p-2">
+                      <button class="filter-clear text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-200">Clear</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Sort -->
+              <div class="flex items-center gap-2">
+                <div class="relative" data-filter="sort">
+                  <button class="filter-btn inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 px-3 py-1.5 text-sm text-slate-700 dark:text-slate-200 hover:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40" aria-haspopup="listbox" aria-expanded="false">
+                    <i data-lucide="arrow-up-down" class="h-4 w-4 text-slate-500"></i>
+                    Sort: <span id="sortLabel" class="font-medium text-slate-900 dark:text-slate-100">Name</span>
+                    <i data-lucide="chevron-down" class="h-4 w-4 text-slate-400"></i>
+                  </button>
+                  <div class="filter-menu absolute right-0 z-20 mt-1 hidden w-56 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl" role="menu" aria-label="Sort">
+                    <ul class="max-h-64 overflow-auto py-1 text-sm">
+                      <li><button data-value="name" class="filter-option block w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-800">Name</button></li>
+                      <li><button data-value="lastWatered" class="filter-option block w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-800">Last watered</button></li>
+                      <li><button data-value="nextDue" class="filter-option block w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-800">Next due</button></li>
+                      <li><button data-value="addedDate" class="filter-option block w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-800">Added date</button></li>
+                    </ul>
+                  </div>
+                </div>
+                <button id="clearFilters" class="text-sm text-emerald-700 hover:text-emerald-900 dark:text-emerald-300 dark:hover:text-emerald-200">Clear all</button>
+              </div>
+            </div>
+
+            <!-- Applied filter chips -->
+            <div id="appliedChips" class="mt-2 flex flex-wrap gap-2"></div>
+          </div>
+        </div>
+      </header>
+
+      <main id="content" class="py-4">
+        <!-- Summary Strip -->
+        <section id="summaryStrip" class="mb-4">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="flex items-center gap-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-3 shadow-sm">
+              <div class="h-9 w-9 rounded-xl bg-emerald-600/10 ring-1 ring-emerald-500/20 flex items-center justify-center">
+                <i data-lucide="sprout" class="h-5 w-5 text-emerald-600 dark:text-emerald-400"></i>
+              </div>
+              <div>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Total plants</p>
+                <p id="statTotal" class="text-base font-medium tracking-tight text-slate-900 dark:text-slate-50">—</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-3 shadow-sm">
+              <div class="h-9 w-9 rounded-xl bg-emerald-600/10 ring-1 ring-emerald-500/20 flex items-center justify-center">
+                <i data-lucide="droplet" class="h-5 w-5 text-emerald-600 dark:text-emerald-400"></i>
+              </div>
+              <div>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Due today</p>
+                <p id="statDueToday" class="text-base font-medium tracking-tight text-slate-900 dark:text-slate-50">—</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-3 shadow-sm">
+              <div class="h-9 w-9 rounded-xl bg-amber-500/10 ring-1 ring-amber-400/20 flex items-center justify-center">
+                <i data-lucide="alert-triangle" class="h-5 w-5 text-amber-500"></i>
+              </div>
+              <div>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Overdue</p>
+                <p id="statOverdue" class="text-base font-medium tracking-tight text-slate-900 dark:text-slate-50">—</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-3 shadow-sm">
+              <div class="h-9 w-9 rounded-xl bg-sky-500/10 ring-1 ring-sky-400/20 flex items-center justify-center">
+                <i data-lucide="sparkles" class="h-5 w-5 text-sky-500"></i>
+              </div>
+              <div>
+                <p class="text-xs text-slate-500 dark:text-slate-400">New this month</p>
+                <p id="statNew" class="text-base font-medium tracking-tight text-slate-900 dark:text-slate-50">—</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Upcoming Care -->
+        <section id="upcomingCare" class="mb-4">
+          <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-3 shadow-sm">
+            <div class="flex items-center justify-between">
+              <h2 class="text-lg tracking-tight font-medium" style="font-family: 'Plus Jakarta Sans', Inter, ui-sans-serif, system-ui;">Upcoming care</h2>
+              <span class="text-xs text-slate-500 dark:text-slate-400">Next 7 days</span>
+            </div>
+            <div id="upcomingList" class="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2"></div>
+          </div>
+        </section>
+
+        <!-- Insights + Activity -->
+        <section id="insights" class="mb-4">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
+            <!-- Chart: Status breakdown -->
+            <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-3 shadow-sm">
+              <h3 class="text-base tracking-tight font-medium" style="font-family: 'Plus Jakarta Sans', Inter, ui-sans-serif, system-ui;">Health status</h3>
+              <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Current distribution</p>
+              <div class="mt-2">
+                <div class="h-48"><canvas id="chartStatus"></canvas></div>
+              </div>
+            </div>
+            <!-- Chart: Due next 7 days -->
+            <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-3 shadow-sm">
+              <h3 class="text-base tracking-tight font-medium" style="font-family: 'Plus Jakarta Sans', Inter, ui-sans-serif, system-ui;">Care due next 7 days</h3>
+              <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Projected tasks</p>
+              <div class="mt-2">
+                <div class="h-48"><canvas id="chartDueWeek"></canvas></div>
+              </div>
+            </div>
+            <!-- Activity feed -->
+            <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-3 shadow-sm">
+              <h3 class="text-base tracking-tight font-medium" style="font-family: 'Plus Jakarta Sans', Inter, ui-sans-serif, system-ui;">Recent activity</h3>
+              <ol id="activityFeed" class="mt-2 space-y-2 text-sm"></ol>
+            </div>
+          </div>
+        </section>
+
+        <!-- Collection -->
+        <section id="collection" aria-live="polite">
+          <!-- Skeletons (initial) -->
+          <div id="skeletonGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+            <!-- 8 skeleton cards -->
+            <template id="skeletonCardTemplate">
+              <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 p-3 shadow-sm">
+                <div class="aspect-[4/3] w-full rounded-xl bg-slate-100 dark:bg-slate-800 animate-pulse"></div>
+                <div class="mt-2 space-y-2">
+                  <div class="h-4 w-2/3 rounded bg-slate-100 dark:bg-slate-800 animate-pulse"></div>
+                  <div class="h-3 w-1/2 rounded bg-slate-100 dark:bg-slate-800 animate-pulse"></div>
+                  <div class="flex gap-2">
+                    <div class="h-6 w-16 rounded bg-slate-100 dark:bg-slate-800 animate-pulse"></div>
+                    <div class="h-6 w-14 rounded bg-slate-100 dark:bg-slate-800 animate-pulse"></div>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <div id="gridContainer" class="hidden grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3"></div>
+          <div id="listContainer" class="hidden divide-y divide-slate-200 dark:divide-slate-800 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 overflow-hidden"></div>
+
+          <!-- Empty States -->
+          <div id="emptyNoPlants" class="hidden rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 bg-white/40 dark:bg-slate-900/40 p-8 text-center">
+            <div class="mx-auto h-14 w-14 rounded-2xl bg-emerald-600/10 ring-1 ring-emerald-500/20 flex items-center justify-center">
+              <i data-lucide="sprout" class="h-7 w-7 text-emerald-600 dark:text-emerald-400"></i>
+            </div>
+            <h3 class="mt-3 text-xl tracking-tight font-medium text-slate-900 dark:text-slate-50" style="font-family: 'Plus Jakarta Sans', Inter, ui-sans-serif, system-ui;">Add your first plant</h3>
+            <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Start building your collection to track care schedules and health.</p>
+            <div class="mt-4">
+              <button class="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm ring-1 ring-emerald-500/30 hover:bg-emerald-500" onclick="openPlantForm()">
+                <i data-lucide="plus" class="h-4 w-4"></i>
+                Add plant
+              </button>
+            </div>
+          </div>
+
+          <div id="emptyNoResults" class="hidden rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 bg-white/40 dark:bg-slate-900/40 p-8 text-center">
+            <div class="mx-auto h-14 w-14 rounded-2xl bg-amber-500/10 ring-1 ring-amber-400/20 flex items-center justify-center">
+              <i data-lucide="filter" class="h-7 w-7 text-amber-500"></i>
+            </div>
+            <h3 class="mt-3 text-xl tracking-tight font-medium text-slate-900 dark:text-slate-50" style="font-family: 'Plus Jakarta Sans', Inter, ui-sans-serif, system-ui;">No results</h3>
+            <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Try adjusting your search or clearing some filters.</p>
+            <div class="mt-4">
+              <button id="clearAllFromEmpty" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 px-4 py-2 text-sm text-slate-800 dark:text-slate-100 hover:border-emerald-400">
+                <i data-lucide="x" class="h-4 w-4"></i>
+                Clear filters
+              </button>
+            </div>
+          </div>
+
+          <!-- Load more -->
+          <div id="loadMoreWrap" class="hidden mt-4 text-center">
+            <button id="loadMore" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 px-4 py-2 text-sm text-slate-800 dark:text-slate-100 hover:border-emerald-400">
+              <i data-lucide="loader-2" class="h-4 w-4 animate-spin hidden" aria-hidden="true"></i>
+              <span>Load more</span>
+            </button>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Bulk Actions Bar -->
+    <div id="bulkBar" class="pointer-events-none fixed inset-x-0 bottom-0 z-40 translate-y-4 opacity-0 transition-all">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-4">
+        <div class="pointer-events-auto flex items-center justify-between gap-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 backdrop-blur px-3 py-2 shadow-lg">
+          <div class="flex items-center gap-2 text-sm">
+            <span id="bulkCount" class="rounded-full bg-emerald-600/10 px-2 py-0.5 text-emerald-700 dark:text-emerald-300 ring-1 ring-emerald-500/20">0</span>
+            selected
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 px-3 py-1.5 text-sm hover:border-emerald-400" id="bulkMove">
+              <i data-lucide="map-pin" class="h-4 w-4"></i>
+              Move location
+            </button>
+            <button class="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 px-3 py-1.5 text-sm hover:border-emerald-400" id="bulkSchedule">
+              <i data-lucide="calendar" class="h-4 w-4"></i>
+              Assign schedule
+            </button>
+            <button class="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 px-3 py-1.5 text-sm hover:border-emerald-400" id="bulkTag">
+              <i data-lucide="tag" class="h-4 w-4"></i>
+              Tag
+            </button>
+            <button class="inline-flex items-center gap-2 rounded-xl bg-rose-600/90 px-3 py-1.5 text-sm text-white ring-1 ring-rose-500/30 hover:bg-rose-600" id="bulkDelete">
+              <i data-lucide="trash-2" class="h-4 w-4"></i>
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Templates -->
+    <template id="plantCardTemplate">
+      <div class="plant-card group relative rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-3 shadow-sm transition hover:shadow-md hover:-translate-y-0.5 focus-within:ring-2 focus-within:ring-emerald-500/40">
+        <!-- Checkbox -->
+        <label class="absolute left-3 top-3 z-10 inline-flex items-center">
+          <input type="checkbox" class="peer sr-only" />
+          <span class="inline-flex h-5 w-5 items-center justify-center rounded-md border border-slate-300 dark:border-slate-700 bg-white/70 dark:bg-slate-900/70 ring-1 ring-slate-200/60 dark:ring-slate-800 peer-checked:bg-emerald-600 peer-checked:border-emerald-600">
+            <i data-lucide="check" class="h-3.5 w-3.5 text-transparent peer-checked:text-white"></i>
+          </span>
+          <span class="sr-only">Select plant</span>
+        </label>
+
+        <button class="open-detail w-full text-left">
+          <div class="overflow-hidden rounded-xl ring-1 ring-slate-200 dark:ring-slate-800">
+            <div class="relative aspect-[4/3]">
+              <img loading="lazy" class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]" alt="" />
+              <div class="absolute right-2 top-2">
+                <span class="status-chip inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] ring-1"></span>
+              </div>
+            </div>
+          </div>
+          <div class="mt-2 flex items-start justify-between gap-2">
+            <div class="min-w-0">
+              <p class="name truncate text-sm font-medium text-slate-900 dark:text-slate-50">Name</p>
+              <p class="species truncate text-xs text-slate-500 dark:text-slate-400">Species</p>
+            </div>
+            <div class="nextcare shrink-0 rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 ring-1 ring-slate-200 dark:ring-slate-700">Next care</div>
+          </div>
+          <div class="mt-2 flex flex-wrap gap-1.5">
+            <span class="tag-location inline-flex items-center gap-1 rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[11px] text-slate-700 dark:text-slate-300 ring-1 ring-slate-200 dark:ring-slate-700"><i data-lucide="map-pin" class="h-3.5 w-3.5"></i><span class="value"></span></span>
+            <span class="tag-light inline-flex items-center gap-1 rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[11px] text-slate-700 dark:text-slate-300 ring-1 ring-slate-200 dark:ring-slate-700"><i data-lucide="sun" class="h-3.5 w-3.5"></i><span class="value"></span></span>
+            <span class="tag-difficulty inline-flex items-center gap-1 rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[11px] text-slate-700 dark:text-slate-300 ring-1 ring-slate-200 dark:ring-slate-700"><i data-lucide="sparkles" class="h-3.5 w-3.5"></i><span class="value"></span></span>
+          </div>
+        </button>
+
+        <!-- Quick actions -->
+        <div class="pointer-events-none absolute inset-x-3 bottom-3 z-10 opacity-0 transition group-hover:pointer-events-auto group-hover:opacity-100">
+          <div class="flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 backdrop-blur px-2 py-1 shadow-sm">
+            <div class="flex items-center gap-1.5">
+              <button class="qa-btn water inline-flex items-center justify-center rounded-lg px-2 py-1 text-xs text-slate-700 dark:text-slate-200 hover:text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/40" aria-label="Log watering"><i data-lucide="droplet" class="h-4 w-4"></i></button>
+              <button class="qa-btn mist inline-flex items-center justify-center rounded-lg px-2 py-1 text-xs text-slate-700 dark:text-slate-200 hover:text-sky-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40" aria-label="Log misting"><i data-lucide="wind" class="h-4 w-4"></i></button>
+              <button class="qa-btn fertilize inline-flex items-center justify-center rounded-lg px-2 py-1 text-xs text-slate-700 dark:text-slate-200 hover:text-amber-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40" aria-label="Log fertilizing"><i data-lucide="leaf" class="h-4 w-4"></i></button>
+              <button class="qa-btn note inline-flex items-center justify-center rounded-lg px-2 py-1 text-xs text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40" aria-label="Add note"><i data-lucide="sticky-note" class="h-4 w-4"></i></button>
+            </div>
+            <!-- Overflow -->
+            <div class="relative">
+              <button class="overflow-btn inline-flex items-center justify-center rounded-lg px-2 py-1 text-xs text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40" aria-haspopup="menu" aria-expanded="false" aria-label="Open menu">
+                <i data-lucide="more-horizontal" class="h-4 w-4"></i>
+              </button>
+              <div class="overflow-menu absolute right-0 bottom-8 hidden w-40 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl">
+                <button class="menu-edit block w-full text-left px-3 py-2 text-sm hover:bg-emerald-50 dark:hover:bg-slate-800">Edit</button>
+                <button class="menu-duplicate block w-full text-left px-3 py-2 text-sm hover:bg-emerald-50 dark:hover:bg-slate-800">Duplicate</button>
+                <button class="menu-archive block w-full text-left px-3 py-2 text-sm hover:bg-emerald-50 dark:hover:bg-slate-800">Archive</button>
+                <button class="menu-delete block w-full text-left px-3 py-2 text-sm text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20">Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <template id="plantRowTemplate">
+      <div class="plant-row grid grid-cols-[auto_1fr_auto_auto] sm:grid-cols-[auto_1fr_auto_auto_auto] items-center gap-3 px-3 py-2 hover:bg-slate-50/60 dark:hover:bg-slate-900/40">
+        <label class="inline-flex items-center">
+          <input type="checkbox" class="peer sr-only" />
+          <span class="inline-flex h-5 w-5 items-center justify-center rounded-md border border-slate-300 dark:border-slate-700 bg-white/70 dark:bg-slate-900/70 ring-1 ring-slate-200/60 dark:ring-slate-800 peer-checked:bg-emerald-600 peer-checked:border-emerald-600">
+            <i data-lucide="check" class="h-3.5 w-3.5 text-transparent peer-checked:text-white"></i>
+          </span>
+          <span class="sr-only">Select plant</span>
+        </label>
+        <button class="open-detail flex items-center gap-3 min-w-0 text-left">
+          <div class="overflow-hidden rounded-lg ring-1 ring-slate-200 dark:ring-slate-800">
+            <img loading="lazy" class="h-12 w-16 object-cover" alt="" />
+          </div>
+          <div class="min-w-0">
+            <p class="name truncate text-sm font-medium text-slate-900 dark:text-slate-50">Name</p>
+            <p class="species truncate text-xs text-slate-500 dark:text-slate-400">Species</p>
+          </div>
+        </button>
+        <div class="hidden sm:flex flex-wrap gap-1.5">
+          <span class="tag-location inline-flex items-center gap-1 rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[11px] text-slate-700 dark:text-slate-300 ring-1 ring-slate-200 dark:ring-slate-700"><i data-lucide="map-pin" class="h-3.5 w-3.5"></i><span class="value"></span></span>
+          <span class="tag-light inline-flex items-center gap-1 rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[11px] text-slate-700 dark:text-slate-300 ring-1 ring-slate-200 dark:ring-slate-700"><i data-lucide="sun" class="h-3.5 w-3.5"></i><span class="value"></span></span>
+          <span class="tag-difficulty inline-flex items-center gap-1 rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[11px] text-slate-700 dark:text-slate-300 ring-1 ring-slate-200 dark:ring-slate-700"><i data-lucide="sparkles" class="h-3.5 w-3.5"></i><span class="value"></span></span>
+        </div>
+        <div class="nextcare shrink-0 rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 ring-1 ring-slate-200 dark:ring-slate-700">Next care</div>
+        <div class="flex items-center gap-2">
+          <span class="status-chip inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] ring-1"></span>
+          <div class="flex items-center gap-1.5">
+            <button class="qa-btn water inline-flex items-center justify-center rounded-lg px-2 py-1 text-xs text-slate-700 dark:text-slate-200 hover:text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/40" aria-label="Log watering"><i data-lucide="droplet" class="h-4 w-4"></i></button>
+            <button class="qa-btn mist inline-flex items-center justify-center rounded-lg px-2 py-1 text-xs text-slate-700 dark:text-slate-200 hover:text-sky-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40" aria-label="Log misting"><i data-lucide="wind" class="h-4 w-4"></i></button>
+            <button class="qa-btn fertilize inline-flex items-center justify-center rounded-lg px-2 py-1 text-xs text-slate-700 dark:text-slate-200 hover:text-amber-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40" aria-label="Log fertilizing"><i data-lucide="leaf" class="h-4 w-4"></i></button>
+            <div class="relative">
+              <button class="overflow-btn inline-flex items-center justify-center rounded-lg px-2 py-1 text-xs text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40" aria-haspopup="menu" aria-expanded="false" aria-label="Open menu">
+                <i data-lucide="more-horizontal" class="h-4 w-4"></i>
+              </button>
+              <div class="overflow-menu absolute right-0 top-8 hidden w-40 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl">
+                <button class="menu-edit block w-full text-left px-3 py-2 text-sm hover:bg-emerald-50 dark:hover:bg-slate-800">Edit</button>
+                <button class="menu-duplicate block w-full text-left px-3 py-2 text-sm hover:bg-emerald-50 dark:hover:bg-slate-800">Duplicate</button>
+                <button class="menu-archive block w-full text-left px-3 py-2 text-sm hover:bg-emerald-50 dark:hover:bg-slate-800">Archive</button>
+                <button class="menu-delete block w-full text-left px-3 py-2 text-sm text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20">Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- Plant Detail Drawer -->
+    <div id="detailDrawer" class="fixed inset-y-0 right-0 z-50 hidden w-full max-w-2xl overflow-y-auto border-l border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-2xl">
+      <div class="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/80 backdrop-blur px-4 py-3">
+        <div class="flex items-center gap-2">
+          <button id="closeDrawer" class="rounded-lg border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 p-2 hover:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40" aria-label="Close details">
+            <i data-lucide="arrow-right" class="h-5 w-5"></i>
+          </button>
+          <h3 id="drawerTitle" class="text-xl tracking-tight font-medium" style="font-family: 'Plus Jakarta Sans', Inter, ui-sans-serif, system-ui;">Plant</h3>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="rounded-lg border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 px-3 py-1.5 text-sm hover:border-emerald-400">Move location</button>
+          <button class="rounded-lg border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 px-3 py-1.5 text-sm hover:border-emerald-400">Archive</button>
+          <button class="rounded-lg bg-rose-600 px-3 py-1.5 text-sm text-white ring-1 ring-rose-500/30 hover:bg-rose-600">Delete</button>
+        </div>
+      </div>
+      <div class="px-4 py-4">
+        <!-- Tabs -->
+        <div class="mb-3 flex flex-wrap gap-2">
+          <button data-tab="overview" class="drawer-tab rounded-xl border border-emerald-300/30 bg-emerald-600/10 px-3 py-1.5 text-sm text-emerald-700 dark:text-emerald-300 ring-1 ring-emerald-500/20">Overview</button>
+          <button data-tab="care" class="drawer-tab rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 px-3 py-1.5 text-sm">Care</button>
+          <button data-tab="activity" class="drawer-tab rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 px-3 py-1.5 text-sm">Activity</button>
+          <button data-tab="notes" class="drawer-tab rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 px-3 py-1.5 text-sm">Notes</button>
+          <button data-tab="images" class="drawer-tab rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 px-3 py-1.5 text-sm">Images</button>
+        </div>
+
+        <!-- Overview -->
+        <div data-panel="overview" class="drawer-panel space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800">
+              <div class="aspect-[4/3] bg-slate-100 dark:bg-slate-900">
+                <img id="drawerImage" alt="" class="h-full w-full object-cover" loading="lazy" />
+              </div>
+            </div>
+            <div class="rounded-2xl border border-slate-200 dark:border-slate-800 p-3">
+              <h4 class="text-base font-medium tracking-tight" style="font-family: 'Plus Jakarta Sans', Inter, ui-sans-serif, system-ui;">Basic info</h4>
+              <dl class="mt-2 grid grid-cols-2 gap-2 text-sm">
+                <div><dt class="text-slate-500 dark:text-slate-400">Species</dt><dd id="drawerSpecies" class="text-slate-900 dark:text-slate-100">—</dd></div>
+                <div><dt class="text-slate-500 dark:text-slate-400">Location</dt><dd id="drawerLocation" class="text-slate-900 dark:text-slate-100">—</dd></div>
+                <div><dt class="text-slate-500 dark:text-slate-400">Light</dt><dd id="drawerLight" class="text-slate-900 dark:text-slate-100">—</dd></div>
+                <div><dt class="text-slate-500 dark:text-slate-400">Difficulty</dt><dd id="drawerDifficulty" class="text-slate-900 dark:text-slate-100">—</dd></div>
+              </dl>
+              <div class="mt-3">
+                <span id="drawerStatus" class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[12px] ring-1"></span>
+              </div>
+              <div id="drawerTags" class="mt-2 flex flex-wrap gap-1.5"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Care -->
+        <div data-panel="care" class="drawer-panel hidden space-y-3">
+          <div class="rounded-2xl border border-slate-200 dark:border-slate-800 p-3">
+            <h4 class="text-base font-medium tracking-tight" style="font-family: 'Plus Jakarta Sans', Inter, ui-sans-serif, system-ui;">Schedule</h4>
+            <div class="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm">
+              <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-2">
+                <p class="text-slate-500 dark:text-slate-400">Water</p>
+                <p id="careWater" class="font-medium">—</p>
+              </div>
+              <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-2">
+                <p class="text-slate-500 dark:text-slate-400">Mist</p>
+                <p id="careMist" class="font-medium">—</p>
+              </div>
+              <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-2">
+                <p class="text-slate-500 dark:text-slate-400">Fertilize</p>
+                <p id="careFert" class="font-medium">—</p>
+              </div>
+              <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-2">
+                <p class="text-slate-500 dark:text-slate-400">Repot</p>
+                <p id="careRepot" class="font-medium">—</p>
+              </div>
+            </div>
+            <div class="mt-3 flex flex-wrap items-center gap-2">
+              <span class="rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[11px] ring-1 ring-slate-200 dark:ring-slate-700">Last done: <span id="careLast">—</span></span>
+              <span class="rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[11px] ring-1 ring-slate-200 dark:ring-slate-700">Next due: <span id="careNext">—</span></span>
+              <button class="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-2.5 py-1.5 text-xs text-white ring-1 ring-emerald-500/30 hover:bg-emerald-500">
+                <i data-lucide="check-circle-2" class="h-4 w-4"></i>
+                Log care
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity -->
+        <div data-panel="activity" class="drawer-panel hidden space-y-3">
+          <div class="rounded-2xl border border-slate-200 dark:border-slate-800 p-3">
+            <h4 class="text-base font-medium tracking-tight" style="font-family: 'Plus Jakarta Sans', Inter, ui-sans-serif, system-ui;">Activity</h4>
+            <ol id="activityList" class="mt-2 space-y-2 text-sm">
+              <!-- timeline items injected -->
+            </ol>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div data-panel="notes" class="drawer-panel hidden space-y-3">
+          <div class="rounded-2xl border border-slate-200 dark:border-slate-800 p-3">
+            <h4 class="text-base font-medium tracking-tight" style="font-family: 'Plus Jakarta Sans', Inter, ui-sans-serif, system-ui;">Notes</h4>
+            <label for="notesArea" class="sr-only">Notes</label>
+            <textarea id="notesArea" rows="6" class="mt-2 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/70 p-3 text-sm font-mono text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40" placeholder="Write notes in Markdown… (# headings, **bold**, - lists, etc.)"></textarea>
+            <div class="mt-2 flex items-center justify-end gap-2">
+              <button class="rounded-lg border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 px-3 py-1.5 text-sm hover:border-emerald-400">Discard</button>
+              <button class="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm text-white ring-1 ring-emerald-500/30 hover:bg-emerald-500">Save</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Images -->
+        <div data-panel="images" class="drawer-panel hidden space-y-3">
+          <div class="rounded-2xl border border-slate-200 dark:border-slate-800 p-3">
+            <h4 class="text-base font-medium tracking-tight" style="font-family: 'Plus Jakarta Sans', Inter, ui-sans-serif, system-ui;">Images</h4>
+            <div id="imagesGrid" class="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-2">
+              <!-- images injected -->
+            </div>
+            <div class="mt-3">
+              <label class="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 px-3 py-2 text-sm hover:border-emerald-400 cursor-pointer">
+                <i data-lucide="upload" class="h-4 w-4"></i>
+                <span>Upload</span>
+                <input type="file" class="sr-only" accept="image/*" />
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add/Edit Plant Modal -->
+    <div id="plantFormModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center">
+      <div class="modal-backdrop absolute inset-0 bg-slate-900/50"></div>
+      <div role="dialog" aria-modal="true" aria-labelledby="plantFormTitle" class="relative w-full sm:max-w-xl rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-2xl">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-4 py-3">
+          <h3 id="plantFormTitle" class="text-lg tracking-tight font-medium" style="font-family: 'Plus Jakarta Sans', Inter, ui-sans-serif, system-ui;">Add plant</h3>
+          <button id="closePlantForm" class="rounded-lg border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 p-2 hover:border-emerald-400" aria-label="Close form">
+            <i data-lucide="x" class="h-5 w-5"></i>
+          </button>
+        </div>
+        <form id="plantForm" class="px-4 py-4 space-y-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="text-xs text-slate-600 dark:text-slate-400">Name</label>
+              <input name="name" required class="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/70 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/40" placeholder="Monstera Deliciosa" />
+              <p class="hidden text-[11px] text-rose-600 mt-1">Name is required</p>
+            </div>
+            <div>
+              <label class="text-xs text-slate-600 dark:text-slate-400">Species</label>
+              <div class="relative">
+                <input name="species" list="speciesList" class="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/70 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/40" placeholder="e.g., Monstera deliciosa" />
+                <datalist id="speciesList">
+                  <option value="Monstera deliciosa"></option>
+                  <option value="Epipremnum aureum (Pothos)"></option>
+                  <option value="Zamioculcas zamiifolia (ZZ)"></option>
+                  <option value="Calathea ornata"></option>
+                  <option value="Ficus elastica"></option>
+                  <option value="Sansevieria trifasciata"></option>
+                  <option value="Spathiphyllum"></option>
+                  <option value="Ficus lyrata"></option>
+                </datalist>
+              </div>
+            </div>
+            <div>
+              <label class="text-xs text-slate-600 dark:text-slate-400">Location</label>
+              <input name="location" class="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/70 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/40" placeholder="Living room" />
+            </div>
+            <div>
+              <label class="text-xs text-slate-600 dark:text-slate-400">Light level</label>
+              <select name="light" class="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/70 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/40">
+                <option>Low</option>
+                <option>Medium</option>
+                <option>Bright indirect</option>
+                <option>Direct</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs text-slate-600 dark:text-slate-400">Difficulty</label>
+              <select name="difficulty" class="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/70 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/40">
+                <option>Easy</option>
+                <option>Moderate</option>
+                <option>Challenging</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs text-slate-600 dark:text-slate-400">Image</label>
+              <input name="image" type="url" class="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/70 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/40" placeholder="https://…" />
+            </div>
+          </div>
+
+          <div>
+            <label class="text-xs text-slate-600 dark:text-slate-400">Notes</label>
+            <textarea name="notes" rows="3" class="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/70 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/40" placeholder="Optional notes…"></textarea>
+          </div>
+
+          <div class="rounded-2xl border border-slate-200 dark:border-slate-800 p-3">
+            <p class="text-sm font-medium">Schedule preset</p>
+            <div class="mt-2 grid grid-cols-3 gap-2">
+              <label class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 px-3 py-2 text-sm cursor-pointer hover:border-emerald-400">
+                <input type="radio" name="preset" value="Low" class="sr-only" />
+                <i data-lucide<i data-lucide="leaf" class="h-4 w-4 text-emerald-600"></i>
+                <span>Low care</span>
+              </label>
+              <label class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 px-3 py-2 text-sm cursor-pointer hover:border-emerald-400">
+                <input type="radio" name="preset" value="Standard" class="sr-only" />
+                <i data-lucide="calendar" class="h-4 w-4 text-slate-700 dark:text-slate-200"></i>
+                <span>Standard</span>
+              </label>
+              <label class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 px-3 py-2 text-sm cursor-pointer hover:border-emerald-400">
+                <input type="radio" name="preset" value="Intensive" class="sr-only" />
+                <i data-lucide="zap" class="h-4 w-4 text-amber-500"></i>
+                <span>Intensive</span>
+              </label>
+            </div>
+
+            <div class="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm">
+              <div>
+                <label class="text-xs text-slate-600 dark:text-slate-400">Water every</label>
+                <div class="mt-1 flex items-center gap-2">
+                  <input name="waterEvery" type="number" min="1" value="7" class="w-20 rounded-lg border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/70 px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/40" />
+                  <span class="text-xs text-slate-500">days</span>
+                </div>
+              </div>
+              <div>
+                <label class="text-xs text-slate-600 dark:text-slate-400">Mist every</label>
+                <div class="mt-1 flex items-center gap-2">
+                  <input name="mistEvery" type="number" min="1" value="3" class="w-20 rounded-lg border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/70 px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/40" />
+                  <span class="text-xs text-slate-500">days</span>
+                </div>
+              </div>
+              <div>
+                <label class="text-xs text-slate-600 dark:text-slate-400">Fertilize every</label>
+                <div class="mt-1 flex items-center gap-2">
+                  <input name="fertEvery" type="number" min="1" value="45" class="w-20 rounded-lg border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/70 px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/40" />
+                  <span class="text-xs text-slate-500">days</span>
+                </div>
+              </div>
+              <div>
+                <label class="text-xs text-slate-600 dark:text-slate-400">Repot every</label>
+                <div class="mt-1 flex items-center gap-2">
+                  <input name="repotEvery" type="number" min="1" value="12" class="w-20 rounded-lg border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/70 px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/40" />
+                  <span class="text-xs text-slate-500">months</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-2">
+            <p class="text-xs text-slate-500 dark:text-slate-400">Tip: choose a preset or fine-tune custom intervals.</p>
+            <div class="flex items-center gap-2">
+              <button type="button" class="form-cancel rounded-lg border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 px-3 py-1.5 text-sm hover:border-emerald-400">Cancel</button>
+              <button type="submit" class="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm text-white ring-1 ring-emerald-500/30 hover:bg-emerald-500">Save plant</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // Utilities
+      const $ = (sel, ctx = document) => ctx.querySelector(sel);
+      const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+      const fmtDate = (d) => new Date(d).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+      const addDays = (date, days) => {
+        const d = new Date(date);
+        d.setDate(d.getDate() + days);
+        return d;
+      };
+      const daysDiff = (a, b = new Date()) => {
+        const ms = (new Date(a).setHours(0,0,0,0)) - (new Date(b).setHours(0,0,0,0));
+        return Math.round(ms / 86400000);
+      };
+      const rel = (d) => {
+        const diff = daysDiff(d);
+        if (diff === 0) return 'today';
+        return diff > 0 ? `in ${diff}d` : `${Math.abs(diff)}d overdue`;
+      };
+      const statusStyles = (status) => {
+        switch (status) {
+          case 'Healthy': return { chip: 'bg-emerald-600/10 text-emerald-700 dark:text-emerald-300 ring-emerald-500/20', icon: 'badge-check' };
+          case 'Warning': return { chip: 'bg-amber-500/10 text-amber-700 dark:text-amber-300 ring-amber-400/20', icon: 'alert-triangle' };
+          case 'Alert':   return { chip: 'bg-rose-500/10 text-rose-700 dark:text-rose-300 ring-rose-400/20', icon: 'octagon-alert' };
+          default: return { chip: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 ring-slate-200 dark:ring-slate-700', icon: 'circle' };
+        }
+      };
+
+      // Theme
+      const applyTheme = (t) => {
+        const root = document.documentElement;
+        if (t === 'dark') root.classList.add('dark'); else root.classList.remove('dark');
+        localStorage.setItem('theme', t);
+        $('.theme-icon-sun').classList.toggle('hidden', t === 'dark');
+        $('.theme-icon-moon').classList.toggle('hidden', t !== 'dark');
+      };
+
+      // State
+      const state = {
+        allPlants: [],
+        filtered: [],
+        view: 'grid',
+        page: 1,
+        pageSize: 12,
+        filters: { location: null, light: null, status: null, difficulty: null, sort: 'name' },
+        search: '',
+        selected: new Set(),
+        activity: []
+      };
+
+      // Demo data generation (24+ plants)
+      function generateDemoPlants() {
+        const names = [
+          ['Maya', 'Monstera deliciosa'],
+          ['Ziggy', 'Zamioculcas zamiifolia (ZZ)'],
+          ['Ivy', 'Epipremnum aureum (Pothos)'],
+          ['Ruby', 'Ficus elastica'],
+          ['Luna', 'Spathiphyllum (Peace Lily)'],
+          ['Spike', 'Sansevieria trifasciata (Snake Plant)'],
+          ['Fiddle', 'Ficus lyrata'],
+          ['Tess', 'Tradescantia zebrina'],
+          ['Piper', 'Peperomia obtusifolia'],
+          ['Halo', 'Hoya carnosa'],
+          ['Fernie', 'Nephrolepis exaltata (Boston Fern)'],
+          ['Calie', 'Calathea ornata'],
+          ['Aloe', 'Aloe vera'],
+          ['Birdy', 'Strelitzia nicolai (White Bird of Paradise)'],
+          ['Pilea', 'Pilea peperomioides'],
+          ['Stringy', 'Senecio rowleyanus (String of Pearls)'],
+          ['Jade', 'Crassula ovata (Jade Plant)'],
+          ['Phil', 'Philodendron hederaceum'],
+          ['Rex', 'Begonia rex'],
+          ['Draco', 'Dracaena fragrans'],
+          ['Aglae', 'Aglaonema commutatum'],
+          ['Oxalis', 'Oxalis triangularis'],
+          ['ZZ Jr.', 'Zamioculcas zamiifolia (ZZ)'],
+          ['Mini Mon', 'Monstera adansonii']
+        ];
+        const locs = ['Living room', 'Bedroom', 'Kitchen', 'Hallway', 'Balcony', 'Office'];
+        const lights = ['Low', 'Medium', 'Bright indirect', 'Direct'];
+        const diffs = ['Easy', 'Moderate', 'Challenging'];
+        const statuses = ['Healthy', 'Warning', 'Alert'];
+
+        const today = new Date();
+        return names((pair, i) => {
+          const added = addDays(today, -Math.floor(Math.random() * 120));
+          const waterEvery = [4, 5, 6, 7, 8, 10][i % 6];
+          const mistEvery = [2, 3, 4, 5][i % 4];
+          const fertEvery = [30, 45, 60][i % 3];
+          const repotEvery = [12, 18, 24][i % 3];
+          const lastWatered = addDays(today, -Math.floor(Math.random() * (waterEvery + 6)));
+          const lastMisted = addDays(today, -Math.floor(Math.random() * (mistEvery + 3)));
+          const lastFert = addDays(today, -Math.floor(Math.random() * (fertEvery + 12)));
+          const lastRepot = addDays(today, -Math.floor(Math.random() * (repotEvery * 30)));
+
+          return {
+            id: `p${i+1}`,
+            name: pair[0],
+            species: pair[1],
+            image: `https://picsum.photos/seed/plant${i+1}/800/600`,
+            location: locs[i % locs.length],
+            light: lights[i % lights.length],
+            difficulty: diffs[i % diffs.length],
+            status: statuses[(i + (i%2)) % statuses.length],
+            addedDate: added,
+            lastWatered,
+            lastMisted,
+            lastFertilized: lastFert,
+            lastRepotted: lastRepot,
+            schedule: { waterEvery, mistEvery, fertEvery, repotEvery },
+            tags: (i % 2 === 0) ? ['pet-safe'] : ['fast-grower'],
+            images: [
+              `https://picsum.photos/seed/plant${i+1}-a/800/600`,
+              `https://picsum.photos/seed/plant${i+1}-b/800/600`
+            ],
+            notes: ''
+          };
+        });
+      }
+
+      // Rendering collection
+      function computeNextDue(p) {
+        const nextWater = addDays(p.lastWatered, p.schedule.waterEvery);
+        return { date: nextWater, rel: rel(nextWater), diff: daysDiff(nextWater) };
+      }
+
+      function fillStatusChip(el, status) {
+        const s = statusStyles(status);
+        el.className = `status-chip inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] ring-1 ${s.chip}`;
+        el.innerHTML = `<i data-lucide="${s.icon}" class="h-3.5 w-3.5"></i><span>${status}</span>`;
+      }
+
+      function plantCard(p) {
+        const t = $('#plantCardTemplate').content.firstElementChild.cloneNode(true);
+        const img = t.querySelector('img');
+        img.src = p.image;
+        img.alt = `${p.name} — ${p.species}`;
+        t.querySelector('.name').textContent = p.name;
+        t.querySelector('.species').textContent = p.species;
+        t.querySelector('.tag-location .value').textContent = p.location;
+        t.querySelector('.tag-light .value').textContent = p.light;
+        t.querySelector('.tag-difficulty .value').textContent = p.difficulty;
+
+        const chip = t.querySelector('.status-chip');
+        fillStatusChip(chip, p.status);
+
+        const nd = computeNextDue(p);
+        const nextcare = t.querySelector('.nextcare');
+        nextcare.textContent = nd.rel;
+        nextcare.classList.toggle('bg-rose-100/80', nd.diff < 0);
+        nextcare.classList.toggle('dark:bg-rose-900/30', nd.diff < 0);
+
+        // selection
+        const checkbox = t.querySelector('input[type="checkbox"]');
+        checkbox.checked = state.selected.has(p.id);
+        checkbox.addEventListener('change', (e) => {
+          e.stopPropagation();
+          if (checkbox.checked) state.selected.add(p.id);
+          else state.selected.delete(p.id);
+          updateBulkBar();
+        });
+
+        // open detail
+        t.querySelector('.open-detail').addEventListener('click', () => openDrawer(p.id));
+
+        // quick actions
+        t.querySelector('.qa-btn.water').addEventListener('click', (e) => { e.stopPropagation(); logAction(p.id, 'water'); });
+        t.querySelector('.qa-btn.mist').addEventListener('click', (e) => { e.stopPropagation(); logAction(p.id, 'mist'); });
+        t.querySelector('.qa-btn.fertilize').addEventListener('click', (e) => { e.stopPropagation(); logAction(p.id, 'fertilize'); });
+        t.querySelector('.qa-btn.note').addEventListener('click', (e) => { e.stopPropagation(); openDrawer(p.id, 'notes'); });
+
+        // overflow menu
+        const overBtn = t.querySelector('.overflow-btn');
+        const overMenu = t.querySelector('.overflow-menu');
+        overBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          closeAllMenus();
+          overMenu.classList.toggle('hidden');
+          overBtn.setAttribute('aria-expanded', overMenu.classList.contains('hidden') ? 'false' : 'true');
+        });
+        $$('.menu-edit, .menu-duplicate, .menu-archive, .menu-delete', overMenu).forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (btn.classList.contains('menu-edit')) openPlantForm(p.id);
+            if (btn.classList.contains('menu-duplicate')) duplicatePlant(p.id);
+            if (btn.classList.contains('menu-archive') || btn.classList.contains('menu-delete')) removePlant(p.id);
+            overMenu.classList.add('hidden');
+          });
+        });
+
+        return t;
+      }
+
+      function plantRow(p) {
+        const t = $('#plantRowTemplate').content.firstElementChild.cloneNode(true);
+        const img = t.querySelector('img');
+        img.src = p.image;
+        img.alt = `${p.name} — ${p.species}`;
+        t.querySelector('.name').textContent = p.name;
+        t.querySelector('.species').textContent = p.species;
+        t.querySelector('.tag-location .value').textContent = p.location;
+        t.querySelector('.tag-light .value').textContent = p.light;
+        t.querySelector('.tag-difficulty .value').textContent = p.difficulty;
+
+        const chip = t.querySelector('.status-chip');
+        fillStatusChip(chip, p.status);
+
+        const nd = computeNextDue(p);
+        const nextcare = t.querySelector('.nextcare');
+        nextcare.textContent = nd.rel;
+        nextcare.classList.toggle('bg-rose-100/80', nd.diff < 0);
+        nextcare.classList.toggle('dark:bg-rose-900/30', nd.diff < 0);
+
+        const checkbox = t.querySelector('input[type="checkbox"]');
+        checkbox.checked = state.selected.has(p.id);
+        checkbox.addEventListener('change', () => {
+          if (checkbox.checked) state.selected.add(p.id);
+          else state.selected.delete(p.id);
+          updateBulkBar();
+        });
+
+        t.querySelector('.open-detail').addEventListener('click', () => openDrawer(p.id));
+
+        t.querySelector('.qa-btn.water').addEventListener('click', (e) => { e.stopPropagation(); logAction(p.id, 'water'); });
+        t.querySelector('.qa-btn.mist').addEventListener('click', (e) => { e.stopPropagation(); logAction(p.id, 'mist'); });
+        t.querySelector('.qa-btn.fertilize').addEventListener('click', (e) => { e.stopPropagation(); logAction(p.id, 'fertilize'); });
+
+        const overBtn = t.querySelector('.overflow-btn');
+        const overMenu = t.querySelector('.overflow-menu');
+        overBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          closeAllMenus();
+          overMenu.classList.toggle('hidden');
+          overBtn.setAttribute('aria-expanded', overMenu.classList.contains('hidden') ? 'false' : 'true');
+        });
+        $$('.menu-edit, .menu-duplicate, .menu-archive, .menu-delete', overMenu).forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (btn.classList.contains('menu-edit')) openPlantForm(p.id);
+            if (btn.classList.contains('menu-duplicate')) duplicatePlant(p.id);
+            if (btn.classList.contains('menu-archive') || btn.classList.contains('menu-delete')) removePlant(p.id);
+            overMenu.classList.add('hidden');
+          });
+        });
+
+        return t;
+      }
+
+      function closeAllMenus() {
+        $$('.overflow-menu').forEach(m => m.classList.add('hidden'));
+        $$('.filter-menu').forEach(m => m.classList.add('hidden'));
+      }
+
+      function applyFilters() {
+        const q = state.search.trim().toLowerCase();
+        let items = state.allPlants.filter(p => {
+          const matchesQ = !q || [p.name, p.species, p.location, p.light, p.difficulty, ...(p.tags || [])].some(v => String(v).toLowerCase().includes(q));
+          const matchesLoc = !state.filters.location || p.location === state.filters.location;
+          const matchesLight = !state.filters.light || p.light === state.filters.light;
+          const matchesStatus = !state.filters.status || p.status === state.filters.status;
+          const matchesDiff = !state.filters.difficulty || p.difficulty === state.filters.difficulty;
+          return matchesQ && matchesLoc && matchesLight && matchesStatus && matchesDiff;
+        });
+
+        switch (state.filters.sort) {
+          case 'name': items.sort((a,b) => a.name.localeCompare(b.name)); break;
+          case 'lastWatered': items.sort((a,b) => new Date(b.lastWatered) - new Date(a.lastWatered)); break;
+          case 'nextDue': items.sort((a,b) => computeNextDue(a).date - computeNextDue(b).date); break;
+          case 'addedDate': items.sort((a,b) => new Date(b.addedDate) - new Date(a.addedDate)); break;
+        }
+
+        state.filtered = items;
+        state.page = 1;
+        renderCollection();
+        renderSummary();
+        renderUpcoming();
+        renderCharts();
+      }
+
+      function renderCollection() {
+        // Skeleton off
+        $('#skeletonGrid').classList.add('hidden');
+
+        const start = 0;
+        const end = state.page * state.pageSize;
+        const visible = state.filtered.slice(start, end);
+
+        $('#gridContainer').classList.toggle('hidden', state.view !== 'grid');
+        $('#listContainer').classList.toggle('hidden', state.view !== 'list');
+
+        if (visible.length === 0) {
+          const hasPlants = state.allPlants.length > 0;
+          $('#emptyNoResults').classList.toggle('hidden', hasPlants);
+          $('#emptyNoPlants').classList.toggle('hidden', hasPlants);
+          $('#gridContainer').innerHTML = '';
+          $('#listContainer').innerHTML = '';
+          $('#loadMoreWrap').classList.add('hidden');
+          lucide.createIcons();
+          return;
+        } else {
+          $('#emptyNoResults').classList.add('hidden');
+          $('#emptyNoPlants').classList.add('hidden');
+        }
+
+        if (state.view === 'grid') {
+          const wrap = $('#gridContainer');
+          wrap.innerHTML = '';
+          visible.forEach(p => wrap.appendChild(plantCard(p)));
+        } else {
+          const wrap = $('#listContainer');
+          wrap.innerHTML = '';
+          visible.forEach(p => wrap.appendChild(plantRow(p)));
+        }
+
+        // Load more
+        const more = state.filtered.length > end;
+        $('#loadMoreWrap').classList.toggle('hidden', !more);
+
+        lucide.createIcons();
+      }
+
+      function renderSummary() {
+        $('#statTotal').textContent = state.allPlants.length;
+        const today = new Date();
+        const dueToday = state.allPlants.filter(p => daysDiff(addDays(p.lastWatered, p.schedule.waterEvery), today) === 0).length;
+        const overdue = state.allPlants.filter(p => daysDiff(addDays(p.lastWatered, p.schedule.waterEvery), today) < 0).length;
+        const newThisMonth = state.allPlants.filter(p => {
+          const d = new Date(p.addedDate);
+          const now = new Date();
+          return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+        }).length;
+
+        $('#statDueToday').textContent = dueToday;
+        $('#statOverdue').textContent = overdue;
+        $('#statNew').textContent = newThisMonth;
+      }
+
+      function renderUpcoming() {
+        const today = new Date();
+        const horizon = addDays(today, 7).setHours(0,0,0,);
+        const tasks = state.allPlants.map(p => {
+          const date = addDays(p.lastWatered, p.schedule.waterEvery);
+          return { plant: p, type: 'Water', date };
+        }).filter(t => t.date.setHours(0,0,0,0) <= horizon)
+          .sort((a,b) => a.date - b.date)
+          .slice(0, 9);
+
+        const list = $('#upcomingList');
+        list.innerHTML = '';
+        if (tasks.length === 0) {
+          list.innerHTML = '<p class="text-sm text-slate-500 dark:text-slate-400 px-1 py-2">No care due in the next 7 days.</p>';
+          return;
+        }
+
+        tasks.forEach(({ plant, type, date }) => {
+          const card = document.createElement('button');
+          card.className = 'text-left rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 p-2 hover:border-emerald-400';
+          card.innerHTML = `
+            <div class="flex items-center gap-2">
+              <div class="h-8 w-8 overflow-hidden rounded-lg ring-1 ring-slate-200 dark:ring-slate-800">
+                <img src="https://images.unsplash.com/photo-1621619856624-42fd193a0661?w=1080&q=80" alt="${plant.name}" class="h-full w-full object-cover" />
+              </div>
+              <div class="min-w-0">
+                <p class="truncate text-sm font-medium">${plant.name}</p>
+                <p class="truncate text-xs text-slate-500 dark:text-slate-400">${type} • ${fmtDate(date)} (${rel(date)})</p>
+              </div>
+              <span class="ml-auto inline-flex items-center rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-300 ring-1 ring-sky-400/20 px-2 py-0.5 text-[11px]">${type}</span>
+            </div>
+          `;
+          card.addEventListener('click', () => openDrawer(plant.id, 'care'));
+          list.appendChild(card);
+        });
+      }
+
+      let chartStatus, chartWeek;
+      function renderCharts() {
+        const ctx1 = $('#chartStatus').getContext('2d');
+        const counts = { Healthy: 0, Warning: 0, Alert: 0 };
+        state.allPlants.forEach(p => counts[p.status] = (counts[p.status] || 0) + 1);
+
+        if (chartStatus) chartStatus.destroy();
+        chartStatus = new Chart(ctx1, {
+          type: 'doughnut',
+          data: {
+            labels: ['Healthy', 'Warning', 'Alert'],
+            datasets: [{
+              data: [counts.Healthy, counts.Warning, counts.Alert],
+              backgroundColor: ['#10b98133', '#f59e0b33', '#ef444433'],
+              borderColor: ['#10b98155', '#f59e0b55', '#ef444455'],
+              borderWidth: 1.5
+            }]
+          },
+          options: {
+            plugins: { legend: { display: false } },
+            cutout: '60%'
+          }
+        });
+
+        const ctx2 = $('#chartDueWeek').getContext('2d');
+        const labels = [...Array(7)].map((_, i) => {
+          const d = addDays(new Date(), i);
+          return d.toLocaleDateString(undefined, { weekday: 'short' });
+        });
+        const data = labels.map((_, i) => {
+          const target = addDays(new Date(), i);
+          return state.allPlants.filter(p => daysDiff(addDays(p.lastWatered, p.schedule.waterEvery), target) === 0).length;
+        });
+
+        if (chartWeek) chartWeek.destroy();
+        chartWeek = new Chart(ctx2, {
+          type: 'bar',
+          data: {
+            labels,
+            datasets: [{
+              label: 'Tasks',
+              data,
+              backgroundColor: '#22c55e33',
+              borderColor: '#22c55e77',
+              borderWidth: 1.5,
+              borderRadius: 6
+            }]
+          },
+          options: {
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { grid: { display: false } },
+              y: { beginAtZero: true, ticks: { precision:0 } }
+            }
+          }
+        });
+      }
+
+      // Drawer
+      function openDrawer(id, tab = 'overview') {
+        const p = state.allPlants.find(x => x.id === id);
+        if (!p) return;
+        const drawer = $('#detailDrawer');
+        $('#drawerTitle').textContent = p.name;
+        $('#drawerImage').src = p.image;
+        $('#drawerImage').alt = `${p.name} image`;
+        $('#drawerSpecies').textContent = p.species;
+        $('#drawerLocation').textContent = p.location;
+        $('#drawerLight').textContent = p.light;
+        $('#drawerDifficulty').textContent = p.difficulty;
+
+        const st = $('#drawerStatus');
+        const s = statusStyles(p.status);
+        st.className = `inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[12px] ring-1 ${s.chip}`;
+        st.innerHTML = `<i data-lucide="${s.icon}" class="h-3.5 w-3.5"></i><span>${p.status}</span>`;
+
+        const tagsWrap = $('#drawerTags');
+        tagsWrap.innerHTML = '';
+        (p.tags || []).forEach(t => {
+          const el = document.createElement('span');
+          el.className = 'inline-flex items-center gap-1 rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[11px] text-slate-700 dark:text-slate-300 ring-1 ring-slate-200 dark:ring-slate-700';
+          el.innerHTML = `<i data-lucide="tag" class="h-3.5 w-3.5"></i>${t}`;
+          tagsWrap.appendChild(el);
+        });
+
+        // Care panel
+        $('#careWater').textContent = `every ${p.schedule.waterEvery} days`;
+        $('#careMist').textContent = `every ${p.schedule.mistEvery} days`;
+        $('#careFert').textContent = `every ${p.schedule.fertEvery} days`;
+        $('#careRepot').textContent = `every ${p.schedule.repotEvery} months`;
+        $('#careLast').textContent = fmtDate(p.lastWatered);
+        $('#careNext').textContent = fmtDate(addDays(p.lastWatered, p.schedule.waterEvery));
+
+        // Activity
+        const list = $('#activityList');
+        list.innerHTML = '';
+        (state.activity.filter(a => a.plantId === p.id).slice(0, 8)).forEach(a => {
+          const li = document.createElement('li');
+          li.className = 'flex items-start gap-2';
+          li.innerHTML = `<span class="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full ${a.bg} ring-1 ${a.ring}">
+            <i data-lucide="${a.icon}" class="h-3.5 w-3.5 ${a.color}"></i>
+          </span>
+          <div class="min-w-0">
+            <p class="truncate">${a.text}</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">${a.time.toLocaleString()}</p>
+          </div>`;
+          list.appendChild(li);
+        });
+
+        // Images
+        const grid = $('#imagesGrid');
+        grid.innerHTML = '';
+        (p.images || []).forEach(src => {
+          const fig = document.createElement('figure');
+          fig.className = 'overflow-hidden rounded-xl ring-1 ring-slate-200 dark:ring-slate-800';
+          fig.innerHTML = `<img src="https://images.unsplash.com/photo-1642615835477-d303d7dc9ee9?w=1080&q=80" alt="${p.name}" class="h-32 w-full object-cover" />`;
+          grid.appendChild(fig);
+        });
+
+        // Tabs
+        $$('.drawer-tab').forEach(btn => {
+          const is = btn.dataset.tab === tab;
+          btn.className = 'drawer-tab rounded-xl px-3 py-1.5 text-sm ' + (is ? 'border border-emerald-300/30 bg-emerald-600/10 text-emerald-700 dark:text-emerald-300 ring-1 ring-emerald-500/20' : 'border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60');
+        });
+        $$('.drawer-panel').forEach(panel => panel.classList.toggle('hidden', panel.dataset.panel !== tab));
+
+        // Show
+        drawer.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        lucide.createIcons();
+      }
+      function closeDrawer() {
+        $('#detailDrawer').classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+      $('#closeDrawer').addEventListener('click', closeDrawer);
+      $$('.drawer-tab').forEach(btn => btn.addEventListener('click', () => openDrawer($('#drawerTitle').textContent && (state.allPlants.find(p => p.name === $('#drawerTitle').textContent)?.id), btn.dataset.tab)));
+
+      // Activity feed (global)
+      function pushActivity({ plantId, text, icon = 'sparkles', color = 'text-slate-700 dark:text-slate-200', bg = 'bg-slate-100 dark:bg-slate-800', ring = 'ring-slate-200 dark:ring-slate-700' }) {
+        const item = { plantId, text, icon, color, bg, ring, time: new Date() };
+        state.activity.unshift(item);
+        // Render sidebar feed
+        const feed = $('#activityFeed');
+        const li = document.createElement('li');
+        li.className = 'flex items-start gap-2';
+        li.innerHTML = `<span class="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full ${bg} ring-1 ${ring}">
+          <i data-lucide="${icon}" class="h-3.5 w-3.5 ${color}"></i>
+        </span>
+        <div class="min-w-0">
+          <p class="truncate">${text}</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400">${item.time.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}</p>
+        </div>`;
+        feed.prepend(li);
+        // keep small
+        while (feed.children.length > 10) feed.removeChild(feed.lastChild);
+        lucide.createIcons();
+      }
+
+      function seedActivity() {
+        const sample = state.allPlants.slice(0, 6);
+        sample.forEach(p => {
+          pushActivity({
+            plantId: p.id,
+            text: `Watered ${p.name}`,
+            icon: 'droplet',
+            color: 'text-emerald-600 dark:text-emerald-400',
+            bg: 'bg-emerald-500/10',
+            ring: 'ring-emerald-400/20'
+          });
+        });
+      }
+
+      function logAction(id, type) {
+        const p = state.allPlants.find(x => x.id === id);
+        if (!p) return;
+        const now = new Date();
+        let meta = {};
+        if (type === 'water') { p.lastWatered = now; meta = { icon: 'droplet', color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-500/10', ring: 'ring-emerald-400/20' }; }
+        if (type === 'mist') { p.lastMisted = now; meta = { icon: 'wind', color: 'text-sky-600 dark:text-sky-400', bg: 'bg-sky-500/10', ring: 'ring-sky-400/20' }; }
+        if (type === 'fertilize') { p.lastFertilized = now; meta = { icon: 'leaf', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-500/10', ring: 'ring-amber-400/20' }; }
+        pushActivity({ plantId: id, text: `${type[0].toUpperCase()+type.slice(1)}d ${p.name}`, ...meta });
+        applyFilters(); // refresh views
+      }
+
+      // Bulk bar
+      function updateBulkBar() {
+        $('#bulkCount').textContent = state.selected.size;
+        const bar = $('#bulkBar');
+        if (state.selected.size > 0) {
+          bar.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+        } else {
+          bar.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+        }
+      }
+
+      // Filters UI
+      function setupFilters() {
+        $$('.relative[data-filter] .filter-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const menu = btn.parentElement.querySelector('.filter-menu');
+            closeAllMenus();
+            menu?.classList.toggle('hidden');
+            btn.setAttribute('aria-expanded', menu && !menu.classList.contains('hidden') ? 'true' : 'false');
+          });
+        });
+        $$('.filter-option').forEach(opt => {
+          opt.addEventListener('click', () => {
+            const wrap = opt.closest('.relative[data-filter]');
+            const key = wrap.dataset.filter;
+            const value = opt.dataset.value;
+            if (key === 'sort') {
+              state.filters.sort = value;
+              $('#sortLabel').textContent = opt.textContent.trim();
+            } else {
+              state.filters[key] = value;
+              renderChips();
+            }
+            closeAllMenus();
+            applyFilters();
+          });
+        });
+        $$('.filter-clear').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const key = btn.closest('.relative[data-filter]').dataset.filter;
+            state.filters[key] = null;
+            renderChips();
+            applyFilters();
+          });
+        });
+        $('#clearFilters').addEventListener('click', clearAllFilters);
+        $('#clearAllFromEmpty').addEventListener('click', clearAllFilters);
+        document.addEventListener('click', closeAllMenus);
+      }
+
+      function renderChips() {
+        const wrap = $('#appliedChips');
+        wrap.innerHTML = '';
+        Object.entries(state.filters).forEach(([k, v]) => {
+          if (!v || k === 'sort') return;
+          const chip = document.createElement('span');
+          chip.className = 'inline-flex items-center gap-1 rounded-full bg-emerald-600/10 text-emerald-700 dark:text-emerald-300 ring-1 ring-emerald-500/20 px-2 py-0.5 text-[11px]';
+          chip.innerHTML = `<i data-lucide="filter" class="h-3.5 w-3.5"></i><span>${k[0].toUpperCase()+k.slice(1)}: ${v}</span><button class="ml-1 rounded hover:text-emerald-900 dark:hover:text-emerald-100" aria-label="Remove"><i data-lucide="x" class="h-3.5 w-3.5"></i></button>`;
+          chip.querySelector('button').addEventListener('click', () => {
+            state.filters[k] = null;
+            renderChips();
+            applyFilters();
+          });
+          wrap.appendChild(chip);
+        });
+        lucide.createIcons();
+      }
+
+      function clearAllFilters() {
+        state.filters.location = null;
+        state.filters.light = null;
+        state.filters.status = null;
+        state.filters.difficulty = null;
+        renderChips();
+        applyFilters();
+      }
+
+      // Search
+      $('#search').addEventListener('input', (e) => {
+        state.search = e.target.value;
+        applyFilters();
+      });
+
+      // View toggle
+      $('#viewGridBtn').addEventListener('click', () => {
+        state.view = 'grid';
+        $('#viewGridBtn').setAttribute('aria-selected', 'true');
+        $('#viewListBtn').setAttribute('aria-selected', 'false');
+        renderCollection();
+      });
+      $('#viewListBtn').addEventListener('click', () => {
+        state.view = 'list';
+        $('#viewGridBtn').setAttribute('aria-selected', 'false');
+        $('#viewListBtn').setAttribute('aria-selected', 'true');
+        renderCollection();
+      });
+
+      // Load more
+      $('#loadMore').addEventListener('click', (e) => {
+        const icon = e.currentTarget.querySelector('i');
+        icon.classList.remove('hidden');
+        setTimeout(() => {
+          state.page += 1;
+          renderCollection();
+          icon.classList.add('hidden');
+        }, 500);
+      });
+
+      // Theme toggle
+      $('#themeToggle').addEventListener('click', () => {
+        const isDark = document.documentElement.classList.contains('dark');
+        applyTheme(isDark ? 'light' : 'dark');
+        renderCharts();
+      });
+
+      // Plant form
+      function openPlantForm(id) {
+        const modal = $('#plantFormModal');
+        const form = $('#plantForm');
+        form.reset();
+        form.dataset.id = id || '';
+        $('#plantFormTitle').textContent = id ? 'Edit plant' : 'Add plant';
+
+        if (id) {
+          const p = state.allPlants.find(x => x.id === id);
+          form.name.value = p.name;
+          form.species.value = p.species;
+          form.location.value = p.location;
+          form.light.value = p.light;
+          form.difficulty.value = p.difficulty;
+          form.image.value = p.image;
+          form.notes.value = p.notes || '';
+          form.waterEvery.value = p.schedule.waterEvery;
+          form.mistEvery.value = p.schedule.mistEvery;
+          form.fertEvery.value = p.schedule.fertEvery;
+          form.repotEvery.value = p.schedule.repotEvery;
+        }
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+        lucide.createIcons();
+      }
+      function closePlantForm() {
+        const modal = $('#plantFormModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = '';
+      }
+      window.openPlantForm = openPlantForm;
+
+      $('#addPlantBtn').addEventListener('click', () => openPlantForm());
+      $('#closePlantForm').addEventListener('click', closePlantForm);
+      $$('.form-cancel').forEach(b => b.addEventListener('click', closePlantForm));
+      $('#plantFormModal .modal-backdrop').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) closePlantForm();
+      });
+
+      $('#plantForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const form = e.target;
+        if (!form.name.value.trim()) {
+          form.querySelector('p.hidden')?.classList.remove('hidden');
+          return;
+        }
+
+        const id = form.dataset.id || `p${Date.now()}`;
+        const preset = form.preset.value;
+        let waterEvery = Number(form.waterEvery.value || 7);
+        let mistEvery = Number(form.mistEvery.value || 3);
+        let fertEvery = Number(form.fertEvery.value || 45);
+        let repotEvery = Number(form.repotEvery.value || 12);
+
+        if (preset === 'Low') { waterEvery = 10; mistEvery = 5; fertEvery = 60; repotEvery = 18; }
+        if (preset === 'Standard') { waterEvery = 7; mistEvery = 3; fertEvery = 45; repotEvery = 12; }
+        if (preset === 'Intensive') { waterEvery = 4; mistEvery = 2; fertEvery = 30; repotEvery = 12; }
+
+        const plant = {
+          id,
+          name: form.name.value.trim(),
+          species: form.species.value.trim(),
+          image: form.image.value.trim() || `https://picsum.photos/seed/${encodeURIComponent(form.name.value.trim())}/800/600`,
+          location: form.location.value.trim() || 'Living room',
+          light: form.light.value,
+          difficulty: form.difficulty.value,
+          status: 'Healthy',
+          addedDate: new Date(),
+          lastWatered: addDays(new Date(), -1),
+          lastMisted: addDays(new Date(), -2),
+          lastFertilized: addDays(new Date(), -30),
+          lastRepotted: addDays(new Date(), -200),
+          schedule: { waterEvery, mistEvery, fertEvery, repotEvery },
+          tags: [],
+          images: [],
+          notes: form.notes.value.trim()
+        };
+
+        const existingIdx = state.allPlants.findIndex(p => p.id === id);
+        if (existingIdx >= 0) state.allPlants[existingIdx] = plant;
+        else state.allPlants.unshift(plant);
+
+        pushActivity({ plantId: id, text: `${existingIdx >= 0 ? 'Updated' : 'Added'} ${plant.name}`, icon: 'sprout', color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-500/10', ring: 'ring-emerald-400/20' });
+
+        applyFilters();
+        closePlantForm();
+      });
+
+      function duplicatePlant(id) {
+        const p = state.allPlants.find(x => x.id === id);
+        if (!p) return;
+        const clone = JSON.parse(JSON.stringify(p));
+        clone.id = `p${Date.now()}`;
+        clone.name = `${p.name} (copy)`;
+        clone.addedDate = new Date();
+        state.allPlants.unshift(clone);
+        pushActivity({ plantId: clone.id, text: `Duplicated ${p.name}`, icon: 'copy', color: 'text-slate-700 dark:text-slate-200' });
+        applyFilters();
+      }
+
+      function removePlant(id) {
+        const p = state.allPlants.find(x => x.id === id);
+        state.allPlants = state.allPlants.filter(x => x.id !== id);
+        state.selected.delete(id);
+        pushActivity({ plantId: id, text: `Removed ${p?.name || 'plant'}`, icon: 'trash-2', color: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-500/10', ring: 'ring-rose-400/20' });
+        applyFilters();
+        updateBulkBar();
+      }
+
+      // Bulk actions (demo)
+      $('#bulkMove').addEventListener('click', () => {
+        state.selected.forEach(id => {
+          const p = state.allPlants.find(x => x.id === id);
+          if (p) p.location = 'Office';
+        });
+        renderChips();
+        applyFilters();
+      });
+      $('#bulkSchedule').addEventListener('click', () => {
+        state.selected.forEach(id => {
+          const p = state.allPlants.find(x => x.id === id);
+          if (p) p.schedule.waterEvery = Math.max(3, p.schedule.waterEvery - 1);
+        });
+        applyFilters();
+      });
+      $('#bulkTag').addEventListener('click', () => {
+        state.selected.forEach(id => {
+          const p = state.allPlants.find(x => x.id === id);
+          if (p && !p.tags.includes('bulk')) p.tags.push('bulk');
+        });
+        applyFilters();
+      });
+      $('#bulkDelete').addEventListener('click', () => {
+        if (!confirm('Delete selected plants?')) return;
+        state.selected.forEach(id => removePlant(id));
+        state.selected.clear();
+        updateBulkBar();
+      });
+
+      // Detail drawer header actions (demo)
+      $('#detailDrawer .bg-rose-600').addEventListener('click', () => {
+        const name = $('#drawerTitle').textContent;
+        const p = state.allPlants.find(x => x.name === name);
+        if (!p) return;
+        removePlant(p.id);
+        closeDrawer();
+      });
+
+      // Search, filters, etc.
+      setupFilters();
+
+      // View init with skeletons
+      function showSkeletons() {
+        const sWrap = $('#skeletonGrid');
+        sWrap.innerHTML = '';
+        const tpl = $('#skeletonCardTemplate').content.firstElementChild;
+        for (let i = 0; i < 8; i++) sWrap.appendChild(tpl.cloneNode(true));
+      }
+
+      // Init
+      document.addEventListener('DOMContentLoaded', () => {
+        // Theme
+        const pref = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        applyTheme(pref);
+
+        lucide.createIcons();
+
+        showSkeletons();
+
+        // Data
+        state.allPlants = generateDemoPlants();
+        seedActivity();
+
+        // Initial render
+        applyFilters();
+
+        // Keyboard
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            closeAllMenus();
+            closeDrawer();
+            closePlantForm();
+          }
+        });
+
+        // Detail drawer action buttons (Move/Archive demo)
+        const hdrBtns = $$('#detailDrawer .border');
+        hdrBtns.forEach(b => b.addEventListener('click', () => alert('Demo action')));
+      });
+    </script>
+  </body>
+</html>

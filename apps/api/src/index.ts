@@ -9,6 +9,7 @@ import router from './routes/plant.route';
 import userRoute from './routes/user.route';
 import speciesRoute from './routes/species.route';
 import careTasksRoute from './routes/careTasks.route';
+import communityRoute from './routes/community.route';
 import { prisma } from './db';
 
 dotenv.config({ path: '.env' })
@@ -39,6 +40,7 @@ app.use('/api/identify-plant', plantIdentifyRouter);
 app.use('/api/v1/plants',router);
 app.use('/api/v1/species',speciesRoute);
 app.use('/api/v1/care-tasks', careTasksRoute);
+app.use('/api/v1/community', communityRoute);
 
 // Health check endpoint
 app.get('/health', async (req: Request, res: Response) => {
