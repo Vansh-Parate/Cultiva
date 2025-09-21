@@ -15,7 +15,7 @@ function fileToBase64(file){
             rej(new Error('FileReader result is not a string'));
           }
         };
-        reader.onerror = error => rej(error);
+        reader.onerror = error => rej(new Error(`File reading error: ${error.toString()}`));
     })
 }
 
@@ -126,10 +126,24 @@ const FindPlant = () => {
   const [healthLoading, setHealthLoading] = useState(false);
   const [showReminderModal, setShowReminderModal] = useState(false);
   const [reminderPlant, setReminderPlant] = useState(null);
+  const [demoMode, setDemoMode] = useState(false);
 
   const handleIdentify = async() => {
     if(!uploadedFile) {
       setError('Please select an image first');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (uploadedFile.size > 5 * 1024 * 1024) {
+      setError('Image file is too large. Please upload an image smaller than 5MB.');
+      return;
+    }
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(uploadedFile.type)) {
+      setError('Unsupported file type. Please upload a JPEG, PNG, or WebP image.');
       return;
     }
 
@@ -138,23 +152,48 @@ const FindPlant = () => {
     setError(null);
     
     try{
+        console.log('Converting image to base64...');
         const base64 = await fileToBase64(uploadedFile);
+        console.log('Base64 conversion complete, making API request...');
 
         const response = await apiClient.post('/api/identify-plant', {
             base64,
         });
 
+        console.log('API response received:', response.data);
         setApiResult(response.data);
         setShowResults(true);
     }catch (err){
-        console.error('Identification error:', err);
-        if (err.response?.data?.error) {
-          setError(`Identification failed: ${err.response.data.error}`);
-        } else if (err.response?.data?.details) {
-          setError(`Identification failed: ${err.response.data.details}`);
-        } else {
-          setError('Failed to identify plant. Please try again with a clearer image.');
+        // Check if it's an API key error and offer demo mode
+        if (err.response?.data?.error?.includes('API key') || err.response?.data?.error?.includes('not configured')) {
+          setError('Plant identification service is not configured. Would you like to try demo mode?');
+          setDemoMode(true);
+          return;
         }
+        console.error('Identification error:', err);
+        console.error('Error details:', {
+          message: err.message,
+          status: err.response?.status,
+          statusText: err.response?.statusText,
+          data: err.response?.data
+        });
+        
+        let errorMessage = 'Failed to identify plant. Please try again.';
+        
+        if (err.response?.data?.error) {
+          errorMessage = err.response.data.error;
+          
+          // Add helpful suggestions based on error type
+          if (err.response.data.suggestion) {
+            errorMessage += ` ${err.response.data.suggestion}`;
+          }
+        } else if (err.response?.data?.details) {
+          errorMessage = err.response.data.details;
+        } else if (err.message) {
+          errorMessage = err.message;
+        }
+        
+        setError(errorMessage);
     }finally{
         setLoading(false);
     }
@@ -257,6 +296,68 @@ const FindPlant = () => {
     }
   };
 
+  const handleDemoMode = () => {
+    setLoading(true);
+    setError(null);
+    setDemoMode(false);
+    
+    // Simulate API response with demo data
+    setTimeout(() => {
+      const demoResult = {
+        result: {
+          classification: {
+            suggestions: [
+              {
+                id: 'demo-1',
+                name: 'Snake Plant (Sansevieria)',
+                probability: 0.95,
+                details: 'A popular houseplant known for its air-purifying qualities and low maintenance requirements.',
+                similar_images: [
+                  {
+                    url_small: 'https://images.unsplash.com/photo-1593482892290-7b8b5b5b5b5b?w=150&h=150&fit=crop'
+                  }
+                ]
+              },
+              {
+                id: 'demo-2',
+                name: 'Monstera Deliciosa',
+                probability: 0.87,
+                details: 'A tropical plant with large, split leaves that thrives in bright, indirect light.',
+                similar_images: [
+                  {
+                    url_small: 'https://images.unsplash.com/photo-1593482892290-7b8b5b5b5b5b?w=150&h=150&fit=crop'
+                  }
+                ]
+              },
+              {
+                id: 'demo-3',
+                name: 'Pothos (Epipremnum)',
+                probability: 0.82,
+                details: 'An easy-care trailing plant perfect for beginners and hanging baskets.',
+                similar_images: [
+                  {
+                    url_small: 'https://images.unsplash.com/photo-1593482892290-7b8b5b5b5b5b?w=150&h=150&fit=crop'
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      };
+      
+      setApiResult(demoResult);
+      setShowResults(true);
+      setLoading(false);
+      
+      setToast({
+        show: true,
+        title: 'Demo Mode',
+        message: 'This is a demo with sample plant data. Configure the API key for real identification.',
+      });
+      setTimeout(() => setToast(t => ({ ...t, show: false })), 4000);
+    }, 2000);
+  };
+
   return (
     <div className='min-h-screen w-full flex bg-[#F5E9DA] text-[#2D2D2D]'>
       <div className='flex-1 flex justify-center items-center px-4 py-10'>
@@ -313,9 +414,9 @@ const FindPlant = () => {
               {Array.isArray(apiResult?.result?.classification?.suggestions) &&
                                              apiResult.result.classification.suggestions.slice(0, 3).map((s, idx) => {
                          return (
-                          <div 
+                          <button 
                             key={s.id || idx} 
-                            className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
+                            className={`w-full p-4 rounded-xl border-2 transition-all text-left ${
                               selectedPlant?.index === idx 
                                 ? 'border-green-500 bg-green-50' 
                                 : 'border-gray-200 bg-gray-50 hover:border-green-300'
@@ -333,16 +434,16 @@ const FindPlant = () => {
                               <div className="flex-1">
                                 <div className='font-bold text-green-700 text-lg mb-1'>{s.name}</div>
                                 <div className='text-sm text-gray-600 mb-3'>
-                        Confidence: {(s.probability * 100).toFixed(1)}%
-                      </div>
+                                  Confidence: {(s.probability * 100).toFixed(1)}%
+                                </div>
                       <button
-                                  className={`px-4 py-2 rounded-lg font-semibold text-white bg-green-600 hover:bg-green-700 transition-colors shadow ${
-                                    addedIdx === idx ? 'opacity-60 pointer-events-none bg-green-500' : ''
-                                  }`}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleAddToCollection(idx);
-                                  }}
+                        className={`px-4 py-2 rounded-lg font-semibold text-white bg-green-600 hover:bg-green-700 transition-colors shadow ${
+                          addedIdx === idx ? 'opacity-60 pointer-events-none bg-green-500' : ''
+                        }`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAddToCollection(idx);
+                        }}
                         disabled={addedIdx === idx}
                       >
                         {addedIdx === idx ? 'Added!' : 'Add to Collection'}
@@ -358,7 +459,7 @@ const FindPlant = () => {
                       </button>
                     </div>
                   </div>
-                          </div>
+                          </button>
                         );
                       })
                     }
@@ -405,7 +506,7 @@ const FindPlant = () => {
                               <div className="font-semibold text-gray-800 mb-2">Quick Tips</div>
                               <ul className="text-sm text-gray-600 space-y-1">
                                 {tips.tips.map((tip, idx) => (
-                                  <li key={idx} className="flex items-start gap-2">
+                                  <li key={`tip-${tip}-${idx}`} className="flex items-start gap-2">
                                     <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
                                     {tip}
                                   </li>
@@ -449,7 +550,7 @@ const FindPlant = () => {
                               <div className="text-sm font-medium text-gray-700 mb-2">Potential Issues:</div>
                               <div className="space-y-2">
                                 {healthAssessment.result.disease.suggestions.slice(0, 2).map((issue, idx) => (
-                                  <div key={idx} className="text-xs text-gray-600 bg-white rounded p-2">
+                                  <div key={`issue-${issue.name}-${idx}`} className="text-xs text-gray-600 bg-white rounded p-2">
                                     <span className="font-medium">{issue.name}</span>
                                     <span className="text-gray-500 ml-2">
                                       ({(issue.probability * 100).toFixed(1)}% confidence)
@@ -474,9 +575,57 @@ const FindPlant = () => {
 
           {/* Error Display */}
           {error && (
-            <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-              <div className="font-semibold mb-1">Identification Error</div>
-              <div className="text-sm">{error}</div>
+            <div className="mt-6 p-6 bg-red-50 border border-red-200 rounded-xl text-red-700">
+              <div className="flex items-start gap-3">
+                <div className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <span className="text-red-600 text-sm">!</span>
+                </div>
+                <div className="flex-1">
+                  <div className="font-semibold mb-2 text-lg">Identification Error</div>
+                  <div className="text-sm mb-3">{error}</div>
+                  {error.includes('API key') && (
+                    <div className="bg-red-100 p-3 rounded-lg">
+                      <div className="text-sm font-medium mb-2">To fix this issue:</div>
+                      <ol className="text-xs space-y-1 list-decimal list-inside">
+                        <li>Get a free API key from <a href="https://web.plant.id/plant-identification-api/" target="_blank" rel="noopener noreferrer" className="underline">Plant.id</a></li>
+                        <li>Add the API key to your environment variables</li>
+                        <li>Restart the server</li>
+                      </ol>
+                    </div>
+                  )}
+                  {error.includes('demo mode') && (
+                    <div className="bg-blue-100 p-3 rounded-lg">
+                      <div className="text-sm font-medium mb-2">Try Demo Mode:</div>
+                      <p className="text-xs mb-3">Experience the plant identification feature with sample data.</p>
+                      <button 
+                        onClick={handleDemoMode}
+                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                      >
+                        Try Demo Mode
+                      </button>
+                    </div>
+                  )}
+                  <div className="flex gap-2 mt-3">
+                    <button 
+                      onClick={() => setError(null)}
+                      className="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium"
+                    >
+                      Dismiss
+                    </button>
+                    {!error.includes('demo mode') && (
+                      <button 
+                        onClick={() => {
+                          setError(null);
+                          setUploadedFile(null);
+                        }}
+                        className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium"
+                      >
+                        Try Again
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 

@@ -2,7 +2,7 @@ import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import { authenticateJWT } from '../middleware/authMiddleware';
 
-const router = express.Router();
+const router: express.Router = express.Router();
 const prisma = new PrismaClient();
 
 // Get all community posts
