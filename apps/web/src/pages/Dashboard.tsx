@@ -303,7 +303,7 @@ const Dashboard: React.FC = () => {
               </button>
               <Link to="/" className="flex items-center gap-3">
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-teal-600 text-white shadow-sm ring-1 ring-teal-500/30">
-                  <span className="text-sm font-semibold tracking-tight">CV</span>
+                  <img src="./public/Cultiva-Photoroom.png" alt="Cultiva Logo" className="text-sm font-semibold tracking-tight"></img>
                 </div>
                 <span className="text-sm font-medium tracking-tight text-teal-100">Cultiva</span>
               </Link>

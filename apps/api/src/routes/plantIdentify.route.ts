@@ -8,20 +8,33 @@ router.post('/', async (req, res) => {
     const { base64 } = req.body;
     
     // Check if API key is configured
-    if (!process.env.PLANT_ID_API_KEY) {
+    if (!process.env.PLANT_ID_API_KEY || process.env.PLANT_ID_API_KEY.trim() === '') {
       console.error('Plant ID API key not configured');
       return res.status(500).json({
         error: 'Plant identification service not configured',
         details: 'API key is missing. Please configure PLANT_ID_API_KEY in environment variables.',
-        suggestion: 'Get a free API key from https://web.plant.id/plant-identification-api/'
+        suggestion: 'Get a free API key from https://web.plant.id/plant-identification-api/',
+        demoMode: true
       });
     }
 
     // Validate base64 input
-    if (!base64) {
+    if (!base64 || base64.trim() === '') {
       return res.status(400).json({
         error: 'Invalid request',
         details: 'Base64 image data is required'
+      });
+    }
+
+    // Validate base64 format
+    const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/;
+    const cleanBase64 = base64.replace(/^data:image\/[a-z]+;base64,/, '');
+    
+    if (!base64Regex.test(cleanBase64) || cleanBase64.length < 100) {
+      return res.status(400).json({
+        error: 'Invalid image format',
+        details: 'The uploaded image format is not supported or image is too small',
+        suggestion: 'Please upload a valid image file (JPEG, PNG, or WebP)'
       });
     }
 

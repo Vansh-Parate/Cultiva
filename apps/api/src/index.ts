@@ -67,6 +67,15 @@ app.get('/health', async (req: Request, res: Response) => {
   }
 });
 
+// Lightweight ping endpoint for cron jobs to keep service awake
+app.get('/ping', (_req: Request, res: Response) => {
+  res.status(200).json({
+    status: 'alive',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
 app.get('/', (_req: Request, res: Response) => {
   res.status(200).json({
     success: true,

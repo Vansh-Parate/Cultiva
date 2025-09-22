@@ -41,7 +41,7 @@ const Sidebar: React.FC = () => {
       {/* Brand */}
       <div className="flex items-center gap-3 px-6 h-16">
         <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-teal-600 to-teal-400 flex items-center justify-center shadow-sm">
-          <Sprout className="text-white w-5 h-5" />
+          <img src="./public/Cultiva-Photoroom.png" alt="Cultiva Logo" className="text-sm font-semibold tracking-tight"></img>
         </div>
         <div>
           <p className="text-xl tracking-tight font-semibold text-teal-100">Cultiva</p>
