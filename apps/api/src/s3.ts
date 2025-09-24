@@ -41,8 +41,15 @@ export async function uploadImageToS3(buffer: Buffer, mimetype: string): Promise
       })
     );
     
-    // Construct proper S3 URL for ap-south-1 region
-    const s3Url = `https://${BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+    // Construct a safe, accessible S3 URL
+    // - Use path-style URLs if bucket contains dots to avoid TLS cert mismatch
+    // - Use regional endpoint, with us-east-1 special-cased
+    const region = process.env.AWS_REGION || 'us-east-1';
+    const bucketHasDot = BUCKET.includes('.')
+    const host = region === 'us-east-1' ? 's3.amazonaws.com' : `s3.${region}.amazonaws.com`;
+    const s3Url = bucketHasDot
+      ? `https://${host}/${BUCKET}/${key}`
+      : `https://${BUCKET}.s3.${region}.amazonaws.com/${key}`;
     console.log(`✅ Image uploaded to S3: ${s3Url}`);
     return s3Url;
   } catch (error: any) {
