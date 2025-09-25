@@ -29,6 +29,7 @@ import { Line } from 'react-chartjs-2';
 import apiClient from '../lib/axios';
 import CustomToast from '../components/CustomToast';
 import { useWeather } from '../hooks/useWeather';
+import Calendar from '../components/widgets/Calendar';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -460,42 +461,7 @@ const Dashboard: React.FC = () => {
               </div>
 
               {/* Mini Calendar */}
-              <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-base font-semibold tracking-tight text-teal-100">Care calendar</h2>
-                  <div className="inline-flex items-center gap-1 rounded-full border border-slate-700/60 bg-slate-900 px-3 py-1 text-xs text-slate-200">
-                    <CalendarDays className="h-4 w-4" />
-                    June 2025
-                  </div>
-                </div>
-                <div className="mt-3 grid grid-cols-7 gap-1 text-center text-[11px] text-slate-400">
-                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                    <span key={day}>{day}</span>
-                  ))}
-                </div>
-                <div className="mt-1 grid grid-cols-7 gap-1">
-                  {Array.from({ length: 35 }, (_, i) => (
-                    <div key={i} className={`h-12 rounded-lg border border-slate-800 ${
-                      i === 6 ? 'bg-teal-900/20 ring-1 ring-teal-700/30' : 'bg-slate-900/40'
-                    }`}>
-                      {i === 6 && (
-                        <span className="absolute right-1 top-1 inline-flex h-1.5 w-1.5 rounded-full bg-teal-400 ring-2 ring-slate-900"></span>
-                      )}
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-3 flex items-center gap-3 text-[11px]">
-                  <span className="inline-flex items-center gap-1 text-slate-400">
-                    <span className="h-1.5 w-1.5 rounded-full bg-teal-400"></span> Water
-                  </span>
-                  <span className="inline-flex items-center gap-1 text-slate-400">
-                    <span className="h-1.5 w-1.5 rounded-full bg-amber-300"></span> Fertilize
-                  </span>
-                  <span className="inline-flex items-center gap-1 text-slate-400">
-                    <span className="h-1.5 w-1.5 rounded-full bg-rose-300"></span> Repot
-                  </span>
-                </div>
-              </div>
+              <Calendar />
             </div>
 
             {/* Col 2 */}

@@ -9,13 +9,21 @@ const prisma = new PrismaClient();
 router.get('/', authenticateJWT, async (req, res) => {
   try {
     const userId = (req as any).user?.userId;
+    const { start, end } = req.query as { start?: string; end?: string };
     
     if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
+    const where: any = { userId };
+    if (start || end) {
+      where.dueDate = {};
+      if (start) where.dueDate.gte = new Date(start);
+      if (end) where.dueDate.lte = new Date(end);
+    }
+
     const tasks = await (prisma as any).careTask.findMany({
-      where: { userId },
+      where,
       orderBy: { dueDate: 'asc' }
     });
 
