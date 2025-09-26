@@ -1,22 +1,28 @@
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
+import { config as appConfig } from './config/env';
 
+// Ensure env is loaded via config/env (dotenv.config ran there)
 // Check if S3 environment variables are set
-const isS3Configured = process.env.AWS_REGION && process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY && process.env.S3_BUCKET_NAME;
+const isS3Configured =
+  !!appConfig.AWS_REGION &&
+  !!appConfig.AWS_ACCESS_KEY_ID &&
+  !!appConfig.AWS_SECRET_ACCESS_KEY &&
+  !!appConfig.S3_BUCKET_NAME;
 
 let s3: S3Client | null = null;
 let BUCKET: string | null = null;
 
 if (isS3Configured) {
   s3 = new S3Client({
-    region: process.env.AWS_REGION,
+    region: appConfig.AWS_REGION,
     credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+      accessKeyId: appConfig.AWS_ACCESS_KEY_ID!,
+      secretAccessKey: appConfig.AWS_SECRET_ACCESS_KEY!,
     },
   });
-  BUCKET = process.env.S3_BUCKET_NAME!;
-  console.log(`✅ S3 configured for region: ${process.env.AWS_REGION}, bucket: ${BUCKET}`);
+  BUCKET = appConfig.S3_BUCKET_NAME!;
+  console.log(`✅ S3 configured for region: ${appConfig.AWS_REGION}, bucket: ${BUCKET}`);
 } else {
   console.warn('⚠️ S3 not configured - missing environment variables');
 }
@@ -44,7 +50,7 @@ export async function uploadImageToS3(buffer: Buffer, mimetype: string): Promise
     // Construct a safe, accessible S3 URL
     // - Use path-style URLs if bucket contains dots to avoid TLS cert mismatch
     // - Use regional endpoint, with us-east-1 special-cased
-    const region = process.env.AWS_REGION || 'us-east-1';
+    const region = appConfig.AWS_REGION || 'us-east-1';
     const bucketHasDot = BUCKET.includes('.')
     const host = region === 'us-east-1' ? 's3.amazonaws.com' : `s3.${region}.amazonaws.com`;
     const s3Url = bucketHasDot
