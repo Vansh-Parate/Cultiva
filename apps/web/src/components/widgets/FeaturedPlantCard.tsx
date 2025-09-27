@@ -40,8 +40,35 @@ const FeaturedPlantCard: React.FC<FeaturedPlantCardProps> = ({ plant }) => {
     }
   }, [plant.waterPH, plant.species, plant.location]);
 
+  const getHumidityValue = () => {
+    if (loading) return 'Loading...';
+    return (weather.humidity ?? plant.humidity ?? 'N/A') + '%';
+  };
+
+  const getWaterPHValue = () => {
+    if (loading) return 'Loading...';
+    if (plant.waterPH !== undefined && plant.waterPH !== null && plant.waterPH !== 0) {
+      return plant.waterPH.toString();
+    }
+    if (phAdvice && phAdvice !== 'No answer found') {
+      return phAdvice;
+    }
+    return 'N/A';
+  };
+
+  const getTemperatureValue = () => {
+    if (loading) return 'Loading...';
+    if (weather.temperature !== undefined) {
+      return `${weather.temperature.toFixed(1)}°C`;
+    }
+    if (plant.temperature !== undefined && plant.temperature !== null) {
+      return `${Number(plant.temperature).toFixed(1)}°C`;
+    }
+    return '--';
+  };
+
   return (
-    <div className="relative w-full bg-white rounded-3xl shadow-2xl p-4 sm:p-6 lg:p-8 flex flex-col lg:flex-row items-center gap-4 sm:gap-6 lg:gap-8 overflow-hidden">
+    <div className="relative w-full bg-white/60 backdrop-blur rounded-3xl border border-emerald-900/10 p-4 sm:p-6 lg:p-8 flex flex-col lg:flex-row items-center gap-4 sm:gap-6 lg:gap-8 overflow-hidden">
       <img
         src="/decorative-leaf.svg"
         alt=""
@@ -53,58 +80,36 @@ const FeaturedPlantCard: React.FC<FeaturedPlantCardProps> = ({ plant }) => {
         <img
           src={plant.photoUrl || "/placeholder-plant.png"}
           alt={plant.name}
-          className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full border-4 border-green-400 object-cover"
+          className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full border-4 border-emerald-400 object-cover"
           onError={e => { e.currentTarget.src = '/placeholder-plant.png'; }}
         />
         <div className="text-center lg:text-left">
-          <div className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800">{plant.name}</div>
-          <div className="text-sm sm:text-base text-green-700">{plant.species}</div>
+          <div className="text-lg sm:text-xl lg:text-2xl font-medium text-slate-800">{plant.name}</div>
+          <div className="text-sm sm:text-base text-emerald-700">{plant.species}</div>
         </div>
       </div>
 
       <div className="flex-1 flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 lg:gap-6 z-10 min-w-0 w-full">
         <PlantStat
-          icon={<Droplet size={24} className="text-green-500 sm:w-6 sm:h-6 lg:w-8 lg:h-8" />}
-          value={
-            loading
-              ? 'Loading...'
-              : (weather.humidity ?? plant.humidity ?? 'N/A') + '%'
-          }
+          icon={<Droplet size={24} className="text-emerald-500 sm:w-6 sm:h-6 lg:w-8 lg:h-8" />}
+          value={getHumidityValue()}
           label="Humidity"
-          bg="bg-[#1a2b23] text-white"
-          valueClass="text-white"
+          bg="bg-emerald-50 border border-emerald-200"
+          valueClass="text-emerald-800"
         />
         <PlantStat
           icon={<Sparkles size={24} className="text-blue-400 sm:w-6 sm:h-6 lg:w-8 lg:h-8" />}
-          value={
-            loading
-              ? 'Loading...'
-              : plant.waterPH !== undefined && plant.waterPH !== null && plant.waterPH !== 0
-                ? plant.waterPH.toString()
-                : phAdvice && phAdvice !== 'No answer found'
-                  ? phAdvice
-                  : 'N/A'
-          }
+          value={getWaterPHValue()}
           label="Water pH"
-          bg="bg-[#eaf6fb]"
-          valueClass="text-black"
+          bg="bg-sky-50 border border-sky-200"
+          valueClass="text-sky-800"
         />
         <PlantStat
-          icon={<Sun size={24} className="text-yellow-400 sm:w-6 sm:h-6 lg:w-8 lg:h-8" />}
-          value={
-            loading
-              ? 'Loading...'
-              : (
-                  weather.temperature !== undefined
-                    ? `${weather.temperature.toFixed(1)}°C`
-                    : plant.temperature !== undefined && plant.temperature !== null
-                      ? `${Number(plant.temperature).toFixed(1)}°C`
-                      : '--'
-                )
-          }
+          icon={<Sun size={24} className="text-amber-500 sm:w-6 sm:h-6 lg:w-8 lg:h-8" />}
+          value={getTemperatureValue()}
           label="Temperature"
-          bg="bg-[#fff7e6]"
-          valueClass="text-black"
+          bg="bg-amber-50 border border-amber-200"
+          valueClass="text-amber-800"
         />
       </div>
 

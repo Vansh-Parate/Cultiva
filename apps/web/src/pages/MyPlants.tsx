@@ -33,7 +33,7 @@ const HealthDashboard = ({ plant }) => {
   if (!plant) return null;
   if (loadingHealth) return <div className="mt-6 font-black">Loading health assessment...</div>;
   if (error) return <div className="mt-6 text-red-500 font-black">{error}</div>;
-  if (!healthResult || !healthResult.result) return <div className="mt-6 font-black">No health data available.</div>;
+  if (!healthResult?.result) return <div className="mt-6 font-black">No health data available.</div>;
 
   const healthScore = Math.round((healthResult.result?.is_healthy?.probability || 0) * 100);
   const isHealthy = healthResult.result?.is_healthy?.binary;
@@ -209,31 +209,39 @@ const MyPlants = () => {
   }
 
   return (
-    <div className="flex flex-col px-6 py-8 space-y-8 min-w-0">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-black text-gray-900">My Plants</h1>
-          <p className="text-gray-600 mt-1 font-black">Manage your plant collection</p>
-        </div>
+    <div className="bg-[#F6F9F3] text-slate-800 antialiased selection:bg-emerald-200/60 selection:text-emerald-900 min-h-screen">
+      {/* Decorative Background Glows (aligned with LandingPage light theme) */}
+      <div aria-hidden="true" className="fixed inset-0 pointer-events-none">
+        <div className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-emerald-300/40 blur-3xl"></div>
+        <div className="absolute top-32 -right-16 h-72 w-72 rounded-full bg-green-200/60 blur-3xl"></div>
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 h-64 w-64 rounded-full bg-lime-200/50 blur-3xl"></div>
       </div>
+      
+      <div className="relative flex flex-col px-6 py-8 space-y-8 min-w-0">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-medium text-emerald-950 tracking-tight">My Plants</h1>
+            <p className="text-slate-700 mt-1">Manage your plant collection</p>
+          </div>
+        </div>
 
       {/* Mobile Plant Selector */}
       <div className="lg:hidden">
         <button
           onClick={() => setShowMobilePlantSelector(!showMobilePlantSelector)}
-          className="w-full flex items-center justify-between p-4 bg-white rounded-lg shadow-sm border border-gray-200"
+          className="w-full flex items-center justify-between p-4 bg-white/60 backdrop-blur rounded-2xl border border-emerald-900/10 hover:border-emerald-900/20 transition-colors"
         >
-          <span className="font-black text-gray-900">
+          <span className="font-medium text-slate-800">
             {selectedPlant ? selectedPlant.name : 'Select a plant'}
           </span>
-          <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${
+          <ChevronDown className={`w-5 h-5 text-slate-600 transition-transform ${
             showMobilePlantSelector ? 'rotate-180' : ''
           }`} />
         </button>
         
         {showMobilePlantSelector && (
-          <div className="mt-2 bg-white rounded-lg shadow-lg border border-gray-200 max-h-60 overflow-y-auto">
+          <div className="mt-2 bg-white/60 backdrop-blur rounded-2xl border border-emerald-900/10 max-h-60 overflow-y-auto">
             {plants.map(plant => (
               <button
                 key={plant.id}
@@ -241,26 +249,26 @@ const MyPlants = () => {
                   setSelectedPlantId(plant.id);
                   setShowMobilePlantSelector(false);
                 }}
-                className={`w-full flex items-center gap-3 p-3 rounded-lg transition ${
+                className={`w-full flex items-center gap-3 p-3 rounded-xl transition ${
                   selectedPlantId === plant.id 
-                    ? 'bg-green-100 border border-green-300' 
-                    : 'bg-gray-50 hover:bg-gray-100'
+                    ? 'bg-emerald-50 border border-emerald-200' 
+                    : 'bg-white/40 hover:bg-white/60'
                 }`}
               >
                 <img
                   src={plant.photoUrl || '/placeholder-plant.png'}
                   alt={plant.name}
-                  className="w-10 h-10 rounded-full border-2 border-green-400 object-cover"
+                  className="w-10 h-10 rounded-full border-2 border-emerald-400 object-cover"
                   onError={e => { e.currentTarget.src = '/placeholder-plant.png'; }}
                 />
                 <div className="flex-1 text-left">
-                  <div className="font-black text-gray-900">{plant.name}</div>
-                  <div className="text-sm font-black text-gray-600">{plant.species}</div>
+                  <div className="font-medium text-slate-800">{plant.name}</div>
+                  <div className="text-sm text-slate-600">{plant.species}</div>
                 </div>
-                <span className={`px-2 py-1 text-xs rounded-full font-black ${
+                <span className={`px-2 py-1 text-xs rounded-full ring-1 ${
                   plant.healthStatus === 'Good' || plant.healthStatus === 'Excellent'
-                    ? 'bg-green-100 text-green-800'
-                    : 'bg-yellow-100 text-yellow-800'
+                    ? 'bg-emerald-700/20 text-emerald-800 ring-emerald-700/40'
+                    : 'bg-amber-500/10 text-amber-800 ring-amber-400/20'
                 }`}>
                   {plant.healthStatus}
                 </span>
@@ -283,10 +291,10 @@ const MyPlants = () => {
 
           {/* Charts and Widgets (placeholders) */}
           <section className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto w-full">
-            <div className="bg-white rounded-2xl shadow-sm p-6 h-64 flex items-center justify-center text-gray-400 font-black">
+            <div className="bg-white/60 backdrop-blur rounded-2xl border border-emerald-900/10 p-6 h-64 flex items-center justify-center text-slate-500">
               Plant Details Chart (coming soon)
             </div>
-            <div className="bg-white rounded-2xl shadow-sm p-6 h-64 flex items-center justify-center text-gray-400 font-black">
+            <div className="bg-white/60 backdrop-blur rounded-2xl border border-emerald-900/10 p-6 h-64 flex items-center justify-center text-slate-500">
               Water Level Chart (coming soon)
             </div>
           </section>
@@ -294,18 +302,19 @@ const MyPlants = () => {
       ) : (
         /* Empty State */
         <div className="text-center py-16">
-          <div className="text-gray-500 font-black text-lg mb-4">No plants in your collection yet.</div>
-          <div className="text-gray-400 font-black text-sm mb-6">
+          <div className="text-slate-600 font-medium text-lg mb-4">No plants in your collection yet.</div>
+          <div className="text-slate-500 text-sm mb-6">
             Start building your plant collection by identifying and adding plants.
           </div>
           <button 
             onClick={() => window.location.href = '/find-plant'} 
-            className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 font-black transition-colors"
+            className="px-6 py-3 bg-emerald-600 text-white rounded-full hover:bg-emerald-700 font-medium transition-colors shadow-sm ring-1 ring-emerald-900/20"
           >
             Add Your First Plant
           </button>
         </div>
       )}
+      </div>
     </div>
   );
 };
