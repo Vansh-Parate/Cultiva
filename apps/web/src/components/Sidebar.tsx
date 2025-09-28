@@ -1,16 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
-  Sprout, 
   LayoutDashboard, 
   Leaf, 
   CalendarCheck2, 
   ScanLine, 
   Users, 
   Bell, 
-  Settings,
-  BarChart3,
-  HelpCircle,
   Plus,
   Camera,
   LogOut
@@ -28,16 +24,11 @@ const Sidebar: React.FC = () => {
     { path: '/community', icon: Users, label: 'Community' },
   ];
 
-  const secondaryItems = [
-    { path: '/insights', icon: BarChart3, label: 'Insights' },
-    { path: '/settings', icon: Settings, label: 'Settings' },
-    { path: '/help', icon: HelpCircle, label: 'Help & Tips' },
-  ];
 
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <aside className="hidden lg:flex w-72 flex-col border-r border-slate-800 bg-slate-900/70 backdrop-blur">
+    <aside className="hidden lg:flex w-72 flex-col h-screen border-r border-slate-800 bg-slate-900/70 backdrop-blur">
       {/* Brand */}
       <div className="flex items-center gap-3 px-6 h-16">
         <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-teal-600 to-teal-400 flex items-center justify-center shadow-sm">
@@ -77,75 +68,52 @@ const Sidebar: React.FC = () => {
         })}
       </nav>
 
-      {/* Secondary Navigation */}
-      <div className="mt-4 h-px w-full bg-slate-800"></div>
-      <div className="mt-3 px-3 space-y-1">
-        {secondaryItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`group flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors ${
-                isActive(item.path)
-                  ? 'text-teal-100 bg-teal-900/30 ring-1 ring-teal-700/40'
-                  : 'hover:bg-teal-900/20 hover:text-teal-100 text-slate-300'
-              }`}
-            >
-              <Icon className={`h-4 w-4 ${
-                isActive(item.path) 
-                  ? 'text-teal-300' 
-                  : 'text-slate-400 group-hover:text-teal-300'
-              }`} />
-              <span>{item.label}</span>
-            </Link>
-          );
-        })}
-      </div>
-
-      {/* Quick Actions */}
-      <div className="mt-4 h-px w-full bg-slate-800"></div>
-      <div className="mt-3 px-3 grid grid-cols-2 gap-2">
-        <Link
-          to="/plants?action=add"
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-teal-600 px-3 py-2 text-xs font-medium text-white shadow-sm ring-1 ring-teal-500/30 transition hover:bg-teal-500"
-        >
-          <Plus className="h-4 w-4" />
-          Add plant
-        </Link>
-        <Link
-          to="/find-plant"
-          className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-700/60 bg-slate-900 px-3 py-2 text-xs font-medium text-slate-100 hover:border-slate-600 transition"
-        >
-          <Camera className="h-4 w-4" />
-          Identify
-        </Link>
-      </div>
-
-      {/* Profile Section */}
-      <div className="mt-4 h-px w-full bg-slate-800"></div>
-      <div className="mt-3 px-3">
-        <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/60 p-3">
-          <div className="flex items-center gap-2">
-            <img className="h-8 w-8 rounded-full object-cover ring-1 ring-slate-800" src="https://images.unsplash.com/photo-1554151228-14d9def656e4?q=80&w=80&auto=format&fit=crop" alt="User" />
-            <div>
-              <p className="text-xs font-medium text-teal-100">Alex Rivera</p>
-              <p className="text-[11px] text-slate-400">Pro · 64 plants</p>
-            </div>
-          </div>
-          <button className="inline-flex items-center justify-center rounded-lg border border-slate-700/60 bg-slate-900 p-2 text-slate-300 hover:text-teal-300">
-            <LogOut className="h-4 w-4" />
-          </button>
+      {/* Bottom Section */}
+      <div className="mt-auto">
+        {/* Quick Actions */}
+        <div className="mt-4 h-px w-full bg-slate-800"></div>
+        <div className="mt-3 px-3 grid grid-cols-2 gap-2">
+          <Link
+            to="/plants?action=add"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-teal-600 px-3 py-2 text-xs font-medium text-white shadow-sm ring-1 ring-teal-500/30 transition hover:bg-teal-500"
+          >
+            <Plus className="h-4 w-4" />
+            Add plant
+          </Link>
+          <Link
+            to="/find-plant"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-700/60 bg-slate-900 px-3 py-2 text-xs font-medium text-slate-100 hover:border-slate-600 transition"
+          >
+            <Camera className="h-4 w-4" />
+            Identify
+          </Link>
         </div>
-      </div>
 
-      {/* Notifications */}
-      <div className="mt-4 px-3">
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-xs text-slate-400">Notifications</span>
-          <span className="inline-flex items-center gap-1 text-xs text-teal-300 bg-teal-900/30 px-2 py-0.5 rounded-full">
-            <Bell className="w-3.5 h-3.5" /> {notifications}
-          </span>
+        {/* Profile Section */}
+        <div className="mt-4 h-px w-full bg-slate-800"></div>
+        <div className="mt-3 px-3">
+          <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/60 p-3">
+            <div className="flex items-center gap-2">
+              <img className="h-8 w-8 rounded-full object-cover ring-1 ring-slate-800" src="https://images.unsplash.com/photo-1554151228-14d9def656e4?q=80&w=80&auto=format&fit=crop" alt="User" />
+              <div>
+                <p className="text-xs font-medium text-teal-100">Alex Rivera</p>
+                <p className="text-[11px] text-slate-400">Pro · 64 plants</p>
+              </div>
+            </div>
+            <button className="inline-flex items-center justify-center rounded-lg border border-slate-700/60 bg-slate-900 p-2 text-slate-300 hover:text-teal-300">
+              <LogOut className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* Notifications */}
+        <div className="mt-4 px-3">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs text-slate-400">Notifications</span>
+            <span className="inline-flex items-center gap-1 text-xs text-teal-300 bg-teal-900/30 px-2 py-0.5 rounded-full">
+              <Bell className="w-3.5 h-3.5" /> {notifications}
+            </span>
+          </div>
         </div>
       </div>
     </aside>
