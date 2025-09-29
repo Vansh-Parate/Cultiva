@@ -17,7 +17,6 @@ import {
   Heart,
   MessageCircle,
   Share2,
-  
   Sun,
   ThermometerSun,
   Droplets,
@@ -503,7 +502,7 @@ const Dashboard: React.FC = () => {
                       <div 
                         key={plant.id} 
                         onClick={() => handlePlantClick(plant.name)}
-                        className="rounded-xl border border-slate-800 bg-slate-900/60 p-3 cursor-pointer hover:border-teal-600/30 transition-colors hover:shadow-[0_0_0_1px_rgba(45,212,191,0.15)] active:scale-[0.99] cursor-pointer"
+                        className="rounded-xl border border-slate-800 bg-slate-900/60 p-3 cursor-pointer hover:border-teal-600/30 transition-colors hover:shadow-[0_0_0_1px_rgba(45,212,191,0.15)] active:scale-[0.99]"
                       >
                         <div className="overflow-hidden rounded-lg ring-1 ring-slate-800">
                           <img loading="lazy" src={primaryImage} className="h-32 w-full object-cover transition-transform duration-300 hover:scale-105" alt={plant.name} />

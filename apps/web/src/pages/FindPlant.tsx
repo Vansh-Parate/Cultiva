@@ -126,6 +126,7 @@ const FindPlant = () => {
   const [healthLoading, setHealthLoading] = useState(false);
   const [showReminderModal, setShowReminderModal] = useState(false);
   const [reminderPlant, setReminderPlant] = useState(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [demoMode, setDemoMode] = useState(false);
 
   const handleIdentify = async() => {
