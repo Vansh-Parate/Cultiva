@@ -79,7 +79,7 @@ const Calendar: React.FC<CalendarProps> = ({ onCreateTask }) => {
     if (onCreateTask) return onCreateTask(date);
     const plantName = window.prompt('Plant name');
     if (!plantName) return;
-    const type = window.prompt('Task type (e.g., Water, Fertilize, Repot)') || 'Water';
+    const type = window.prompt('Task type (watering, fertilizing, pruning, repotting, pest-control)') || 'watering';
     const due = new Date(date);
     due.setHours(9, 0, 0, 0);
     setCreating(true);
@@ -87,7 +87,7 @@ const Calendar: React.FC<CalendarProps> = ({ onCreateTask }) => {
       await apiClient.post('/api/v1/care-tasks', {
         plantName,
         type,
-        frequency: 'once',
+        frequency: 'weekly',
         dueDate: due.toISOString(),
         priority: 'medium',
       });

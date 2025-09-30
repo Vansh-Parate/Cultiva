@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Filter, Calendar, Droplet, Sun, Thermometer, Leaf, Sprout, Award, Check, Clock, AlertCircle } from 'lucide-react';
+import { Plus, Search, Filter, Calendar, Droplet, Sun, Thermometer, Leaf, Sprout, Award, Check, AlertCircle } from 'lucide-react';
 import apiClient from '../lib/axios';
+import TodaysTasks from '../components/widgets/TodaysTasks';
 import { useWeather } from '../hooks/useWeather';
 
 interface CareTask {
@@ -44,13 +45,14 @@ interface CareRecommendations {
 
 const Care = () => {
   const [tasks, setTasks] = useState<CareTask[]>([]);
-  const [plants, setPlants] = useState<Plant[]>([]);
+  
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'pending' | 'completed'>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [typeFilter, setTypeFilter] = useState<'' | CareTask['type']>('');
+  const [priorityFilter, setPriorityFilter] = useState<'' | CareTask['priority']>('');
   const [careRecommendations, setCareRecommendations] = useState<Record<string, CareRecommendations>>({});
-  const [loadingRecommendations, setLoadingRecommendations] = useState(false);
   const [newTask, setNewTask] = useState({
     plantName: '',
     type: 'watering' as CareTask['type'],
@@ -96,7 +98,6 @@ const Care = () => {
         careHistory: plant.careLogs || []
       }));
 
-      setPlants(mappedPlants);
       setTasks(tasksRes.data);
 
       // Generate care recommendations for each plant
@@ -147,7 +148,6 @@ const Care = () => {
 
   // Generate care recommendations using Gemini API
   const generateCareRecommendations = async (plants: Plant[]) => {
-    setLoadingRecommendations(true);
     try {
       for (const plant of plants) {
         if (plant.species && !careRecommendations[plant.id]) {
@@ -157,8 +157,6 @@ const Care = () => {
       }
     } catch (err) {
       console.error('Failed to generate care recommendations:', err);
-    } finally {
-      setLoadingRecommendations(false);
     }
   };
 
@@ -244,19 +242,7 @@ const Care = () => {
     }
   };
 
-  const handleRecordCareAction = async (plantId: string, careType: string, notes?: string) => {
-    try {
-      await apiClient.post(`/api/v1/plants/${plantId}/care`, {
-        careType,
-        notes
-      });
-      
-      // Refresh data
-      fetchData();
-    } catch (err) {
-      console.error('Failed to record care action:', err);
-    }
-  };
+  
 
   const getTaskIcon = (type: CareTask['type']) => {
     switch (type) {
@@ -294,7 +280,9 @@ const Care = () => {
       (filter === 'pending' && !task.completed) || 
       (filter === 'completed' && task.completed);
     const matchesSearch = task.plantName.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesFilter && matchesSearch;
+    const matchesType = !typeFilter || task.type === typeFilter;
+    const matchesPriority = !priorityFilter || task.priority === priorityFilter;
+    return matchesFilter && matchesSearch && matchesType && matchesPriority;
   });
 
   if (loading) {
@@ -313,7 +301,7 @@ const Care = () => {
           <h1 className="text-3xl font-bold text-gray-900">Plant Care</h1>
           <p className="text-gray-600">Manage your plant care tasks and schedules</p>
         </div>
-        <button className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+        <button onClick={() => setShowAddModal(true)} className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
           <Plus className="w-5 h-5" />
           + Add Task
         </button>
@@ -401,7 +389,7 @@ const Care = () => {
       {/* Task Management */}
       <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-200">
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-wrap">
             <Filter className="w-5 h-5 text-gray-600" />
             <select
               value={filter}
@@ -411,6 +399,28 @@ const Care = () => {
               <option value="all">All Tasks</option>
               <option value="pending">Pending</option>
               <option value="completed">Completed</option>
+            </select>
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value as any)}
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            >
+              <option value="">All Types</option>
+              <option value="watering">Watering</option>
+              <option value="fertilizing">Fertilizing</option>
+              <option value="pruning">Pruning</option>
+              <option value="repotting">Repotting</option>
+              <option value="pest-control">Pest control</option>
+            </select>
+            <select
+              value={priorityFilter}
+              onChange={(e) => setPriorityFilter(e.target.value as any)}
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            >
+              <option value="">All Priorities</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
             </select>
           </div>
           <div className="relative">
@@ -452,6 +462,14 @@ const Care = () => {
                     <span className={`px-2 py-1 text-xs rounded-full ${getPriorityColor(task.priority)}`}>
                       {task.priority}
                     </span>
+                    {!task.completed && (
+                      <button
+                        onClick={() => handleCompleteTask(task.id)}
+                        className="px-2 py-1 text-xs rounded bg-green-600 text-white hover:bg-green-700"
+                      >
+                        Complete
+                      </button>
+                    )}
                   </div>
                 </div>
               );
@@ -464,6 +482,121 @@ const Care = () => {
           )}
         </div>
       </div>
+
+      {/* Today overview */}
+      <div className="mt-8">
+        <h2 className="mb-3 text-xl font-bold text-gray-900">Today</h2>
+        <TodaysTasks
+          tasks={tasks}
+          onComplete={async (id) => handleCompleteTask(id)}
+          onBulkComplete={async (ids) => {
+            try {
+              await apiClient.post('/api/v1/care-tasks/bulk-complete', { ids });
+            } finally {
+              setTasks(prev => prev.map(t => ids.includes(t.id) ? { ...t, completed: true } : t));
+            }
+          }}
+          onSnooze={async (id, days = 1) => {
+            const res = await apiClient.patch(`/api/v1/care-tasks/${id}/snooze`, { days });
+            setTasks(prev => prev.map(t => t.id === id ? { ...t, dueDate: res.data.dueDate } : t));
+          }}
+        />
+      </div>
+
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-lg rounded-xl bg-white p-6 shadow-xl">
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-900">Add Care Task</h3>
+              <button onClick={() => setShowAddModal(false)} className="text-gray-500 hover:text-gray-700">✕</button>
+            </div>
+            <div className="grid grid-cols-1 gap-4">
+              <div>
+                <label htmlFor="plantName" className="mb-1 block text-sm text-gray-700">Plant name</label>
+                <input
+                  id="plantName"
+                  value={newTask.plantName}
+                  onChange={(e) => setNewTask({ ...newTask, plantName: e.target.value })}
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-green-500"
+                  placeholder="e.g., Aloe Vera"
+                />
+              </div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="taskType" className="mb-1 block text-sm text-gray-700">Type</label>
+                  <select
+                    id="taskType"
+                    value={newTask.type}
+                    onChange={(e) => setNewTask({ ...newTask, type: e.target.value as CareTask['type'] })}
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-green-500"
+                  >
+                    <option value="watering">Watering</option>
+                    <option value="fertilizing">Fertilizing</option>
+                    <option value="pruning">Pruning</option>
+                    <option value="repotting">Repotting</option>
+                    <option value="pest-control">Pest control</option>
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="taskFrequency" className="mb-1 block text-sm text-gray-700">Frequency</label>
+                  <select
+                    id="taskFrequency"
+                    value={newTask.frequency}
+                    onChange={(e) => setNewTask({ ...newTask, frequency: e.target.value as CareTask['frequency'] })}
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-green-500"
+                  >
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="bi-weekly">Bi-weekly</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="quarterly">Quarterly</option>
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="dueDate" className="mb-1 block text-sm text-gray-700">Due date</label>
+                  <input
+                    id="dueDate"
+                    type="datetime-local"
+                    value={newTask.dueDate}
+                    onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="priority" className="mb-1 block text-sm text-gray-700">Priority</label>
+                  <select
+                    id="priority"
+                    value={newTask.priority}
+                    onChange={(e) => setNewTask({ ...newTask, priority: e.target.value as CareTask['priority'] })}
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-green-500"
+                  >
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label htmlFor="notes" className="mb-1 block text-sm text-gray-700">Notes</label>
+                <textarea
+                  id="notes"
+                  value={newTask.notes}
+                  onChange={(e) => setNewTask({ ...newTask, notes: e.target.value })}
+                  rows={3}
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-green-500"
+                  placeholder="Optional notes"
+                />
+              </div>
+              <div className="mt-2 flex items-center justify-end gap-2">
+                <button onClick={() => setShowAddModal(false)} className="rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100">Cancel</button>
+                <button onClick={handleAddTask} className="rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700">Add Task</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
