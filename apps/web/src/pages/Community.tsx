@@ -92,6 +92,7 @@ const Community = () => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [newComment, setNewComment] = useState<Record<string, string>>({});
   const [selectedShop, setSelectedShop] = useState<PlantShop | null>(null);
+  const [hasPlants, setHasPlants] = useState<boolean | null>(null);
   
   const [newPost, setNewPost] = useState({
     postType: 'question' as CommunityPost['postType'],
@@ -108,6 +109,20 @@ const Community = () => {
     fetchTrendingTags();
     fetchStats();
   }, [activeTab, sortBy, searchTerm, selectedTags]);
+
+  useEffect(() => {
+    // Determine if the user has plants to tailor blank states
+    const checkPlants = async () => {
+      try {
+        const res = await apiClient.get('/api/v1/plants');
+        setHasPlants(Array.isArray(res.data) && res.data.length > 0);
+      } catch (err: any) {
+        // If unauthorized or error, we assume user has no plants for blank state
+        setHasPlants(false);
+      }
+    };
+    checkPlants();
+  }, []);
 
   const fetchCommunityData = async () => {
     try {
@@ -529,6 +544,22 @@ const Community = () => {
             ) : (
               /* Community Posts */
               <div className="space-y-6">
+                {/* Blank-state banner prompting to add plants (only visible if no plants) */}
+                {hasPlants === false && (
+                  <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-100 rounded-2xl p-5 flex items-start gap-4">
+                    <div className="shrink-0 rounded-xl bg-white p-3 border border-green-100 shadow-sm">
+                      <PlantIcon />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-900">Add a plant to unlock personalized community insights</h3>
+                      <p className="text-gray-600 mt-1">Recommendations, local tips, and relevant discussions become smarter once you add your first plant.</p>
+                      <div className="mt-3 flex gap-3">
+                        <a href="/my-plants" className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium">Go to My Plants</a>
+                        <a href="/find-plant" className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">Identify a Plant</a>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 {posts.length > 0 ? (
                   posts.map(post => (
                     <div key={post.id} className="bg-white rounded-2xl shadow-sm border border-green-100 hover:shadow-md transition-all duration-200 overflow-hidden">
@@ -713,17 +744,29 @@ const Community = () => {
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-16 bg-white rounded-2xl shadow-sm border border-green-100">
-                    <MessageCircle className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No posts found</h3>
-                    <p className="text-gray-600 mb-6">Be the first to share something with the community!</p>
-                    <button 
-                      onClick={() => setShowCreatePost(true)}
-                      className="px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 font-medium"
-                    >
-                      Create First Post
-                    </button>
-                  </div>
+                  hasPlants === false ? (
+                    <div className="text-center py-16 bg-white rounded-2xl shadow-sm border border-green-100">
+                      <PlantIconLarge />
+                      <h3 className="text-xl font-semibold text-gray-900 mb-2">Add a plant to unlock personalized content</h3>
+                      <p className="text-gray-600 mb-6 max-w-md mx-auto">Your feed gets better with your garden. Add your first plant to see tailored discussions, tips, and local shop recommendations.</p>
+                      <div className="flex items-center justify-center gap-3">
+                        <a href="/my-plants" className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">Add a Plant</a>
+                        <a href="/find-plant" className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">Identify a Plant</a>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-16 bg-white rounded-2xl shadow-sm border border-green-100">
+                      <MessageCircle className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">No posts found</h3>
+                      <p className="text-gray-600 mb-6">Be the first to share something with the community!</p>
+                      <button 
+                        onClick={() => setShowCreatePost(true)}
+                        className="px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 font-medium"
+                      >
+                        Create First Post
+                      </button>
+                    </div>
+                  )
                 )}
               </div>
             )}
@@ -1061,3 +1104,22 @@ const Community = () => {
 };
 
 export default Community;
+
+// Simple inline icons for blank states to avoid extra asset imports
+function PlantIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-green-600">
+      <path d="M12 2C8 2 6 6 6 6s4 0 6-2c2 2 6 2 6 2s-2-4-6-4z" />
+      <path d="M6 10c0 3.866 3.134 7 7 7h1v5h-2v-3.5C8.91 17.83 6 14.33 6 10z" />
+    </svg>
+  );
+}
+
+function PlantIconLarge() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-16 h-16 mx-auto mb-4 text-green-500">
+      <path d="M12 2C8 2 6 6 6 6s4 0 6-2c2 2 6 2 6 2s-2-4-6-4z" />
+      <path d="M6 10c0 3.866 3.134 7 7 7h1v5h-2v-3.5C8.91 17.83 6 14.33 6 10z" />
+    </svg>
+  );
+}
