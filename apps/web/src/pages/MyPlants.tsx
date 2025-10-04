@@ -226,6 +226,23 @@ const MyPlants = () => {
           </div>
         </div>
 
+        {/* Blank-state banner prompting to add plants */}
+        {plants.length === 0 && (
+          <div className="bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-200/60 rounded-2xl p-5 flex items-start gap-4">
+            <div className="shrink-0 rounded-xl bg-white p-3 border border-emerald-100 shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-emerald-600"><path d="M12 2C8 2 6 6 6 6s4 0 6-2c2 2 6 2 6 2s-2-4-6-4z" /><path d="M6 10c0 3.866 3.134 7 7 7h1v5h-2v-3.5C8.91 17.83 6 14.33 6 10z" /></svg>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-emerald-950">Add your first plant to unlock health insights and care tips</h3>
+              <p className="text-slate-600 mt-1">Start your collection to see personalized health assessments, schedules, and AI recommendations.</p>
+              <div className="mt-3 flex gap-3">
+                <a href="/find-plant" className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium">Add a Plant</a>
+                <a href="/community" className="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-white transition-colors text-sm font-medium">Explore Community</a>
+              </div>
+            </div>
+          </div>
+        )}
+
       {/* Mobile Plant Selector */}
       <div className="lg:hidden">
         <button
@@ -302,16 +319,15 @@ const MyPlants = () => {
       ) : (
         /* Empty State */
         <div className="text-center py-16">
-          <div className="text-slate-600 font-medium text-lg mb-4">No plants in your collection yet.</div>
-          <div className="text-slate-500 text-sm mb-6">
-            Start building your plant collection by identifying and adding plants.
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-16 h-16 mx-auto mb-4 text-emerald-500"><path d="M12 2C8 2 6 6 6 6s4 0 6-2c2 2 6 2 6 2s-2-4-6-4z" /><path d="M6 10c0 3.866 3.134 7 7 7h1v5h-2v-3.5C8.91 17.83 6 14.33 6 10z" /></svg>
+          <div className="text-slate-800 font-semibold text-lg mb-2">Add a plant to unlock personalized insights</div>
+          <div className="text-slate-600 text-sm mb-6 max-w-md mx-auto">
+            Track health, see care schedules, and get AI-powered tips tailored to your plants.
           </div>
-          <button 
-            onClick={() => window.location.href = '/find-plant'} 
-            className="px-6 py-3 bg-emerald-600 text-white rounded-full hover:bg-emerald-700 font-medium transition-colors shadow-sm ring-1 ring-emerald-900/20"
-          >
-            Add Your First Plant
-          </button>
+          <div className="flex items-center justify-center gap-3">
+            <a href="/find-plant" className="px-6 py-3 bg-emerald-600 text-white rounded-full hover:bg-emerald-700 font-medium transition-colors shadow-sm ring-1 ring-emerald-900/20">Add Your First Plant</a>
+            <a href="/community" className="px-6 py-3 border border-slate-300 text-slate-700 rounded-full hover:bg-white font-medium transition-colors">Browse Community</a>
+          </div>
         </div>
       )}
       </div>

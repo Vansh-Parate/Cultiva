@@ -303,9 +303,26 @@ const Care = () => {
         </div>
         <button onClick={() => setShowAddModal(true)} className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
           <Plus className="w-5 h-5" />
-          + Add Task
+           Add Task
         </button>
       </div>
+
+      {/* Blank-state banner: show when no tasks and likely no plants */}
+      {tasks.length === 0 && (
+        <div className="mb-8 bg-gradient-to-r from-green-50 to-blue-50 border border-green-100 rounded-2xl p-5 flex items-start gap-4">
+          <div className="shrink-0 rounded-xl bg-white p-3 border border-green-100 shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-green-600"><path d="M12 2C8 2 6 6 6 6s4 0 6-2c2 2 6 2 6 2s-2-4-6-4z" /><path d="M6 10c0 3.866 3.134 7 7 7h1v5h-2v-3.5C8.91 17.83 6 14.33 6 10z" /></svg>
+          </div>
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-gray-900">Add a plant to unlock care schedules and smart reminders</h3>
+            <p className="text-gray-600 mt-1">We’ll generate tasks and AI tips based on your plants and local weather.</p>
+            <div className="mt-3 flex gap-3">
+              <a href="/find-plant" className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium">Add a Plant</a>
+              <a href="/my-plants" className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">View My Plants</a>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Weather-Based Care Tips */}
       <div className="bg-white rounded-2xl shadow-sm p-6 mb-8 border border-gray-200">
