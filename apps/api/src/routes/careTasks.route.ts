@@ -49,27 +49,147 @@ router.get('/stats', authenticateJWT, async (req, res) => {
   try {
     const userId = (req as any).user?.userId;
     if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+    const now = new Date();
+    const startOfToday = new Date(now.setHours(0,0,0,0));
+    const endOfToday = new Date(new Date().setHours(23,59,59,999));
 
     const [total, completedCount, overdue, dueToday] = await Promise.all([
       (prisma as any).careTask.count({ where: { userId } }),
       (prisma as any).careTask.count({ where: { userId, completed: true } }),
       (prisma as any).careTask.count({ where: { userId, completed: false, dueDate: { lt: new Date() } } }),
-      (prisma as any).careTask.count({
-        where: {
-          userId,
-          completed: false,
-          AND: [
-            { dueDate: { gte: new Date(new Date().setHours(0,0,0,0)) } },
-            { dueDate: { lte: new Date(new Date().setHours(23,59,59,999)) } }
-          ]
-        }
-      })
+      (prisma as any).careTask.count({ where: { userId, completed: false, dueDate: { gte: startOfToday, lte: endOfToday } } })
     ]);
 
-    res.json({ total, completed: completedCount, overdue, dueToday });
+    // 14-day trend
+    const start = new Date();
+    start.setDate(start.getDate() - 13);
+    start.setHours(0,0,0,0);
+    const trendRaw = await (prisma as any).careTask.groupBy({
+      by: ['completed'],
+      where: { userId, dueDate: { gte: start } },
+      _count: { _all: true }
+    });
+
+    res.json({ total, completed: completedCount, overdue, dueToday, trend: trendRaw });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch stats' });
+  }
+});
+
+// Calendar view (group tasks by date)
+router.get('/calendar', authenticateJWT, async (req, res) => {
+  try {
+    const userId = (req as any).user?.userId;
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+    const { start, end } = req.query as { start?: string; end?: string };
+    const startDate = start ? new Date(start) : new Date(new Date().setDate(new Date().getDate() - 7));
+    const endDate = end ? new Date(end) : new Date(new Date().setDate(new Date().getDate() + 21));
+
+    const tasks = await (prisma as any).careTask.findMany({
+      where: { userId, dueDate: { gte: startDate, lte: endDate } },
+      orderBy: { dueDate: 'asc' }
+    });
+
+    const byDate: Record<string, any[]> = {};
+    for (const t of tasks) {
+      const key = new Date(t.dueDate).toISOString().slice(0,10);
+      if (!byDate[key]) byDate[key] = [];
+      byDate[key].push(t);
+    }
+    res.json(byDate);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch calendar' });
+  }
+});
+
+// Task templates (static for now)
+router.get('/templates', authenticateJWT, async (_req, res) => {
+  const templates = [
+    { type: 'watering', frequency: 'weekly', notes: 'Water when top soil is dry', priority: 'medium' },
+    { type: 'fertilizing', frequency: 'monthly', notes: 'Balanced fertilizer during growth', priority: 'low' },
+    { type: 'pruning', frequency: 'quarterly', notes: 'Remove yellow leaves', priority: 'low' },
+    { type: 'pest-control', frequency: 'monthly', notes: 'Inspect leaves, apply neem if needed', priority: 'medium' }
+  ];
+  res.json(templates);
+});
+
+// Activity logs for tasks
+router.get('/:id/activity', authenticateJWT, async (req, res) => {
+  try {
+    const userId = (req as any).user?.userId;
+    const taskId = req.params.id;
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+    const task = await (prisma as any).careTask.findFirst({ where: { id: taskId, userId } });
+    if (!task) return res.status(404).json({ error: 'Task not found' });
+
+    // Using CareLog model if exists, otherwise return synthetic log
+    const logs = await (prisma as any).careLog?.findMany?.({
+      where: { careType: task.type, plantId: task.plantId || undefined },
+      orderBy: { completedAt: 'desc' },
+      take: 20
+    }).catch(() => []);
+
+    res.json(logs || []);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch activity' });
+  }
+});
+
+// Schedules (using CareSchedule model)
+router.get('/schedules', authenticateJWT, async (req, res) => {
+  try {
+    const userId = (req as any).user?.userId;
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+    const schedules = await (prisma as any).careSchedule.findMany({
+      where: { plant: { userId } },
+      include: { plant: { select: { id: true, name: true } } },
+      orderBy: { createdAt: 'desc' }
+    });
+    res.json(schedules);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch schedules' });
+  }
+});
+
+router.post('/schedules', authenticateJWT, async (req, res) => {
+  try {
+    const userId = (req as any).user?.userId;
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+    const { plantId, careType, frequencyDays } = req.body as { plantId: string; careType: string; frequencyDays: number };
+    if (!plantId || !careType || !frequencyDays) return res.status(400).json({ error: 'plantId, careType, frequencyDays required' });
+
+    // Verify plant belongs to user
+    const plant = await (prisma as any).plant.findFirst({ where: { id: plantId, userId } });
+    if (!plant) return res.status(404).json({ error: 'Plant not found' });
+
+    const schedule = await (prisma as any).careSchedule.create({
+      data: { plantId, careType, frequencyDays }
+    });
+    res.status(201).json(schedule);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to create schedule' });
+  }
+});
+
+router.delete('/schedules/:id', authenticateJWT, async (req, res) => {
+  try {
+    const userId = (req as any).user?.userId;
+    const id = req.params.id;
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+    const schedule = await (prisma as any).careSchedule.findFirst({ where: { id, plant: { userId } } });
+    if (!schedule) return res.status(404).json({ error: 'Schedule not found' });
+    await (prisma as any).careSchedule.delete({ where: { id } });
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to delete schedule' });
   }
 });
 
