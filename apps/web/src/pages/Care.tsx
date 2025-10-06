@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Filter, Calendar, Droplet, Sun, Thermometer, Leaf, Sprout, Award, Check, AlertCircle } from 'lucide-react';
+import { Plus, Search, Filter, Calendar, Droplet, Sun, Thermometer, Leaf, Sprout, Award, Check, AlertCircle, Wand2 } from 'lucide-react';
 import apiClient from '../lib/axios';
 import TodaysTasks from '../components/widgets/TodaysTasks';
 import { useWeather } from '../hooks/useWeather';
@@ -43,6 +43,15 @@ interface CareRecommendations {
   general?: string;
 }
 
+type GeneratedTask = {
+  plantName?: string;
+  type?: CareTask['type'];
+  frequency?: CareTask['frequency'];
+  dueDate?: string;
+  notes?: string;
+  priority?: CareTask['priority'];
+};
+
 const Care = () => {
   const [tasks, setTasks] = useState<CareTask[]>([]);
   
@@ -53,6 +62,9 @@ const Care = () => {
   const [typeFilter, setTypeFilter] = useState<'' | CareTask['type']>('');
   const [priorityFilter, setPriorityFilter] = useState<'' | CareTask['priority']>('');
   const [careRecommendations, setCareRecommendations] = useState<Record<string, CareRecommendations>>({});
+  const [aiInput, setAiInput] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
   const [newTask, setNewTask] = useState({
     plantName: '',
     type: 'watering' as CareTask['type'],
@@ -143,6 +155,64 @@ const Care = () => {
       ]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // AI Task Assistant - generate a task from natural language
+  const generateTaskFromAI = async () => {
+    if (!aiInput.trim()) return;
+    setAiError(null);
+    setAiLoading(true);
+    try {
+      const prompt = `You are a plant care assistant. Convert the user's request into a single care task JSON.
+Request: "${aiInput}"
+
+Return ONLY compact JSON with keys: plantName (string), type (one of watering|fertilizing|pruning|repotting|pest-control), frequency (one of daily|weekly|bi-weekly|monthly|quarterly), dueDate (ISO 8601 string, default next suitable time in user's local timezone), notes (short string), priority (one of low|medium|high).`;
+
+      const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=' + import.meta.env.VITE_GEMINI_API_KEY, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+      });
+
+      const data = await response.json();
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      let parsed: GeneratedTask | null = null;
+      try {
+        parsed = JSON.parse(text) as GeneratedTask;
+      } catch {
+        // try to extract JSON if wrapped in text
+        const match = text.match(/\{[\s\S]*\}/);
+        if (match) {
+          try { parsed = JSON.parse(match[0]) as GeneratedTask; } catch { void 0; }
+        }
+      }
+
+      if (!parsed) throw new Error('Could not parse AI response');
+
+      const nextTask = {
+        plantName: String(parsed.plantName || ''),
+        type: (['watering','fertilizing','pruning','repotting','pest-control'] as const).includes(parsed.type as CareTask['type']) ? (parsed.type as CareTask['type']) : 'watering',
+        frequency: (['daily','weekly','bi-weekly','monthly','quarterly'] as const).includes(parsed.frequency as CareTask['frequency']) ? (parsed.frequency as CareTask['frequency']) : 'weekly',
+        dueDate: (() => {
+          const d = new Date(parsed?.dueDate || Date.now());
+          if (isNaN(d.getTime())) return '';
+          // Convert to local datetime-local value (YYYY-MM-DDTHH:MM)
+          const pad = (n: number) => String(n).padStart(2, '0');
+          const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+          return `${local.getFullYear()}-${pad(local.getMonth()+1)}-${pad(local.getDate())}T${pad(local.getHours())}:${pad(local.getMinutes())}`;
+        })(),
+        notes: String(parsed.notes || ''),
+        priority: (['low','medium','high'] as const).includes(parsed.priority as CareTask['priority']) ? (parsed.priority as CareTask['priority']) : 'medium'
+      };
+
+      setNewTask(nextTask);
+      setShowAddModal(true);
+    } catch (err: unknown) {
+      console.error('AI generation error:', err);
+      setAiError('Could not generate a task. Please try refining your request.');
+    } finally {
+      setAiLoading(false);
     }
   };
 
@@ -307,6 +377,41 @@ const Care = () => {
         </button>
       </div>
 
+      {/* AI Task Assistant */}
+      <div className="bg-white rounded-2xl shadow-sm p-6 mb-8 border border-purple-200">
+        <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <Wand2 className="w-6 h-6 text-purple-600" />
+          AI Task Assistant
+        </h2>
+        <div className="flex flex-col gap-3 md:flex-row">
+          <input
+            type="text"
+            value={aiInput}
+            onChange={(e) => setAiInput(e.target.value)}
+            placeholder="e.g., Remind me to water my Snake Plant every week on Sundays"
+            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+          />
+          <button
+            onClick={generateTaskFromAI}
+            disabled={aiLoading}
+            className={`inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-white ${aiLoading ? 'bg-purple-400' : 'bg-purple-600 hover:bg-purple-700'} transition-colors`}
+          >
+            {aiLoading ? (
+              <span>Generating…</span>
+            ) : (
+              <>
+                <Wand2 className="w-5 h-5" />
+                <span>Generate Task</span>
+              </>
+            )}
+          </button>
+        </div>
+        {aiError && (
+          <p className="mt-2 text-sm text-red-600">{aiError}</p>
+        )}
+        <p className="mt-2 text-xs text-gray-500">Uses your configured AI key to draft a task and prefill the form. Review before saving.</p>
+      </div>
+
       {/* Blank-state banner: show when no tasks and likely no plants */}
       {tasks.length === 0 && (
         <div className="mb-8 bg-gradient-to-r from-green-50 to-blue-50 border border-green-100 rounded-2xl p-5 flex items-start gap-4">
@@ -419,7 +524,7 @@ const Care = () => {
             </select>
             <select
               value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value as any)}
+              onChange={(e) => setTypeFilter(e.target.value as '' | CareTask['type'])}
               className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
             >
               <option value="">All Types</option>
@@ -431,7 +536,7 @@ const Care = () => {
             </select>
             <select
               value={priorityFilter}
-              onChange={(e) => setPriorityFilter(e.target.value as any)}
+              onChange={(e) => setPriorityFilter(e.target.value as '' | CareTask['priority'])}
               className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
             >
               <option value="">All Priorities</option>
