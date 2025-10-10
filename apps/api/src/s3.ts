@@ -2,8 +2,6 @@ import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 import { config as appConfig } from './config/env';
 
-// Ensure env is loaded via config/env (dotenv.config ran there)
-// Check if S3 environment variables are set
 const isS3Configured =
   !!appConfig.AWS_REGION &&
   !!appConfig.AWS_ACCESS_KEY_ID &&
@@ -43,13 +41,10 @@ export async function uploadImageToS3(buffer: Buffer, mimetype: string): Promise
         Key: key,
         Body: buffer,
         ContentType: mimetype,
-        // Remove ACL for bucket policy compatibility
       })
     );
     
-    // Construct a safe, accessible S3 URL
-    // - Use path-style URLs if bucket contains dots to avoid TLS cert mismatch
-    // - Use regional endpoint, with us-east-1 special-cased
+   
     const region = appConfig.AWS_REGION || 'us-east-1';
     const bucketHasDot = BUCKET.includes('.')
     const host = region === 'us-east-1' ? 's3.amazonaws.com' : `s3.${region}.amazonaws.com`;
