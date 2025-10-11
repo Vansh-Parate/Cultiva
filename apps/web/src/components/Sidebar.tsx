@@ -9,7 +9,8 @@ import {
   Bell, 
   Plus,
   Camera,
-  LogOut
+  LogOut,
+  Brain
 } from 'lucide-react';
 
 const Sidebar: React.FC = () => {
@@ -21,6 +22,7 @@ const Sidebar: React.FC = () => {
     { path: '/plants', icon: Leaf, label: 'My Plants' },
     { path: '/care', icon: CalendarCheck2, label: 'Care' },
     { path: '/find-plant', icon: ScanLine, label: 'Identify' },
+    { path: '/ai-features', icon: Brain, label: 'AI Features' },
     { path: '/community', icon: Users, label: 'Community' },
   ];
 
