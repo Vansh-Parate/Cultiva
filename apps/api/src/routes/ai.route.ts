@@ -7,7 +7,7 @@ import {
   getCompanionPlants, 
   getEnvironmentalOptimization, 
   chatWithPlantAssistant 
-} from '../../web/src/lib/gemini';
+} from '../lib/gemini';
 
 const router: express.Router = express.Router();
 

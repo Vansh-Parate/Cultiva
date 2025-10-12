@@ -13,6 +13,7 @@ import {
   Shield
 } from 'lucide-react';
 import AICareDashboard from '../components/AICareDashboard';
+import AIAnalyticsDashboard from '../components/AIAnalyticsDashboard';
 
 const AIFeatures: React.FC = () => {
   const features = [
@@ -85,6 +86,13 @@ const AIFeatures: React.FC = () => {
       description: "Early detection of pests and diseases with prevention strategies",
       status: "Coming Soon",
       color: "text-pink-600 bg-pink-100"
+    },
+    {
+      icon: BarChart3,
+      title: "AI Analytics Dashboard",
+      description: "Comprehensive insights into your plant care performance and trends",
+      status: "New",
+      color: "text-indigo-600 bg-indigo-100"
     }
   ];
 
@@ -173,6 +181,11 @@ const AIFeatures: React.FC = () => {
         {/* AI Dashboard */}
         <div id="ai-dashboard">
           <AICareDashboard />
+        </div>
+
+        {/* AI Analytics Dashboard */}
+        <div className="mt-12">
+          <AIAnalyticsDashboard />
         </div>
 
         {/* How It Works */}
