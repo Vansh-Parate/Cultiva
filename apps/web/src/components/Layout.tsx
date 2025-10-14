@@ -18,9 +18,9 @@ const Layout: React.FC = () => {
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 h-64 w-64 rounded-full bg-lime-200/50 blur-3xl"></div>
       </div>
 
-      <div className="flex min-h-screen relative">
+      <div className="flex h-screen relative">
         {!isAuthRoute && <Sidebar />}
-        <main className={`flex-1 transition-all duration-300 ${
+        <main className={`flex-1 transition-all duration-300 overflow-y-auto ${
           !isAuthRoute ? 'lg:pl-0' : 'w-full'
         }`}>
           <Outlet />
