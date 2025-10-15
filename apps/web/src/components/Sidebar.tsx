@@ -12,7 +12,12 @@ import {
   LogOut
 } from 'lucide-react';
 
-const Sidebar: React.FC = () => {
+type SidebarProps = {
+  mobile?: boolean;
+  onNavigate?: () => void;
+};
+
+const Sidebar: React.FC<SidebarProps> = ({ mobile = false, onNavigate }) => {
   const location = useLocation();
   const [notifications] = useState(3);
 
@@ -28,7 +33,7 @@ const Sidebar: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <aside className="hidden lg:flex w-72 flex-col h-screen border-r border-slate-800 bg-slate-900/70 backdrop-blur overflow-hidden">
+    <aside className={`${mobile ? 'flex h-full' : 'hidden lg:flex h-screen'} w-72 flex-col border-r border-slate-800 bg-slate-900/70 backdrop-blur overflow-hidden`}>
       {/* Brand */}
       <div className="flex items-center gap-3 px-6 h-16 flex-shrink-0">
         <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-teal-600 to-teal-400 flex items-center justify-center shadow-sm">
@@ -50,6 +55,7 @@ const Sidebar: React.FC = () => {
               <Link
                 key={item.path}
                 to={item.path}
+                onClick={onNavigate}
                 className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors ${
                   isActive(item.path)
                     ? 'text-teal-100 bg-teal-900/30 ring-1 ring-teal-700/40'
