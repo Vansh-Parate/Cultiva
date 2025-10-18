@@ -11,6 +11,8 @@ import MyPlants from './pages/MyPlants';
 import FindPlant from './pages/FindPlant';
 import Care from './pages/Care';
 import Community from './pages/Community';
+import AIFeatures from './pages/AIFeatures';
+import AdvancedAIFeatures from './pages/AdvancedAIFeatures';
 
 function App() {
   return (
@@ -58,6 +60,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <Community />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ai-features"
+            element={
+              <ProtectedRoute>
+                <AIFeatures />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/advanced-ai-features"
+            element={
+              <ProtectedRoute>
+                <AdvancedAIFeatures />
               </ProtectedRoute>
             }
           />

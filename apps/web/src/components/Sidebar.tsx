@@ -9,7 +9,9 @@ import {
   Bell, 
   Plus,
   Camera,
-  LogOut
+  LogOut,
+  Brain,
+  Zap
 } from 'lucide-react';
 
 type SidebarProps = {
@@ -26,6 +28,8 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile = false, onNavigate }) => {
     { path: '/plants', icon: Leaf, label: 'My Plants' },
     { path: '/care', icon: CalendarCheck2, label: 'Care' },
     { path: '/find-plant', icon: ScanLine, label: 'Identify' },
+    { path: '/ai-features', icon: Brain, label: 'AI Features' },
+    { path: '/advanced-ai-features', icon: Zap, label: 'Advanced AI' },
     { path: '/community', icon: Users, label: 'Community' },
   ];
 
