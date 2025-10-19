@@ -7,13 +7,11 @@ import {
   Thermometer, 
   TestTube, 
   TrendingUp,
-  AlertTriangle,
   CheckCircle,
   Loader2,
   Brain,
   Target,
-  BarChart3,
-  Lightbulb
+
 } from 'lucide-react';
 import apiClient from '../lib/axios';
 
