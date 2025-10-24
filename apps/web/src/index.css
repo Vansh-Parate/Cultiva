@@ -11,13 +11,11 @@
   ::file-selector-button {
     border-color: var(--color-gray-200, currentcolor);
   }
-  
-  /* Apply Museo Sans font globally to all elements */
+
   html, body {
     font-family: 'Museo Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   }
-  
-  /* Apply to all text elements */
+
   h1, h2, h3, h4, h5, h6, p, span, div, button, input, textarea, select, label, a {
     font-family: 'Museo Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   }
