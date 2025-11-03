@@ -1,12 +1,10 @@
 import express from 'express';
 import { authenticateJWT } from '../middleware/authMiddleware';
-import { 
-  getComprehensiveCareRecommendations, 
-  diagnosePlantDisease, 
-  predictPlantGrowth, 
-  getCompanionPlants, 
-  getEnvironmentalOptimization, 
-  chatWithPlantAssistant 
+import {
+  getComprehensiveCareRecommendations,
+  diagnosePlantDisease,
+  predictPlantGrowth,
+  chatWithPlantAssistant
 } from '../lib/gemini';
 
 const router: express.Router = express.Router();
@@ -99,60 +97,7 @@ router.post('/growth-prediction', authenticateJWT, async (req, res) => {
   }
 });
 
-// Get companion plants
-router.post('/companion-plants', authenticateJWT, async (req, res) => {
-  try {
-    const { plantName, gardenSize, location } = req.body;
-    
-    if (!plantName) {
-      return res.status(400).json({
-        error: 'Missing plant name',
-        details: 'plantName is required'
-      });
-    }
 
-    const companions = await getCompanionPlants(
-      plantName, 
-      gardenSize || 'medium', 
-      location
-    );
-
-    res.json({ companions });
-  } catch (error: any) {
-    console.error('Companion plants error:', error);
-    res.status(500).json({
-      error: 'Failed to get companion plants',
-      details: error.message
-    });
-  }
-});
-
-// Get environmental optimization
-router.post('/environmental-optimization', authenticateJWT, async (req, res) => {
-  try {
-    const { plantName, currentConditions } = req.body;
-    
-    if (!plantName) {
-      return res.status(400).json({
-        error: 'Missing plant name',
-        details: 'plantName is required'
-      });
-    }
-
-    const optimization = await getEnvironmentalOptimization(
-      plantName, 
-      currentConditions || {}
-    );
-
-    res.json({ optimization });
-  } catch (error: any) {
-    console.error('Environmental optimization error:', error);
-    res.status(500).json({
-      error: 'Failed to get environmental optimization',
-      details: error.message
-    });
-  }
-});
 
 // Chat with plant assistant
 router.post('/chat', authenticateJWT, async (req, res) => {

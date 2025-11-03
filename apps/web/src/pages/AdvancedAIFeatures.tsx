@@ -28,7 +28,6 @@ import {
 import AINutritionAnalyzer from '../components/AINutritionAnalyzer';
 import AIPropagationGuide from '../components/AIPropagationGuide';
 import AISeasonalPlanner from '../components/AISeasonalPlanner';
-import AIStressDetector from '../components/AIStressDetector';
 
 interface Plant {
   id: string;
@@ -103,25 +102,6 @@ const AdvancedAIFeatures: React.FC = () => {
         'Prevent weather-related damage',
         'Optimize care timing',
         'Plan ahead for seasons'
-      ]
-    },
-    {
-      id: 'stress',
-      title: 'AI Stress Detector',
-      description: 'Advanced stress detection and recovery recommendations',
-      icon: Heart,
-      color: 'text-red-600 bg-red-100',
-      features: [
-        'Multi-factor stress analysis',
-        'Visual symptom recognition',
-        'Environmental stress detection',
-        'Recovery plan generation'
-      ],
-      benefits: [
-        'Early problem detection',
-        'Prevent plant loss',
-        'Faster recovery times',
-        'Better plant health'
       ]
     },
     {
@@ -212,8 +192,6 @@ const AdvancedAIFeatures: React.FC = () => {
         return <AIPropagationGuide plant={selectedPlant} />;
       case 'seasonal':
         return <AISeasonalPlanner plant={selectedPlant} />;
-      case 'stress':
-        return <AIStressDetector plant={selectedPlant} />;
       default:
         return (
           <div className="text-center py-12">

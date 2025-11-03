@@ -1,16 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Brain, 
-  Camera, 
-  Stethoscope, 
-  TrendingUp, 
-  Users, 
+import {
+  Brain,
+  Camera,
+  Stethoscope,
+  TrendingUp,
   MessageCircle,
   Lightbulb,
-  Zap,
-  Target,
-  Shield
+  Target
 } from 'lucide-react';
 import AICareDashboard from '../components/AICareDashboard';
 import AIAnalyticsDashboard from '../components/AIAnalyticsDashboard';
@@ -26,72 +23,37 @@ const AIFeatures: React.FC = () => {
     },
     {
       icon: Stethoscope,
-      title: "Health Assessment",
-      description: "Get instant health analysis and disease detection for your plants",
+      title: "Health Assessment & Disease Diagnosis",
+      description: "Get instant health analysis, disease detection, and AI-powered treatment recommendations",
       status: "Active",
       color: "text-red-600 bg-red-100"
     },
     {
       icon: Lightbulb,
       title: "Smart Care Recommendations",
-      description: "Personalized care advice based on species, location, and season",
-      status: "New",
+      description: "Personalized care advice based on species, location, season, and environmental optimization",
+      status: "Active",
       color: "text-green-600 bg-green-100"
-    },
-    {
-      icon: Stethoscope,
-      title: "Disease Diagnosis",
-      description: "AI-powered disease identification with treatment recommendations",
-      status: "New",
-      color: "text-orange-600 bg-orange-100"
     },
     {
       icon: TrendingUp,
       title: "Growth Prediction",
       description: "Predict plant growth trajectory and milestones based on current conditions",
-      status: "New",
+      status: "Active",
       color: "text-purple-600 bg-purple-100"
-    },
-    {
-      icon: Users,
-      title: "Companion Plant Suggestions",
-      description: "Discover plants that work well together for optimal garden health",
-      status: "New",
-      color: "text-indigo-600 bg-indigo-100"
     },
     {
       icon: MessageCircle,
       title: "AI Plant Assistant",
       description: "Chat with an intelligent assistant for instant plant care answers",
-      status: "New",
+      status: "Active",
       color: "text-teal-600 bg-teal-100"
     },
     {
-      icon: Zap,
-      title: "Environmental Optimization",
-      description: "Get recommendations to optimize light, temperature, and humidity",
-      status: "New",
-      color: "text-yellow-600 bg-yellow-100"
-    },
-    {
       icon: Target,
-      title: "Personalized Care Schedules",
-      description: "AI-generated care schedules that adapt to your plants and routine",
-      status: "Coming Soon",
-      color: "text-gray-600 bg-gray-100"
-    },
-    {
-      icon: Shield,
-      title: "Pest Detection",
-      description: "Early detection of pests and diseases with prevention strategies",
-      status: "Coming Soon",
-      color: "text-pink-600 bg-pink-100"
-    },
-    {
-      icon: BarChart3,
-      title: "AI Analytics Dashboard",
+      title: "Care Analytics Dashboard",
       description: "Comprehensive insights into your plant care performance and trends",
-      status: "New",
+      status: "Active",
       color: "text-indigo-600 bg-indigo-100"
     }
   ];
@@ -107,8 +69,8 @@ const AIFeatures: React.FC = () => {
               <h1 className="text-4xl font-bold text-gray-900">AI-Powered Plant Care</h1>
             </div>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Harness the power of artificial intelligence to give your plants the best possible care. 
-              From identification to growth prediction, our AI features help you become a better plant parent.
+              Harness the power of artificial intelligence to give your plants the best possible care.
+              From identification and disease diagnosis to personalized recommendations, our AI helps you become an expert plant parent.
             </p>
           </div>
         </div>
@@ -227,7 +189,7 @@ const AIFeatures: React.FC = () => {
           <h3 className="text-2xl font-bold text-gray-900 text-center mb-8">Benefits of AI-Powered Plant Care</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <h4 className="text-lg font-semibold text-gray-900 mb-4">For Beginners</h4>
+              <h4 className="text-lg font-semibold text-gray-900 mb-4">Core Features</h4>
               <ul className="space-y-2 text-gray-700">
                 <li className="flex items-center">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
@@ -235,36 +197,36 @@ const AIFeatures: React.FC = () => {
                 </li>
                 <li className="flex items-center">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                  Step-by-step care guidance
+                  Disease detection & diagnosis
                 </li>
                 <li className="flex items-center">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                  Early problem detection
+                  Personalized care guidance
                 </li>
                 <li className="flex items-center">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                  Personalized care schedules
+                  Growth prediction & insights
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="text-lg font-semibold text-gray-900 mb-4">For Experts</h4>
+              <h4 className="text-lg font-semibold text-gray-900 mb-4">Advanced Features</h4>
               <ul className="space-y-2 text-gray-700">
-                <li className="flex items-center">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
-                  Advanced growth predictions
-                </li>
                 <li className="flex items-center">
                   <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
                   Environmental optimization
                 </li>
                 <li className="flex items-center">
                   <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
-                  Companion plant suggestions
+                  AI plant assistant chatbot
                 </li>
                 <li className="flex items-center">
                   <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
-                  Data-driven insights
+                  Care analytics & tracking
+                </li>
+                <li className="flex items-center">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+                  Data-driven recommendations
                 </li>
               </ul>
             </div>

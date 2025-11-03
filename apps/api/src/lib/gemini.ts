@@ -8,6 +8,7 @@ interface CareRecommendations {
   tasks: string;
   seasonal: string;
   general: string;
+  environmental: string;
 }
 
 interface DiseaseInfo {
@@ -27,12 +28,6 @@ interface GrowthPrediction {
   timeline: string;
 }
 
-interface CompanionPlant {
-  name: string;
-  benefits: string[];
-  compatibility: 'excellent' | 'good' | 'moderate' | 'poor';
-  spacing: string;
-}
 
 export async function getWaterPHFromGemini(species: string, location?: string) {
   const apiKey = process.env.GEMINI_API_KEY; 
@@ -52,7 +47,7 @@ export async function getWaterPHFromGemini(species: string, location?: string) {
 
 export async function getComprehensiveCareRecommendations(species: string, plantName: string, location?: string, season?: string): Promise<CareRecommendations> {
   const apiKey = process.env.GEMINI_API_KEY;
-  const prompt = `Provide comprehensive care recommendations for ${species} (${plantName})${location ? ` in ${location}` : ''}${season ? ` during ${season}` : ''}. 
+  const prompt = `Provide comprehensive care recommendations for ${species} (${plantName})${location ? ` in ${location}` : ''}${season ? ` during ${season}` : ''}.
 
 Return a JSON object with these exact keys:
 {
@@ -62,7 +57,8 @@ Return a JSON object with these exact keys:
   "fertilization": "fertilizer recommendations including type, frequency, and application method",
   "tasks": "seasonal care tasks and maintenance activities",
   "seasonal": "season-specific care adjustments",
-  "general": "overall care tips and important notes"
+  "general": "overall care tips and important notes",
+  "environmental": "recommendations to optimize light, temperature, humidity, and air circulation based on current growing conditions"
 }
 
 Be specific and actionable in your recommendations.`;
@@ -97,7 +93,8 @@ Be specific and actionable in your recommendations.`;
       fertilization: "Monthly with balanced fertilizer during growing season",
       tasks: "Regular pruning and repotting as needed",
       seasonal: "Reduce watering in winter, increase in summer",
-      general: "Monitor for pests and diseases regularly"
+      general: "Monitor for pests and diseases regularly",
+      environmental: "Maintain consistent watering schedule, ensure proper drainage, and keep plant away from drafts and heat sources"
     };
   } catch (error) {
     console.error('Error fetching care recommendations:', error);
@@ -207,84 +204,6 @@ Base predictions on typical growth patterns for this species.`;
   }
 }
 
-export async function getCompanionPlants(plantName: string, gardenSize: string, location?: string): Promise<CompanionPlant[]> {
-  const apiKey = process.env.GEMINI_API_KEY;
-  const prompt = `Suggest companion plants for ${plantName} in a ${gardenSize} garden${location ? ` in ${location}` : ''}.
-
-Return a JSON array of companion plants with this structure:
-[
-  {
-    "name": "companion plant name",
-    "benefits": ["benefit1", "benefit2"],
-    "compatibility": "excellent|good|moderate|poor",
-    "spacing": "recommended spacing from main plant"
-  }
-]
-
-Provide 4-6 companion plant suggestions.`;
-
-  try {
-    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=' + apiKey, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }]
-      })
-    });
-    
-    const data = await res.json();
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    
-    try {
-      const match = text.match(/\[[\s\S]*\]/);
-      if (match) {
-        return JSON.parse(match[0]);
-      }
-    } catch (parseError) {
-      console.error('Failed to parse companion plants:', parseError);
-    }
-    
-    return [{
-      name: "Marigolds",
-      benefits: ["Pest deterrent", "Attracts beneficial insects"],
-      compatibility: "good" as const,
-      spacing: "6-12 inches"
-    }];
-  } catch (error) {
-    console.error('Error getting companion plants:', error);
-    throw new Error('Failed to get companion plants');
-  }
-}
-
-export async function getEnvironmentalOptimization(plantName: string, currentConditions: any): Promise<string> {
-  const apiKey = process.env.GEMINI_API_KEY;
-  const prompt = `Optimize growing conditions for ${plantName}. Current conditions: ${JSON.stringify(currentConditions)}.
-
-Provide specific recommendations to improve the plant's environment, including:
-- Light adjustments
-- Temperature modifications  
-- Humidity changes
-- Air circulation improvements
-- Soil amendments
-
-Be practical and actionable.`;
-
-  try {
-    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=' + apiKey, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }]
-      })
-    });
-    
-    const data = await res.json();
-    return data?.candidates?.[0]?.content?.parts?.[0]?.text || 'No optimization recommendations available';
-  } catch (error) {
-    console.error('Error getting environmental optimization:', error);
-    throw new Error('Failed to get environmental optimization');
-  }
-}
 
 export async function chatWithPlantAssistant(question: string, context?: string): Promise<string> {
   const apiKey = process.env.GEMINI_API_KEY;

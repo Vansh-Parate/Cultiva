@@ -1,0 +1,287 @@
+GreenCare Codebase Exploration - Summary Report
+
+PROJECT OVERVIEW
+================
+
+Project Type: Full-stack plant care management system with AI
+Architecture: Turbo monorepo with Express backend and React frontend
+Database: PostgreSQL with Prisma ORM
+
+TECH STACK
+==========
+
+Frontend:
+- React 18.3.1, TypeScript, Vite 5.4.1
+- React Router 7.6.3, Axios 1.10.0
+- Tailwind CSS 4.1.11 (dark mode support)
+- HeroUI 2.8.1 (component library)
+- Chart.js for data visualization
+- Icons: Lucide (primary), Heroicons, React Icons, HugeIcons
+- Sonner for notifications
+
+Backend:
+- Express 4.21.0 with TypeScript
+- Prisma 5.19.1 ORM for PostgreSQL
+- Passport.js + Google OAuth 2.0
+- JWT authentication with bcrypt
+- Multer for file uploads
+- AWS S3 for cloud storage
+
+DIRECTORY STRUCTURE
+===================
+
+apps/api/src/
+  ├── index.ts (Express setup)
+  ├── lib/gemini.ts (AI service - 7 functions)
+  ├── routes/ (10 API modules)
+  │   ├── ai.route.ts (AI endpoints)
+  │   ├── auth.route.ts
+  │   ├── plant.route.ts
+  │   ├── careTasks.route.ts
+  │   ├── community.route.ts
+  │   ├── plantIdentify.route.ts (Plant.id API)
+  │   ├── species.route.ts
+  │   └── more...
+  ├── middleware/
+  ├── auth/
+  └── config/
+
+apps/web/src/
+  ├── components/ (32 total)
+  │   ├── landing/ (6 sections)
+  │   ├── AI components (7 specialized)
+  │   ├── widgets/ (cards, grids, etc)
+  │   └── utility components
+  ├── pages/ (11 pages)
+  │   ├── Dashboard.tsx
+  │   ├── MyPlants.tsx
+  │   ├── AIFeatures.tsx
+  │   ├── AdvancedAIFeatures.tsx
+  │   ├── Care.tsx
+  │   ├── Community.tsx
+  │   └── auth pages
+  ├── lib/
+  │   ├── axios.ts (HTTP client)
+  │   └── gemini.ts (Gemini SDK)
+  ├── hooks/
+  ├── styles/
+  └── index.css (theme variables)
+
+AI FEATURES IMPLEMENTED
+=======================
+
+Backend Services (Google Gemini 2.5 Pro):
+1. Water pH Recommendation
+2. Comprehensive Care Recommendations (watering, light, temperature, fertilization, seasonal)
+3. Plant Disease Diagnosis (symptoms, causes, treatment, severity)
+4. Growth Prediction (height, width, milestones, timeline)
+5. Companion Plant Suggestions (4-6 recommendations)
+6. Environmental Optimization (light, temperature, humidity, air circulation)
+7. Plant Care Chat Assistant (conversational AI)
+
+API Endpoints (/api/v1/ai/):
+- POST /care-recommendations
+- POST /disease-diagnosis
+- POST /growth-prediction
+- POST /companion-plants
+- POST /environmental-optimization
+- POST /chat
+
+Frontend Components:
+1. AIAnalyticsDashboard - Performance metrics and insights
+2. AICareDashboard - Central management hub
+3. AICareScheduler - AI-generated schedules with weather awareness
+4. AINutritionAnalyzer - Soil analysis and fertilizer recommendations
+5. AIPropagationGuide - Propagation instructions
+6. AISeasonalPlanner - Weather-aware seasonal planning
+7. AIStressDetector - Stress analysis (environmental, nutritional, pest, disease)
+
+STYLING & THEME SYSTEM
+======================
+
+Tailwind CSS 4.1.11 with:
+- Dark mode (class-based)
+- CSS custom properties for colors
+- Custom font: Museo Sans
+- Responsive design (mobile-first)
+- Animation plugin support
+
+Theme Colors (Light/Dark):
+- Primary: Dark gray / near white
+- Background: White / nearly black
+- Secondary: Light gray / dark gray
+- Accent: Light gray / dark gray
+- Destructive: Red (consistent)
+- Chart colors: 5 defined gradients
+
+Design Patterns:
+- Card-based layout with subtle shadows
+- Color-coded status indicators
+- Icon + label combinations
+- Responsive grids (1 col mobile, 2-3 cols desktop)
+- Interactive elements with hover states
+- Modals with backdrop blur
+
+ROUTING STRUCTURE
+=================
+
+Public Routes:
+- / (Landing page with hero, benefits, story, community, FAQ)
+- /auth/signup
+- /auth/signin
+- /auth/google/success
+
+Protected Routes (Require JWT):
+- /dashboard (Main hub - plants, tasks, feed)
+- /plants (Plant collection)
+- /care (Care management)
+- /find-plant (Plant discovery/identification)
+- /community (Social feed)
+- /ai-features (AI showcase)
+- /advanced-ai-features (Advanced tools)
+
+AUTHENTICATION
+===============
+
+Methods:
+- JWT (jsonwebtoken)
+- Google OAuth 2.0 (Passport.js)
+- Password hashing (bcrypt)
+
+Implementation:
+- Tokens stored in localStorage
+- Axios interceptor adds token to requests
+- 401 responses trigger re-authentication
+- Session management with express-session
+
+FILE STORAGE & APIS
+===================
+
+Cloud Storage: AWS S3 (apps/api/src/s3.ts)
+
+External APIs:
+1. Google Gemini 2.5 Pro - AI recommendations
+2. Plant.id API - Plant identification from images
+3. Google OAuth 2.0 - Social authentication
+4. AWS S3 SDK - Cloud storage
+5. Weather APIs - Environmental data (via useWeather hook)
+
+DATABASE MODELS
+===============
+
+Using Prisma with PostgreSQL:
+- User (email, password, profile)
+- Plant (species, location, health status)
+- PlantSpecies (care requirements database)
+- CareSchedule, CareTask, CareLog (task management)
+- HealthLog (health tracking)
+- CommunityPost, PostComment, PostLike (social)
+- PlantImage (multiple images per plant)
+- PlantIdentification (API results storage)
+
+DEVELOPMENT INFO
+================
+
+Build Tools:
+- Turbo 2.1.2 (monorepo management)
+- pnpm 8.15.6 (package manager)
+- TypeScript 5.5.3 (type safety)
+- Vite 5.4.1 (frontend bundler)
+- ESLint + Prettier (code quality)
+
+Environment Variables:
+
+Frontend:
+- VITE_API_URL (backend URL)
+- VITE_GEMINI_API_KEY (Gemini API)
+
+Backend:
+- DATABASE_URL (PostgreSQL)
+- GEMINI_API_KEY
+- PLANT_ID_API_KEY
+- SESSION_SECRET
+- NODE_ENV
+- PORT (default 6969)
+
+Development Servers:
+- Frontend: http://localhost:5173
+- Backend: http://localhost:6969
+
+Deployment:
+- Frontend: Vercel
+- Backend: Render compatible
+- CORS: localhost:5173, vercel.app
+
+COMPONENT STATISTICS
+====================
+
+- React Components: 32
+- Page Components: 11
+- API Route Files: 10
+- AI API Endpoints: 6
+- AI Components: 7
+- Database Models: 15+
+- External Integrations: 5
+- Total Dependencies: 45+
+
+KEY FEATURES
+============
+
+1. Plant Management
+   - CRUD operations with Prisma
+   - Multiple images per plant
+   - Species database
+   - Health status tracking
+
+2. Care System
+   - AI-generated care schedules
+   - Task management and tracking
+   - Weather-aware adjustments
+   - Seasonal recommendations
+
+3. AI Integration
+   - 7 major AI-powered features
+   - Disease diagnosis
+   - Growth predictions
+   - Companion planting
+   - Environmental optimization
+   - Stress detection
+
+4. Community Features
+   - User profiles
+   - Posts, comments, likes
+   - Community feed
+   - Plant shop integration
+
+5. Analytics & Insights
+   - Performance metrics
+   - AI-generated recommendations
+   - Growth analysis
+   - Care trend tracking
+
+6. Authentication & Security
+   - JWT + OAuth
+   - Password hashing
+   - Protected routes
+   - Session management
+
+7. Responsive Design
+   - Mobile-first approach
+   - Dark/light theme support
+   - Tailwind CSS
+   - Touch-friendly UI
+
+SUMMARY
+=======
+
+GreenCare is a production-ready plant care management platform with:
+- Modern frontend (React + Vite + Tailwind)
+- Robust backend (Express + PostgreSQL + Prisma)
+- Comprehensive AI integration (Google Gemini)
+- Cloud storage (AWS S3)
+- Social features (community, profiles)
+- Scalable architecture (Turbo monorepo)
+- Type-safe codebase (TypeScript)
+- Professional design system
+
+All systems include error handling, fallbacks, and user-friendly interfaces.
