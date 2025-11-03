@@ -20,7 +20,6 @@ export function useWeather(location?: string) {
           },
           () => {
             setLoading(false);
-            // Optionally handle error (user denied, etc.)
           }
         );
       }
