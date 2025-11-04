@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  MessageCircle, Heart, Share2, Search, Filter, Plus, MapPin, Star, 
+import {
+  MessageCircle, Heart, Share2, Search, Filter, Plus, MapPin, Star,
   Camera, MessageSquare, Bookmark, TrendingUp, Users, Calendar,
   Eye, ChevronDown, ChevronUp, Send, Image, X, Edit3, MoreHorizontal,
   Award, ThumbsUp, Reply, Flag, Download, ExternalLink, Phone
 } from 'lucide-react';
 import apiClient from "../lib/axios";
+import { Card, CardContent } from '../components/ui';
+import { badgeClasses, buttonClasses, inputClasses, textClasses } from '../lib/classNameHelpers';
 
 interface CommunityPost {
   id: string;
@@ -273,7 +275,7 @@ const Community = () => {
   const getPostTypeIcon = (type: CommunityPost['postType']) => {
     switch (type) {
       case 'question': return <MessageCircle className="w-5 h-5 text-blue-600" />;
-      case 'showcase': return <Camera className="w-5 h-5 text-green-600" />;
+      case 'showcase': return <Camera className="w-5 h-5 text-emerald-600" />;
       case 'tip': return <Award className="w-5 h-5 text-yellow-600" />;
       case 'trade': return <Share2 className="w-5 h-5 text-purple-600" />;
       default: return <MessageCircle className="w-5 h-5" />;
@@ -283,10 +285,10 @@ const Community = () => {
   const getPostTypeColor = (type: CommunityPost['postType']) => {
     switch (type) {
       case 'question': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'showcase': return 'bg-green-100 text-green-800 border-green-200';
+      case 'showcase': return 'bg-emerald-100 text-emerald-800 border-green-200';
       case 'tip': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
       case 'trade': return 'bg-purple-100 text-purple-800 border-purple-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      default: return 'bg-[hsl(var(--muted))] text-gray-800 border-[hsl(var(--border))]';
     }
   };
 
@@ -339,30 +341,30 @@ const Community = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[hsl(var(--background))] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-green-500 mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Loading community...</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-emerald-500 mx-auto mb-4"></div>
+          <p className="text-[hsl(var(--muted-foreground))] font-medium">Loading community...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
+    <div className="min-h-screen bg-[hsl(var(--background))] text-[hsl(var(--foreground))]">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-green-100">
+      <div className="bg-[hsl(var(--card))] shadow-sm border-b border-[hsl(var(--border))]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold text-[hsl(var(--foreground))]">
                 Plant Community
               </h1>
-              <p className="text-gray-600 mt-1">Connect, learn, and grow together</p>
+              <p className="text-[hsl(var(--muted-foreground))] mt-1">Connect, learn, and grow together</p>
             </div>
             <div className="flex items-center gap-4">
               {stats && (
-                <div className="hidden md:flex items-center gap-6 text-sm text-gray-600">
+                <div className="hidden md:flex items-center gap-6 text-sm text-[hsl(var(--muted-foreground))]">
                   <div className="flex items-center gap-2">
                     <Users className="w-4 h-4" />
                     <span>{stats.totalUsers.toLocaleString()} members</span>
@@ -379,7 +381,7 @@ const Community = () => {
               )}
               <button
                 onClick={() => setShowCreatePost(true)}
-                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                className={`flex items-center gap-2 ${buttonClasses.primary} transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5`}
               >
                 <Plus className="w-5 h-5" />
                 <span className="font-medium">Create Post</span>
@@ -394,29 +396,29 @@ const Community = () => {
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-6">
             {/* Search and Filters */}
-            <div className="bg-white rounded-2xl shadow-sm border border-green-100 p-6">
+            <div className="bg-[hsl(var(--card))] rounded-2xl shadow-sm border border-emerald-200 dark:border-emerald-900/30 p-6">
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex items-center gap-3 flex-1">
-                  <Search className="w-5 h-5 text-gray-500" />
+                  <Search className="w-5 h-5 text-[hsl(var(--muted-foreground))]" />
                   <input
                     type="text"
                     placeholder="Search posts, tips, or questions..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="flex-1 border-0 focus:ring-0 text-gray-700 placeholder-gray-500"
+                    className="flex-1 border-0 focus:ring-0 text-[hsl(var(--foreground))] placeholder-gray-500"
                   />
                 </div>
                 <div className="flex items-center gap-4">
                   <select 
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                    className="px-4 py-2 border border-[hsl(var(--border))] rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
                   >
                     <option value="recent">Most Recent</option>
                     <option value="popular">Most Popular</option>
                     <option value="discussed">Most Discussed</option>
                   </select>
-                  <Filter className="w-5 h-5 text-gray-500" />
+                  <Filter className="w-5 h-5 text-[hsl(var(--muted-foreground))]" />
                 </div>
               </div>
 
@@ -426,7 +428,7 @@ const Community = () => {
                   {selectedTags.map(tag => (
                     <span 
                       key={tag}
-                      className="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full cursor-pointer hover:bg-green-200 transition-colors"
+                      className="inline-flex items-center gap-1 px-3 py-1 bg-emerald-100 text-emerald-800 text-sm rounded-full cursor-pointer hover:bg-green-200 transition-colors"
                       onClick={() => handleTagClick(tag)}
                     >
                       #{tag}
@@ -438,7 +440,7 @@ const Community = () => {
             </div>
 
             {/* Tab Navigation */}
-            <div className="bg-white rounded-2xl shadow-sm border border-green-100 p-2">
+            <div className="bg-[hsl(var(--card))] rounded-2xl shadow-sm border border-emerald-200 dark:border-emerald-900/30 p-2">
               <div className="flex space-x-1">
                 {[
                   { id: 'feed', label: 'All Posts', icon: MessageCircle },
@@ -452,8 +454,8 @@ const Community = () => {
                     onClick={() => setActiveTab(tab.id as any)}
                     className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                       activeTab === tab.id 
-                        ? 'bg-gradient-to-r from-green-600 to-green-700 text-white shadow-md' 
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                        ? 'bg-gradient-to-r from-emerald-600 to-emerald-700 text-white shadow-md' 
+                        : 'text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] hover:bg-[hsl(var(--muted))]'
                     }`}
                   >
                     <tab.icon className="w-4 h-4" />
@@ -468,11 +470,11 @@ const Community = () => {
               /* Plant Shops Directory */
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {shops.map(shop => (
-                  <div key={shop.id} className="bg-white rounded-2xl shadow-sm border border-green-100 hover:shadow-md transition-all duration-200 overflow-hidden">
+                  <div key={shop.id} className="bg-[hsl(var(--card))] rounded-2xl shadow-sm border border-emerald-200 dark:border-emerald-900/30 hover:shadow-md transition-all duration-200 overflow-hidden">
                     <div className="p-6">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
-                          <h3 className="text-lg font-bold text-gray-900 mb-2">{shop.name}</h3>
+                          <h3 className="text-lg font-bold text-[hsl(var(--foreground))] mb-2">{shop.name}</h3>
                           <div className="flex items-center gap-2">
                             <div className="flex items-center">
                               {[...Array(5)].map((_, i) => (
@@ -486,27 +488,27 @@ const Community = () => {
                                 />
                               ))}
                             </div>
-                            <span className="text-sm text-gray-600">
+                            <span className="text-sm text-[hsl(var(--muted-foreground))]">
                               {shop.averageRating.toFixed(1)} ({shop.reviewCount})
                             </span>
                           </div>
                         </div>
-                        <div className="text-sm text-green-600 font-medium bg-green-50 px-2 py-1 rounded-lg">
+                        <div className="text-sm text-emerald-600 font-medium bg-green-50 px-2 py-1 rounded-lg">
                           {shop.distance}
                         </div>
                       </div>
                       
                       <div className="space-y-3 mb-4">
-                        <div className="flex items-start gap-2 text-sm text-gray-600">
+                        <div className="flex items-start gap-2 text-sm text-[hsl(var(--muted-foreground))]">
                           <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
                           <span>{shop.address}</span>
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <div className="flex items-center gap-2 text-sm text-[hsl(var(--muted-foreground))]">
                           <Phone className="w-4 h-4 flex-shrink-0" />
                           <span>{shop.phone}</span>
                         </div>
                         {shop.website && (
-                          <div className="flex items-center gap-2 text-sm text-green-600">
+                          <div className="flex items-center gap-2 text-sm text-emerald-600">
                             <ExternalLink className="w-4 h-4 flex-shrink-0" />
                             <a href={shop.website} target="_blank" rel="noopener noreferrer" className="hover:underline">
                               {shop.website}
@@ -516,10 +518,10 @@ const Community = () => {
                       </div>
                       
                       <div className="mb-4">
-                        <h4 className="text-sm font-semibold text-gray-900 mb-2">Services:</h4>
+                        <h4 className="text-sm font-semibold text-[hsl(var(--foreground))] mb-2">Services:</h4>
                         <div className="flex flex-wrap gap-1">
                           {shop.services.map(service => (
-                            <span key={service} className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                            <span key={service} className="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs rounded-full">
                               {service}
                             </span>
                           ))}
@@ -527,12 +529,12 @@ const Community = () => {
                       </div>
                       
                       <div className="flex gap-2">
-                        <button className="flex-1 px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white text-sm rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 font-medium">
+                        <button className="flex-1 px-4 py-2 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-sm rounded-lg hover:from-emerald-700 hover:to-emerald-800 transition-all duration-200 font-medium">
                           Contact
                         </button>
                         <button 
                           onClick={() => setSelectedShop(shop)}
-                          className="px-4 py-2 border border-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-50 transition-colors"
+                          className="px-4 py-2 border border-[hsl(var(--border))] text-[hsl(var(--foreground))] text-sm rounded-lg hover:bg-[hsl(var(--muted))] transition-colors"
                         >
                           Details
                         </button>
@@ -546,23 +548,23 @@ const Community = () => {
               <div className="space-y-6">
                 {/* Blank-state banner prompting to add plants (only visible if no plants) */}
                 {hasPlants === false && (
-                  <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-100 rounded-2xl p-5 flex items-start gap-4">
-                    <div className="shrink-0 rounded-xl bg-white p-3 border border-green-100 shadow-sm">
+                  <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-emerald-200 dark:border-emerald-900/30 rounded-2xl p-5 flex items-start gap-4">
+                    <div className="shrink-0 rounded-xl bg-white p-3 border border-emerald-200 dark:border-emerald-900/30 shadow-sm">
                       <PlantIcon />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900">Add a plant to unlock personalized community insights</h3>
-                      <p className="text-gray-600 mt-1">Recommendations, local tips, and relevant discussions become smarter once you add your first plant.</p>
+                      <h3 className="text-lg font-semibold text-[hsl(var(--foreground))]">Add a plant to unlock personalized community insights</h3>
+                      <p className="text-[hsl(var(--muted-foreground))] mt-1">Recommendations, local tips, and relevant discussions become smarter once you add your first plant.</p>
                       <div className="mt-3 flex gap-3">
-                        <a href="/my-plants" className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium">Go to My Plants</a>
-                        <a href="/find-plant" className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">Identify a Plant</a>
+                        <a href="/my-plants" className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium">Go to My Plants</a>
+                        <a href="/find-plant" className="px-4 py-2 border border-[hsl(var(--border))] text-[hsl(var(--foreground))] rounded-lg hover:bg-[hsl(var(--muted))] transition-colors text-sm font-medium">Identify a Plant</a>
                       </div>
                     </div>
                   </div>
                 )}
                 {posts.length > 0 ? (
                   posts.map(post => (
-                    <div key={post.id} className="bg-white rounded-2xl shadow-sm border border-green-100 hover:shadow-md transition-all duration-200 overflow-hidden">
+                    <div key={post.id} className="bg-[hsl(var(--card))] rounded-2xl shadow-sm border border-emerald-200 dark:border-emerald-900/30 hover:shadow-md transition-all duration-200 overflow-hidden">
                       {/* Post Header */}
                       <div className="p-6 pb-4">
                         <div className="flex items-start justify-between mb-4">
@@ -570,17 +572,17 @@ const Community = () => {
                             <img 
                               src={post.user.avatarUrl} 
                               alt={post.user.username} 
-                              className="w-12 h-12 rounded-full object-cover ring-2 ring-green-100"
+                              className="w-12 h-12 rounded-full object-cover ring-2 ring-emerald-100"
                             />
                             <div>
                               <div className="flex items-center gap-2 mb-1">
-                                <h3 className="font-semibold text-gray-900">{post.user.username}</h3>
+                                <h3 className="font-semibold text-[hsl(var(--foreground))]">{post.user.username}</h3>
                                 {getExperienceBadge(post.user.experienceLevel)}
                                 <span className={`px-3 py-1 text-xs rounded-full font-medium border ${getPostTypeColor(post.postType)}`}>
                                   {post.postType}
                                 </span>
                               </div>
-                              <div className="flex items-center gap-2 text-sm text-gray-500">
+                              <div className="flex items-center gap-2 text-sm text-[hsl(var(--muted-foreground))]">
                                 <span>{new Date(post.createdAt).toLocaleDateString()}</span>
                                 {post.user.location && (
                                   <>
@@ -593,16 +595,16 @@ const Community = () => {
                           </div>
                           <div className="flex items-center gap-2">
                             {getPostTypeIcon(post.postType)}
-                            <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                              <MoreHorizontal className="w-4 h-4 text-gray-500" />
+                            <button className="p-2 hover:bg-[hsl(var(--muted))] rounded-lg transition-colors">
+                              <MoreHorizontal className="w-4 h-4 text-[hsl(var(--muted-foreground))]" />
                             </button>
                           </div>
                         </div>
 
                         {/* Post Content */}
                         <div className="mb-4">
-                          <h4 className="text-xl font-semibold text-gray-900 mb-3">{post.title}</h4>
-                          <div className={`text-gray-700 leading-relaxed ${
+                          <h4 className="text-xl font-semibold text-[hsl(var(--foreground))] mb-3">{post.title}</h4>
+                          <div className={`text-[hsl(var(--foreground))] leading-relaxed ${
                             expandedPosts.has(post.id) ? '' : 'line-clamp-3'
                           }`}>
                             {post.content}
@@ -610,7 +612,7 @@ const Community = () => {
                           {post.content.length > 200 && (
                             <button 
                               onClick={() => toggleExpanded(post.id)}
-                              className="text-green-600 text-sm font-medium mt-2 hover:text-green-700 transition-colors"
+                              className="text-emerald-600 text-sm font-medium mt-2 hover:text-emerald-700 transition-colors"
                             >
                               {expandedPosts.has(post.id) ? 'Show less' : 'Read more'}
                             </button>
@@ -643,8 +645,8 @@ const Community = () => {
                                   onClick={() => handleTagClick(tag)}
                                   className={`px-3 py-1 text-xs rounded-full transition-colors cursor-pointer ${
                                     selectedTags.includes(tag)
-                                      ? 'bg-green-100 text-green-800 ring-1 ring-green-300'
-                                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                      ? 'bg-emerald-100 text-emerald-800 ring-1 ring-green-300'
+                                      : 'bg-[hsl(var(--muted))] text-[hsl(var(--foreground))] hover:bg-[hsl(var(--muted))]'
                                   }`}
                                 >
                                   #{tag}
@@ -656,13 +658,13 @@ const Community = () => {
                       </div>
 
                       {/* Post Actions */}
-                      <div className="px-6 py-4 border-t border-gray-100 bg-gray-50">
+                      <div className="px-6 py-4 border-t border-[hsl(var(--border))] bg-[hsl(var(--muted))]">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-6">
                             <button 
                               onClick={() => handleLike(post.id)}
                               className={`flex items-center gap-2 transition-colors ${
-                                post.isLiked ? 'text-red-600' : 'text-gray-600 hover:text-red-600'
+                                post.isLiked ? 'text-red-600' : 'text-[hsl(var(--muted-foreground))] hover:text-red-600'
                               }`}
                             >
                               <Heart className={`w-5 h-5 ${post.isLiked ? 'fill-current' : ''}`} />
@@ -670,24 +672,24 @@ const Community = () => {
                             </button>
                             <button 
                               onClick={() => toggleComments(post.id)}
-                              className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
+                              className="flex items-center gap-2 text-[hsl(var(--muted-foreground))] hover:text-blue-600 transition-colors"
                             >
                               <MessageSquare className="w-5 h-5" />
                               <span className="text-sm font-medium">{post.commentsCount}</span>
                             </button>
-                            <button className="flex items-center gap-2 text-gray-600 hover:text-green-600 transition-colors">
+                            <button className="flex items-center gap-2 text-[hsl(var(--muted-foreground))] hover:text-emerald-600 transition-colors">
                               <Share2 className="w-5 h-5" />
                               <span className="text-sm font-medium">Share</span>
                             </button>
                           </div>
-                          <button className="text-gray-600 hover:text-yellow-600 transition-colors">
+                          <button className="text-[hsl(var(--muted-foreground))] hover:text-yellow-600 transition-colors">
                             <Bookmark className="w-5 h-5" />
                           </button>
                         </div>
 
                         {/* Comments Section */}
                         {showComments.has(post.id) && (
-                          <div className="mt-4 pt-4 border-t border-gray-200">
+                          <div className="mt-4 pt-4 border-t border-[hsl(var(--border))]">
                             {/* Add Comment */}
                             <div className="flex gap-3 mb-4">
                               <img 
@@ -702,11 +704,11 @@ const Community = () => {
                                   value={newComment[post.id] || ''}
                                   onChange={(e) => setNewComment({ ...newComment, [post.id]: e.target.value })}
                                   onKeyPress={(e) => e.key === 'Enter' && handleComment(post.id)}
-                                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                                  className="flex-1 px-3 py-2 border border-[hsl(var(--border))] rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
                                 />
                                 <button 
                                   onClick={() => handleComment(post.id)}
-                                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                                  className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
                                 >
                                   <Send className="w-4 h-4" />
                                 </button>
@@ -724,14 +726,14 @@ const Community = () => {
                                       className="w-8 h-8 rounded-full object-cover"
                                     />
                                     <div className="flex-1">
-                                      <div className="bg-gray-100 rounded-lg px-3 py-2">
-                                        <div className="font-semibold text-sm text-gray-900">{comment.user.username}</div>
-                                        <div className="text-sm text-gray-700">{comment.content}</div>
+                                      <div className="bg-[hsl(var(--muted))] rounded-lg px-3 py-2">
+                                        <div className="font-semibold text-sm text-[hsl(var(--foreground))]">{comment.user.username}</div>
+                                        <div className="text-sm text-[hsl(var(--foreground))]">{comment.content}</div>
                                       </div>
-                                      <div className="flex items-center gap-4 mt-1 text-xs text-gray-500">
+                                      <div className="flex items-center gap-4 mt-1 text-xs text-[hsl(var(--muted-foreground))]">
                                         <span>{new Date(comment.createdAt).toLocaleDateString()}</span>
-                                        <button className="hover:text-gray-700">Reply</button>
-                                        <button className="hover:text-gray-700">Like</button>
+                                        <button className="hover:text-[hsl(var(--foreground))]">Reply</button>
+                                        <button className="hover:text-[hsl(var(--foreground))]">Like</button>
                                       </div>
                                     </div>
                                   </div>
@@ -745,23 +747,23 @@ const Community = () => {
                   ))
                 ) : (
                   hasPlants === false ? (
-                    <div className="text-center py-16 bg-white rounded-2xl shadow-sm border border-green-100">
+                    <div className="text-center py-16 bg-white rounded-2xl shadow-sm border border-emerald-200 dark:border-emerald-900/30">
                       <PlantIconLarge />
-                      <h3 className="text-xl font-semibold text-gray-900 mb-2">Add a plant to unlock personalized content</h3>
-                      <p className="text-gray-600 mb-6 max-w-md mx-auto">Your feed gets better with your garden. Add your first plant to see tailored discussions, tips, and local shop recommendations.</p>
+                      <h3 className="text-xl font-semibold text-[hsl(var(--foreground))] mb-2">Add a plant to unlock personalized content</h3>
+                      <p className="text-[hsl(var(--muted-foreground))] mb-6 max-w-md mx-auto">Your feed gets better with your garden. Add your first plant to see tailored discussions, tips, and local shop recommendations.</p>
                       <div className="flex items-center justify-center gap-3">
-                        <a href="/my-plants" className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">Add a Plant</a>
-                        <a href="/find-plant" className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">Identify a Plant</a>
+                        <a href="/my-plants" className="px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium">Add a Plant</a>
+                        <a href="/find-plant" className="px-6 py-3 border border-[hsl(var(--border))] text-[hsl(var(--foreground))] rounded-lg hover:bg-[hsl(var(--muted))] transition-colors font-medium">Identify a Plant</a>
                       </div>
                     </div>
                   ) : (
-                    <div className="text-center py-16 bg-white rounded-2xl shadow-sm border border-green-100">
+                    <div className="text-center py-16 bg-white rounded-2xl shadow-sm border border-emerald-200 dark:border-emerald-900/30">
                       <MessageCircle className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">No posts found</h3>
-                      <p className="text-gray-600 mb-6">Be the first to share something with the community!</p>
+                      <h3 className="text-lg font-semibold text-[hsl(var(--foreground))] mb-2">No posts found</h3>
+                      <p className="text-[hsl(var(--muted-foreground))] mb-6">Be the first to share something with the community!</p>
                       <button 
                         onClick={() => setShowCreatePost(true)}
-                        className="px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 font-medium"
+                        className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-lg hover:from-emerald-700 hover:to-emerald-800 transition-all duration-200 font-medium"
                       >
                         Create First Post
                       </button>
@@ -776,31 +778,31 @@ const Community = () => {
           <div className="space-y-6">
             {/* Community Stats */}
             {stats && (
-              <div className="bg-white rounded-2xl shadow-sm border border-green-100 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-green-600" />
+              <div className="bg-[hsl(var(--card))] rounded-2xl shadow-sm border border-emerald-200 dark:border-emerald-900/30 p-6">
+                <h3 className="text-lg font-semibold text-[hsl(var(--foreground))] mb-4 flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 text-emerald-600" />
                   Community Stats
                 </h3>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Total Members</span>
-                    <span className="font-semibold text-gray-900">{stats.totalUsers.toLocaleString()}</span>
+                    <span className="text-[hsl(var(--muted-foreground))]">Total Members</span>
+                    <span className="font-semibold text-[hsl(var(--foreground))]">{stats.totalUsers.toLocaleString()}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Total Posts</span>
-                    <span className="font-semibold text-gray-900">{stats.totalPosts.toLocaleString()}</span>
+                    <span className="text-[hsl(var(--muted-foreground))]">Total Posts</span>
+                    <span className="font-semibold text-[hsl(var(--foreground))]">{stats.totalPosts.toLocaleString()}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">This Week</span>
-                    <span className="font-semibold text-green-600">+{stats.thisWeekPosts}</span>
+                    <span className="text-[hsl(var(--muted-foreground))]">This Week</span>
+                    <span className="font-semibold text-emerald-600">+{stats.thisWeekPosts}</span>
                   </div>
                 </div>
               </div>
             )}
 
             {/* Trending Tags */}
-            <div className="bg-white rounded-2xl shadow-sm border border-green-100 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <div className="bg-[hsl(var(--card))] rounded-2xl shadow-sm border border-emerald-200 dark:border-emerald-900/30 p-6">
+              <h3 className="text-lg font-semibold text-[hsl(var(--foreground))] mb-4 flex items-center gap-2">
                 <Award className="w-5 h-5 text-yellow-600" />
                 Trending Topics
               </h3>
@@ -811,12 +813,12 @@ const Community = () => {
                     onClick={() => handleTagClick(tag.tag)}
                     className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors ${
                       selectedTags.includes(tag.tag)
-                        ? 'bg-green-100 text-green-800'
-                        : 'hover:bg-gray-50 text-gray-700'
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : 'hover:bg-[hsl(var(--muted))] text-[hsl(var(--foreground))]'
                     }`}
                   >
                     <span className="font-medium">#{tag.tag}</span>
-                    <span className="text-sm bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    <span className="text-sm bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))] px-2 py-1 rounded-full">
                       {tag.count}
                     </span>
                   </button>
@@ -825,23 +827,23 @@ const Community = () => {
             </div>
 
             {/* Quick Actions */}
-            <div className="bg-white rounded-2xl shadow-sm border border-green-100 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+            <div className="bg-[hsl(var(--card))] rounded-2xl shadow-sm border border-emerald-200 dark:border-emerald-900/30 p-6">
+              <h3 className="text-lg font-semibold text-[hsl(var(--foreground))] mb-4">Quick Actions</h3>
               <div className="space-y-3">
                 <button 
                   onClick={() => setShowCreatePost(true)}
-                  className="w-full flex items-center gap-3 p-3 text-left hover:bg-gray-50 rounded-lg transition-colors"
+                  className="w-full flex items-center gap-3 p-3 text-left hover:bg-[hsl(var(--muted))] rounded-lg transition-colors"
                 >
-                  <Plus className="w-5 h-5 text-green-600" />
-                  <span className="font-medium text-gray-700">Create Post</span>
+                  <Plus className="w-5 h-5 text-emerald-600" />
+                  <span className="font-medium text-[hsl(var(--foreground))]">Create Post</span>
                 </button>
-                <button className="w-full flex items-center gap-3 p-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
+                <button className="w-full flex items-center gap-3 p-3 text-left hover:bg-[hsl(var(--muted))] rounded-lg transition-colors">
                   <Camera className="w-5 h-5 text-blue-600" />
-                  <span className="font-medium text-gray-700">Share Photo</span>
+                  <span className="font-medium text-[hsl(var(--foreground))]">Share Photo</span>
                 </button>
-                <button className="w-full flex items-center gap-3 p-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
+                <button className="w-full flex items-center gap-3 p-3 text-left hover:bg-[hsl(var(--muted))] rounded-lg transition-colors">
                   <MessageCircle className="w-5 h-5 text-purple-600" />
-                  <span className="font-medium text-gray-700">Ask Question</span>
+                  <span className="font-medium text-[hsl(var(--foreground))]">Ask Question</span>
                 </button>
               </div>
             </div>
@@ -852,22 +854,22 @@ const Community = () => {
       {/* Create Post Modal */}
       {showCreatePost && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200">
+          <div className="bg-[hsl(var(--card))] rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-[hsl(var(--border))]">
               <div className="flex items-center justify-between">
-                <h3 className="text-2xl font-bold text-gray-900">Create New Post</h3>
+                <h3 className="text-2xl font-bold text-[hsl(var(--foreground))]">Create New Post</h3>
                 <button 
                   onClick={() => setShowCreatePost(false)}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="p-2 hover:bg-[hsl(var(--muted))] rounded-lg transition-colors"
                 >
-                  <X className="w-6 h-6 text-gray-500" />
+                  <X className="w-6 h-6 text-[hsl(var(--muted-foreground))]" />
                 </button>
               </div>
             </div>
             
             <div className="p-6 space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Post Type</label>
+                <label className="block text-sm font-medium text-[hsl(var(--foreground))] mb-2">Post Type</label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {[
                     { value: 'question', label: 'Question', icon: MessageCircle, color: 'blue' },
@@ -881,7 +883,7 @@ const Community = () => {
                       className={`flex items-center gap-2 p-3 rounded-lg border-2 transition-all ${
                         newPost.postType === type.value
                           ? `border-${type.color}-500 bg-${type.color}-50`
-                          : 'border-gray-200 hover:border-gray-300'
+                          : 'border-[hsl(var(--border))] hover:border-[hsl(var(--border))]'
                       }`}
                     >
                       <type.icon className={`w-5 h-5 text-${type.color}-600`} />
@@ -892,42 +894,42 @@ const Community = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                <label className="block text-sm font-medium text-[hsl(var(--foreground))] mb-2">Title</label>
                 <input
                   type="text"
                   value={newPost.title}
                   onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-[hsl(var(--border))] rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   placeholder="Enter your post title..."
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Content</label>
+                <label className="block text-sm font-medium text-[hsl(var(--foreground))] mb-2">Content</label>
                 <textarea
                   value={newPost.content}
                   onChange={(e) => setNewPost({ ...newPost, content: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-[hsl(var(--border))] rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   rows={6}
                   placeholder="Share your thoughts, questions, or tips..."
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Tags</label>
+                <label className="block text-sm font-medium text-[hsl(var(--foreground))] mb-2">Tags</label>
                 <input
                   type="text"
                   value={newPost.tags.join(', ')}
                   onChange={(e) => setNewPost({ ...newPost, tags: e.target.value.split(',').map(tag => tag.trim()).filter(tag => tag) })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-[hsl(var(--border))] rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   placeholder="monstera, care-help, beginner"
                 />
-                <p className="text-sm text-gray-500 mt-1">Separate tags with commas</p>
+                <p className="text-sm text-[hsl(var(--muted-foreground))] mt-1">Separate tags with commas</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Images</label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-green-500 transition-colors cursor-pointer">
+                <label className="block text-sm font-medium text-[hsl(var(--foreground))] mb-2">Images</label>
+                <div className="border-2 border-dashed border-[hsl(var(--border))] rounded-lg p-6 text-center hover:border-green-500 transition-colors cursor-pointer">
                   <input 
                     ref={fileInputRef}
                     type="file" 
@@ -936,11 +938,11 @@ const Community = () => {
                     className="hidden"
                   />
                   <Image className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                  <p className="text-gray-600 mb-2">Drop images here or click to upload</p>
+                  <p className="text-[hsl(var(--muted-foreground))] mb-2">Drop images here or click to upload</p>
                   <button 
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+                    className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm"
                   >
                     Choose Images
                   </button>
@@ -948,17 +950,17 @@ const Community = () => {
               </div>
             </div>
 
-            <div className="p-6 border-t border-gray-200 flex gap-3">
+            <div className="p-6 border-t border-[hsl(var(--border))] flex gap-3">
               <button
                 onClick={handleCreatePost}
                 disabled={!newPost.title.trim() || !newPost.content.trim()}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-lg hover:from-emerald-700 hover:to-emerald-800 transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Create Post
               </button>
               <button
                 onClick={() => setShowCreatePost(false)}
-                className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                className="flex-1 px-6 py-3 border border-[hsl(var(--border))] text-[hsl(var(--foreground))] rounded-lg hover:bg-[hsl(var(--muted))] transition-colors font-medium"
               >
                 Cancel
               </button>
@@ -970,15 +972,15 @@ const Community = () => {
       {/* Shop Details Modal */}
       {selectedShop && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200">
+          <div className="bg-[hsl(var(--card))] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-[hsl(var(--border))]">
               <div className="flex items-center justify-between">
-                <h3 className="text-2xl font-bold text-gray-900">{selectedShop.name}</h3>
+                <h3 className="text-2xl font-bold text-[hsl(var(--foreground))]">{selectedShop.name}</h3>
                 <button 
                   onClick={() => setSelectedShop(null)}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="p-2 hover:bg-[hsl(var(--muted))] rounded-lg transition-colors"
                 >
-                  <X className="w-6 h-6 text-gray-500" />
+                  <X className="w-6 h-6 text-[hsl(var(--muted-foreground))]" />
                 </button>
               </div>
             </div>
@@ -1004,31 +1006,31 @@ const Community = () => {
 
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-gray-500 mt-0.5" />
+                  <MapPin className="w-5 h-5 text-[hsl(var(--muted-foreground))] mt-0.5" />
                   <div>
-                    <p className="font-medium text-gray-900">Address</p>
-                    <p className="text-gray-600">{selectedShop.address}</p>
+                    <p className="font-medium text-[hsl(var(--foreground))]">Address</p>
+                    <p className="text-[hsl(var(--muted-foreground))]">{selectedShop.address}</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start gap-3">
-                  <Phone className="w-5 h-5 text-gray-500 mt-0.5" />
+                  <Phone className="w-5 h-5 text-[hsl(var(--muted-foreground))] mt-0.5" />
                   <div>
-                    <p className="font-medium text-gray-900">Phone</p>
-                    <p className="text-gray-600">{selectedShop.phone}</p>
+                    <p className="font-medium text-[hsl(var(--foreground))]">Phone</p>
+                    <p className="text-[hsl(var(--muted-foreground))]">{selectedShop.phone}</p>
                   </div>
                 </div>
 
                 {selectedShop.website && (
                   <div className="flex items-start gap-3">
-                    <ExternalLink className="w-5 h-5 text-gray-500 mt-0.5" />
+                    <ExternalLink className="w-5 h-5 text-[hsl(var(--muted-foreground))] mt-0.5" />
                     <div>
-                      <p className="font-medium text-gray-900">Website</p>
+                      <p className="font-medium text-[hsl(var(--foreground))]">Website</p>
                       <a 
                         href={selectedShop.website} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="text-green-600 hover:underline"
+                        className="text-emerald-600 hover:underline"
                       >
                         {selectedShop.website}
                       </a>
@@ -1038,12 +1040,12 @@ const Community = () => {
               </div>
 
               <div>
-                <h4 className="font-semibold text-gray-900 mb-3">Services Offered</h4>
+                <h4 className="font-semibold text-[hsl(var(--foreground))] mb-3">Services Offered</h4>
                 <div className="flex flex-wrap gap-2">
                   {selectedShop.services.map(service => (
                     <span 
                       key={service} 
-                      className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full"
+                      className="px-3 py-1 bg-emerald-100 text-emerald-800 text-sm rounded-full"
                     >
                       {service}
                     </span>
@@ -1053,7 +1055,7 @@ const Community = () => {
 
               {selectedShop.reviews && selectedShop.reviews.length > 0 && (
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-4">Recent Reviews</h4>
+                  <h4 className="font-semibold text-[hsl(var(--foreground))] mb-4">Recent Reviews</h4>
                   <div className="space-y-4">
                     {selectedShop.reviews.map(review => (
                       <div key={review.id} className="border-l-4 border-green-200 pl-4">
@@ -1076,11 +1078,11 @@ const Community = () => {
                               />
                             ))}
                           </div>
-                          <span className="text-xs text-gray-500">
+                          <span className="text-xs text-[hsl(var(--muted-foreground))]">
                             {new Date(review.createdAt).toLocaleDateString()}
                           </span>
                         </div>
-                        <p className="text-gray-700 text-sm">{review.comment}</p>
+                        <p className="text-[hsl(var(--foreground))] text-sm">{review.comment}</p>
                       </div>
                     ))}
                   </div>
@@ -1088,11 +1090,11 @@ const Community = () => {
               )}
             </div>
 
-            <div className="p-6 border-t border-gray-200 flex gap-3">
-              <button className="flex-1 px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 font-medium">
+            <div className="p-6 border-t border-[hsl(var(--border))] flex gap-3">
+              <button className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-lg hover:from-emerald-700 hover:to-emerald-800 transition-all duration-200 font-medium">
                 Contact Shop
               </button>
-              <button className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+              <button className="flex-1 px-6 py-3 border border-[hsl(var(--border))] text-[hsl(var(--foreground))] rounded-lg hover:bg-[hsl(var(--muted))] transition-colors font-medium">
                 Get Directions
               </button>
             </div>
@@ -1108,7 +1110,7 @@ export default Community;
 // Simple inline icons for blank states to avoid extra asset imports
 function PlantIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-green-600">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-emerald-600">
       <path d="M12 2C8 2 6 6 6 6s4 0 6-2c2 2 6 2 6 2s-2-4-6-4z" />
       <path d="M6 10c0 3.866 3.134 7 7 7h1v5h-2v-3.5C8.91 17.83 6 14.33 6 10z" />
     </svg>
