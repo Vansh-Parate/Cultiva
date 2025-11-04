@@ -3,8 +3,6 @@ import Component from '~/components/comp-544'
 import CustomToast from '~/components/CustomToast';
 import { Leaf, Lightbulb, Droplet, Sun, Thermometer } from 'lucide-react';
 import apiClient from '../lib/axios';
-import { Card, CardContent } from '../components/ui';
-import { badgeClasses, buttonClasses, inputClasses, textClasses } from '../lib/classNameHelpers';
 
 function fileToBase64(file){
     return new Promise((res,rej) => {
@@ -362,9 +360,9 @@ const FindPlant = () => {
   };
 
   return (
-    <div className='min-h-screen w-full flex bg-[hsl(var(--background))] text-[hsl(var(--foreground))]'>
+    <div className='min-h-screen w-full flex bg-[#F5E9DA] text-[#2D2D2D]'>
       <div className='flex-1 flex justify-center items-center px-4 py-10'>
-        <div className="relative max-w-4xl w-full bg-[hsl(var(--card))] rounded-2xl shadow-lg p-8 flex flex-col items-center">
+        <div className="relative max-w-4xl w-full bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center">
           <CustomToast
             show={toast.show}
             title={toast.title}
@@ -373,11 +371,11 @@ const FindPlant = () => {
           
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-emerald-700 mb-2 flex items-center justify-center gap-2">
+            <h1 className="text-3xl font-bold text-green-700 mb-2 flex items-center justify-center gap-2">
               <Leaf className="w-8 h-8" />
               Plant Identification
             </h1>
-            <p className="text-[hsl(var(--muted-foreground))] max-w-md">
+            <p className="text-gray-600 max-w-md">
               Upload a clear photo of your plant to identify its species and get personalized care recommendations.
             </p>
           </div>
@@ -386,7 +384,7 @@ const FindPlant = () => {
           <div className="w-full max-w-md mb-8">
           <Component onFileChange={setUploadedFile} />
           <button
-              className={`mt-6 w-full py-3 px-6 rounded-lg font-semibold text-white transition-colors shadow-lg bg-emerald-600 hover:bg-emerald-700 cursor-pointer flex items-center justify-center gap-2`}
+              className={`mt-6 w-full py-3 px-6 rounded-lg font-semibold text-white transition-colors shadow-lg bg-green-600 hover:bg-green-700 cursor-pointer flex items-center justify-center gap-2`}
             onClick={handleIdentify}
               disabled={loading || !uploadedFile}
           >
@@ -407,12 +405,12 @@ const FindPlant = () => {
           {/* Results Section */}
           {showResults && apiResult && (
             <div className="w-full max-w-4xl">
-              <h2 className='text-2xl font-bold mb-6 text-center text-emerald-700'>Identification Results</h2>
+              <h2 className='text-2xl font-bold mb-6 text-center text-green-700'>Identification Results</h2>
               
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Plant Suggestions */}
                 <div>
-                  <h3 className="text-lg font-semibold mb-4 text-[hsl(var(--foreground))]">Top Matches</h3>
+                  <h3 className="text-lg font-semibold mb-4 text-gray-800">Top Matches</h3>
                   <div className="space-y-4">
               {Array.isArray(apiResult?.result?.classification?.suggestions) &&
                                              apiResult.result.classification.suggestions.slice(0, 3).map((s, idx) => {
@@ -421,8 +419,8 @@ const FindPlant = () => {
                             key={s.id || idx} 
                             className={`w-full p-4 rounded-xl border-2 transition-all text-left ${
                               selectedPlant?.index === idx 
-                                ? 'border-emerald-500 bg-emerald-50' 
-                                : 'border-[hsl(var(--border))] bg-[hsl(var(--muted))] hover:border-emerald-300'
+                                ? 'border-green-500 bg-green-50' 
+                                : 'border-gray-200 bg-gray-50 hover:border-green-300'
                             }`}
                             onClick={() => handlePlantSelect(s, idx)}
                           >
@@ -435,13 +433,13 @@ const FindPlant = () => {
                                 />
                               )}
                               <div className="flex-1">
-                                <div className='font-bold text-emerald-700 text-lg mb-1'>{s.name}</div>
-                                <div className='text-sm text-[hsl(var(--muted-foreground))] mb-3'>
+                                <div className='font-bold text-green-700 text-lg mb-1'>{s.name}</div>
+                                <div className='text-sm text-gray-600 mb-3'>
                                   Confidence: {(s.probability * 100).toFixed(1)}%
                                 </div>
                       <button
-                        className={`px-4 py-2 rounded-lg font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors shadow ${
-                          addedIdx === idx ? 'opacity-60 pointer-events-none bg-emerald-500' : ''
+                        className={`px-4 py-2 rounded-lg font-semibold text-white bg-green-600 hover:bg-green-700 transition-colors shadow ${
+                          addedIdx === idx ? 'opacity-60 pointer-events-none bg-green-500' : ''
                         }`}
                         onClick={(e) => {
                           e.stopPropagation();
@@ -452,7 +450,7 @@ const FindPlant = () => {
                         {addedIdx === idx ? 'Added!' : 'Add to Collection'}
                       </button>
                       <button
-                        className="mt-2 px-3 py-1 rounded-lg font-medium text-emerald-600 bg-emerald-50 hover:bg-green-100 transition-colors text-sm"
+                        className="mt-2 px-3 py-1 rounded-lg font-medium text-green-600 bg-green-50 hover:bg-green-100 transition-colors text-sm"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleSetReminder(s);
@@ -472,11 +470,11 @@ const FindPlant = () => {
                 {/* Care Tips */}
                 {selectedPlant && (
                   <div>
-                    <h3 className="text-lg font-semibold mb-4 text-[hsl(var(--foreground))] flex items-center gap-2">
+                    <h3 className="text-lg font-semibold mb-4 text-gray-800 flex items-center gap-2">
                       <Lightbulb className="w-5 h-5 text-yellow-500" />
                       Care Tips for {selectedPlant.name}
                     </h3>
-                    <div className="bg-emerald-50 rounded-xl p-6 border border-emerald-200">
+                    <div className="bg-green-50 rounded-xl p-6 border border-green-200">
                       {(() => {
                         const tips = getCareTips(selectedPlant.name);
                         return (
@@ -484,33 +482,33 @@ const FindPlant = () => {
                             <div className="flex items-start gap-3">
                               <Droplet className="w-5 h-5 text-blue-500 mt-0.5" />
                               <div>
-                                <div className="font-semibold text-[hsl(var(--foreground))]">Watering</div>
-                                <div className="text-sm text-[hsl(var(--muted-foreground))]">{tips.water}</div>
+                                <div className="font-semibold text-gray-800">Watering</div>
+                                <div className="text-sm text-gray-600">{tips.water}</div>
                               </div>
                             </div>
                             
                             <div className="flex items-start gap-3">
                               <Sun className="w-5 h-5 text-yellow-500 mt-0.5" />
                               <div>
-                                <div className="font-semibold text-[hsl(var(--foreground))]">Light</div>
-                                <div className="text-sm text-[hsl(var(--muted-foreground))]">{tips.light}</div>
+                                <div className="font-semibold text-gray-800">Light</div>
+                                <div className="text-sm text-gray-600">{tips.light}</div>
                               </div>
                             </div>
                             
                             <div className="flex items-start gap-3">
                               <Thermometer className="w-5 h-5 text-red-500 mt-0.5" />
                               <div>
-                                <div className="font-semibold text-[hsl(var(--foreground))]">Temperature</div>
-                                <div className="text-sm text-[hsl(var(--muted-foreground))]">{tips.temperature}</div>
+                                <div className="font-semibold text-gray-800">Temperature</div>
+                                <div className="text-sm text-gray-600">{tips.temperature}</div>
                               </div>
                             </div>
                             
-                            <div className="pt-3 border-t border-emerald-200">
-                              <div className="font-semibold text-[hsl(var(--foreground))] mb-2">Quick Tips</div>
-                              <ul className="text-sm text-[hsl(var(--muted-foreground))] space-y-1">
+                            <div className="pt-3 border-t border-green-200">
+                              <div className="font-semibold text-gray-800 mb-2">Quick Tips</div>
+                              <ul className="text-sm text-gray-600 space-y-1">
                                 {tips.tips.map((tip, idx) => (
                                   <li key={`tip-${tip}-${idx}`} className="flex items-start gap-2">
-                                    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-2 flex-shrink-0"></span>
+                                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
                                     {tip}
                                   </li>
                                 ))}
@@ -523,8 +521,8 @@ const FindPlant = () => {
                     
                     {/* Health Assessment */}
                     <div className="mt-6">
-                      <h4 className="text-md font-semibold mb-3 text-[hsl(var(--foreground))] flex items-center gap-2">
-                        <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                      <h4 className="text-md font-semibold mb-3 text-gray-800 flex items-center gap-2">
+                        <span className="w-2 h-2 bg-green-500 rounded-full"></span>
                         Health Assessment
                       </h4>
                       {healthLoading ? (
@@ -537,7 +535,7 @@ const FindPlant = () => {
                       ) : healthAssessment ? (
                         <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
                           <div className="flex items-center justify-between mb-3">
-                            <span className="font-semibold text-[hsl(var(--foreground))]">
+                            <span className="font-semibold text-gray-800">
                               Health Score: {Math.round((healthAssessment.result?.is_healthy?.probability || 0) * 100)}%
                             </span>
                             <span className={`px-2 py-1 text-xs rounded-full font-semibold ${
@@ -550,12 +548,12 @@ const FindPlant = () => {
                           </div>
                           {!healthAssessment.result?.is_healthy?.binary && healthAssessment.result?.disease?.suggestions?.length > 0 && (
                             <div className="mt-3">
-                              <div className="text-sm font-medium text-[hsl(var(--foreground))] mb-2">Potential Issues:</div>
+                              <div className="text-sm font-medium text-gray-700 mb-2">Potential Issues:</div>
                               <div className="space-y-2">
                                 {healthAssessment.result.disease.suggestions.slice(0, 2).map((issue, idx) => (
-                                  <div key={`issue-${issue.name}-${idx}`} className="text-xs text-[hsl(var(--muted-foreground))] bg-white rounded p-2">
+                                  <div key={`issue-${issue.name}-${idx}`} className="text-xs text-gray-600 bg-white rounded p-2">
                                     <span className="font-medium">{issue.name}</span>
-                                    <span className="text-[hsl(var(--muted-foreground))] ml-2">
+                                    <span className="text-gray-500 ml-2">
                                       ({(issue.probability * 100).toFixed(1)}% confidence)
                                     </span>
                                   </div>
@@ -565,8 +563,8 @@ const FindPlant = () => {
                           )}
                         </div>
                       ) : (
-                        <div className="bg-[hsl(var(--muted))] rounded-xl p-4 border border-[hsl(var(--border))]">
-                          <span className="text-sm text-[hsl(var(--muted-foreground))]">Select a plant to see health assessment</span>
+                        <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                          <span className="text-sm text-gray-600">Select a plant to see health assessment</span>
                         </div>
                       )}
                     </div>
@@ -621,7 +619,7 @@ const FindPlant = () => {
                           setError(null);
                           setUploadedFile(null);
                         }}
-                        className="px-4 py-2 bg-[hsl(var(--muted))] text-[hsl(var(--foreground))] rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium"
+                        className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium"
                       >
                         Try Again
                       </button>
@@ -653,7 +651,7 @@ const FindPlant = () => {
             <div className="fixed inset-0 z-[9999] bg-black bg-opacity-50 flex items-center justify-center">
               <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4">
                 <h3 className="text-lg font-bold mb-4">Set Care Reminder</h3>
-                <p className="text-[hsl(var(--muted-foreground))] mb-4">Set up a care reminder for {reminderPlant.name}</p>
+                <p className="text-gray-600 mb-4">Set up a care reminder for {reminderPlant.name}</p>
                 <div className="space-y-4">
                   <button
                     onClick={() => handleCreateReminder({ type: 'watering', frequency: 'weekly', notes: 'Water your plant' })}
@@ -663,13 +661,13 @@ const FindPlant = () => {
                   </button>
                   <button
                     onClick={() => handleCreateReminder({ type: 'fertilizing', frequency: 'monthly', notes: 'Fertilize your plant' })}
-                    className="w-full p-3 bg-emerald-50 text-emerald-700 rounded-lg hover:bg-green-100 transition-colors"
+                    className="w-full p-3 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors"
                   >
                     Fertilizing Reminder (Monthly)
                   </button>
                   <button
                     onClick={() => setShowReminderModal(false)}
-                    className="w-full p-3 bg-[hsl(var(--muted))] text-[hsl(var(--foreground))] rounded-lg hover:bg-[hsl(var(--muted))] transition-colors"
+                    className="w-full p-3 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
                   >
                     Cancel
                   </button>
