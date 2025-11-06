@@ -8,6 +8,7 @@ import GoogleSuccess from './pages/auth/GoogleSuccess';
 import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './pages/Dashboard';
 import MyPlants from './pages/MyPlants';
+import PlantDashboard from './pages/PlantDashboard';
 import FindPlant from './pages/FindPlant';
 import Care from './pages/Care';
 import Community from './pages/Community';
@@ -31,6 +32,14 @@ function App() {
           />
           <Route
             path="/plants"
+            element={
+              <ProtectedRoute>
+                <PlantDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/plants/analytics"
             element={
               <ProtectedRoute>
                 <MyPlants />

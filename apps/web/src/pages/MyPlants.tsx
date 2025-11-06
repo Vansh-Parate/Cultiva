@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import FeaturedPlantCard from "../components/widgets/FeaturedPlantCard";
+import PlantAnalyticsCharts from "../components/widgets/PlantAnalyticsCharts";
+import EnhancedAnalyticsDashboard from "../components/widgets/EnhancedAnalyticsDashboard";
 import apiClient from "../lib/axios";
 
 // Minimalistic MVP Health Dashboard
@@ -306,13 +308,17 @@ const MyPlants = () => {
             </div>
           </section>
 
-          {/* Charts and Widgets (placeholders) */}
-          <section className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto w-full">
-            <div className="bg-white/60 backdrop-blur rounded-2xl border border-emerald-900/10 p-6 h-64 flex items-center justify-center text-slate-500">
-              Plant Details Chart (coming soon)
+          {/* Enhanced Analytics Dashboard */}
+          <section className="w-full flex justify-center px-4">
+            <div className="flex flex-col items-center w-full max-w-5xl">
+              {selectedPlant && <EnhancedAnalyticsDashboard plant={selectedPlant} careHistory={selectedPlant.careHistory} />}
             </div>
-            <div className="bg-white/60 backdrop-blur rounded-2xl border border-emerald-900/10 p-6 h-64 flex items-center justify-center text-slate-500">
-              Water Level Chart (coming soon)
+          </section>
+
+          {/* Analytics Charts */}
+          <section className="w-full flex justify-center px-4">
+            <div className="flex flex-col items-center w-full max-w-5xl">
+              {selectedPlant && <PlantAnalyticsCharts plant={selectedPlant} careHistory={selectedPlant.careHistory} />}
             </div>
           </section>
         </>

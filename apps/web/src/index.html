@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Plants — Minimal Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="min-h-full bg-gradient-to-b from-emerald-50 via-white to-white text-slate-900 antialiased" style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Cantarell, Noto Sans, Helvetica Neue, Arial, 'Apple Color Emoji', 'Segoe UI Emoji';">
+    <!-- Shell -->
+    <div class="min-h-screen">
+      <!-- Top Nav -->
+      <header class="sticky top-0 z-30 backdrop-blur bg-white/70 border-b border-emerald-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 ring-1 ring-emerald-200">
+              <i data-lucide="leaf" class="h-5 w-5"></i>
+            </span>
+            <div class="hidden sm:block">
+              <h1 class="text-2xl tracking-tight font-semibold text-slate-900">My Plants</h1>
+              <p class="text-sm text-slate-500">Manage your collection and keep them thriving</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 w-full sm:w-auto">
+            <div class="relative hidden md:block">
+              <input type="text" placeholder="Search plants…" class="w-72 rounded-xl border border-slate-200 bg-white/70 pl-10 pr-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-300">
+              <i data-lucide="search" class="h-4 w-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+            </div>
+            <button class="inline-flex items-center gap-2 rounded-xl bg-emerald-600 text-white px-3.5 py-2 text-sm font-medium shadow-sm hover:bg-emerald-700 active:bg-emerald-800">
+              <i data-lucide="plus" class="h-4 w-4"></i>
+              Add Plant
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Hero / Featured Plant -->
+      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Featured Card -->
+          <div class="lg:col-span-2">
+            <div class="relative overflow-hidden rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 via-white to-emerald-50 shadow-sm">
+              <div class="absolute inset-0 bg-[radial-gradient(60%_50%_at_20%_10%,rgba(16,185,129,0.12),rgba(16,185,129,0)_70%)]"></div>
+              <div class="relative p-6 sm:p-7">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div class="flex items-center gap-4">
+                    <img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=240&q=80" alt="Adenium obesum" class="h-16 w-16 rounded-xl object-cover ring-1 ring-emerald-200">
+                    <div>
+                      <h2 class="text-3xl tracking-tight font-semibold text-slate-900">Adenium obesum</h2>
+                      <p class="text-sm text-emerald-700">Desert Rose</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 text-emerald-700 px-3 py-1 text-sm font-medium ring-1 ring-emerald-200">
+                      <i data-lucide="thumbs-up" class="h-4 w-4"></i>
+                      Good
+                    </span>
+                    <div class="flex items-baseline gap-1">
+                      <span class="text-3xl tracking-tight font-semibold text-emerald-600">78%</span>
+                      <span class="text-xs text-slate-500">overall health</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div class="rounded-xl border border-emerald-100 bg-white p-4 shadow-sm">
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center gap-2">
+                        <span class="h-8 w-8 rounded-lg bg-emerald-50 text-emerald-600 inline-flex items-center justify-center ring-1 ring-emerald-100">
+                          <i data-lucide="droplet" class="h-4 w-4"></i>
+                        </span>
+                        <span class="text-sm font-medium text-slate-600">Humidity</span>
+                      </div>
+                      <span class="text-sm text-emerald-700">Ok</span>
+                    </div>
+                    <p class="mt-3 text-2xl tracking-tight font-semibold text-slate-900">69%</p>
+                  </div>
+
+                  <div class="rounded-xl border border-emerald-100 bg-white p-4 shadow-sm">
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center gap-2">
+                        <span class="h-8 w-8 rounded-lg bg-sky-50 text-sky-600 inline-flex items-center justify-center ring-1 ring-sky-100">
+                          <i data-lucide="flask-conical" class="h-4 w-4"></i>
+                        </span>
+                        <span class="text-sm font-medium text-slate-600">Water pH</span>
+                      </div>
+                      <span class="text-sm text-sky-700">Slightly acidic</span>
+                    </div>
+                    <p class="mt-3 text-2xl tracking-tight font-semibold text-slate-900">6.0</p>
+                  </div>
+
+                  <div class="rounded-xl border border-emerald-100 bg-white p-4 shadow-sm">
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center gap-2">
+                        <span class="h-8 w-8 rounded-lg bg-amber-50 text-amber-600 inline-flex items-center justify-center ring-1 ring-amber-100">
+                          <i data-lucide="thermometer" class="h-4 w-4"></i>
+                        </span>
+                        <span class="text-sm font-medium text-slate-600">Temperature</span>
+                      </div>
+                      <span class="text-sm text-amber-700">Warm</span>
+                    </div>
+                    <p class="mt-3 text-2xl tracking-tight font-semibold text-slate-900">27.9°C</p>
+                  </div>
+
+                  <div class="rounded-xl border border-emerald-100 bg-white p-4 shadow-sm">
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center gap-2">
+                        <span class="h-8 w-8 rounded-lg bg-lime-50 text-lime-700 inline-flex items-center justify-center ring-1 ring-lime-100">
+                          <i data-lucide="sun" class="h-4 w-4"></i>
+                        </span>
+                        <span class="text-sm font-medium text-slate-600">Light</span>
+                      </div>
+                      <span class="text-sm text-lime-700">Bright</span>
+                    </div>
+                    <p class="mt-3 text-2xl tracking-tight font-semibold text-slate-900">5.5 hrs</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Health Donut -->
+          <div class="lg:col-span-1">
+            <div class="rounded-2xl border border-emerald-100 bg-white shadow-sm p-6 h-full">
+              <div class="flex items-start justify-between">
+                <div>
+                  <h3 class="text-lg tracking-tight font-semibold text-slate-900">Health Score</h3>
+                  <p class="text-sm text-slate-500">Weighted by humidity, watering, and pH</p>
+                </div>
+                <i data-lucide="activity" class="h-5 w-5 text-emerald-600"></i>
+              </div>
+              <div class="mt-4">
+                <div class="w-full">
+                  <div class="rounded-xl bg-slate-50 p-3">
+                    <div class="relative">
+                      <div class="h-60">
+                        <div class="h-full">
+                          <div class="h-full">
+                            <div class="h-full">
+                              <div class="h-full">
+                                <div class="h-full">
+                                  <div class="h-full">
+                                    <div class="h-full">
+                                      <div class="h-full">
+                                        <div class="h-full">
+                                          <div class="h-full">
+                                            <div class="h-full">
+                                              <div class="h-full">
+                                                <div class="h-full">
+                                                  <div class="h-full">
+                                                    <div class="h-full">
+                                                      <div class="h-full">
+                                                        <div class="h-full">
+                                                          <div class="h-full">
+                                                            <div class="h-full">
+                                                              <div class="h-full">
+                                                                <div class="h-full">
+                                                                  <div class="h-full">
+                                                                    <div class="h-full">
+                                                                      <div class="h-full">
+                                                                        <div class="h-full">
+                                                                          <div class="h-full">
+                                                                            <div class="h-full">
+                                                                              <div class="h-full">
+                                                                                <div class="h-60">
+                                                                                  <div class="h-full">
+                                                                                    <div class="h-full">
+                                                                                      <div class="h-full">
+                                                                                        <div class="h-full">
+                                                                                          <div class="h-full">
+                                                                                            <div class="h-full">
+                                                                                              <div class="h-full">
+                                                                                                <div class="h-full">
+                                                                                                  <div class="h-full">
+                                                                                                    <div class="h-full">
+                                                                                                      <div class="h-full">
+                                                                                                        <!-- Wrapper avoids canvas sibling growth issue -->
+                                                                                                        <div class="relative h-48">
+                                                                                                          <canvas id="healthDonut"></canvas>
+                                                                                                        </div>
+                                                                                                      </div>
+                                                                                                    </div>
+                                                                                                  </div>
+                                                                                                </div>
+                                                                                              </div>
+                                                                                            </div>
+                                                                                          </div>
+                                                                                        </div>
+                                                                                      </div>
+                                                                                    </div>
+                                                                                  </div>
+                                                                                </div>
+                                                                              </div>
+                                                                            </div>
+                                                                          </div>
+                                                                        </div>
+                                                                      </div>
+                                                                    </div>
+                                                                  </div>
+                                                                </div>
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mt-4 grid grid-cols-3 gap-2 text-xs">
+                    <div class="flex items-center gap-2 text-slate-600">
+                      <span class="h-2 w-2 rounded-full bg-emerald-500"></span> Health
+                    </div>
+                    <div class="flex items-center gap-2 text-slate-600">
+                      <span class="h-2 w-2 rounded-full bg-slate-200"></span> Remaining
+                    </div>
+                    <div class="justify-self-end text-slate-500">Updated now</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Charts -->
+      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Moisture Trend -->
+          <div class="lg:col-span-2 rounded-2xl border border-emerald-100 bg-white shadow-sm p-6">
+            <div class="flex items-start justify-between">
+              <div>
+                <h3 class="text-lg tracking-tight font-semibold text-slate-900">Soil Moisture (30 days)</h3>
+                <p class="text-sm text-slate-500">Target: 35–60%</p>
+              </div>
+              <span class="inline-flex items-center gap-1 rounded-lg bg-emerald-50 text-emerald-700 px-2.5 py-1 text-xs ring-1 ring-emerald-200">
+                <i data-lucide="droplets" class="h-4 w-4"></i>
+                Stable
+              </span>
+            </div>
+            <div class="mt-4 rounded-xl bg-slate-50 p-3">
+              <div class="relative h-64">
+                <canvas id="moistureLine"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Watering Frequency -->
+          <div class="rounded-2xl border border-emerald-100 bg-white shadow-sm p-6">
+            <div class="flex items-start justify-between">
+              <div>
+                <h3 class="text-lg tracking-tight font-semibold text-slate-900">Watering Frequency</h3>
+                <p class="text-sm text-slate-500">Past 6 weeks</p>
+              </div>
+              <i data-lucide="calendar-check" class="h-5 w-5 text-emerald-600"></i>
+            </div>
+            <div class="mt-4 rounded-xl bg-slate-50 p-3">
+              <div class="relative h-64">
+                <canvas id="wateringBar"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- pH Sparkline -->
+          <div class="rounded-2xl border border-emerald-100 bg-white shadow-sm p-6">
+            <div class="flex items-start justify-between">
+              <div>
+                <h3 class="text-lg tracking-tight font-semibold text-slate-900">Water pH Trend</h3>
+                <p class="text-sm text-slate-500">Ideal: 5.5–6.5</p>
+              </div>
+              <i data-lucide="beaker" class="h-5 w-5 text-sky-600"></i>
+            </div>
+            <div class="mt-4 rounded-xl bg-slate-50 p-3">
+              <div class="relative h-40">
+                <canvas id="phLine"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Temperature + Humidity Mini -->
+          <div class="rounded-2xl border border-emerald-100 bg-white shadow-sm p-6">
+            <div class="flex items-start justify-between">
+              <div>
+                <h3 class="text-lg tracking-tight font-semibold text-slate-900">Environment Snapshot</h3>
+                <p class="text-sm text-slate-500">Current room conditions</p>
+              </div>
+              <i data-lucide="thermometer-sun" class="h-5 w-5 text-amber-600"></i>
+            </div>
+            <div class="mt-4 grid grid-cols-2 gap-4">
+              <div class="rounded-xl bg-slate-50 p-3">
+                <p class="text-sm text-slate-600">Temperature</p>
+                <div class="mt-3 relative h-36">
+                  <canvas id="tempDonut"></canvas>
+                </div>
+                <p class="mt-2 text-center text-sm text-amber-700">27.9°C of 35°C max</p>
+              </div>
+              <div class="rounded-xl bg-slate-50 p-3">
+                <p class="text-sm text-slate-600">Humidity</p>
+                <div class="mt-3 relative h-36">
+                  <canvas id="humidityDonut"></canvas>
+                </div>
+                <p class="mt-2 text-center text-sm text-emerald-700">69% of 100%</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Plants List -->
+      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 mb-16">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl tracking-tight font-semibold text-slate-900">Your Plants</h3>
+          <button class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium hover:bg-slate-50">
+            <i data-lucide="sliders-horizontal" class="h-4 w-4"></i>
+            Filters
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Plant Card -->
+          <article class="rounded-2xl border border-emerald-100 bg-white shadow-sm p-4">
+            <div class="flex items-center gap-3">
+              <img src="https://images.unsplash.com/photo-1545167622-3a6ac756afa4?auto=format&fit=crop&w=160&q=80" alt="Fiddle Leaf Fig" class="h-12 w-12 rounded-lg object-cover ring-1 ring-emerald-200">
+              <div class="min-w-0">
+                <h4 class="text-base tracking-tight font-semibold text-slate-900 truncate">Fiddle Leaf Fig</h4>
+                <p class="text-xs text-slate-500">Ficus lyrata</p>
+              </div>
+              <div class="ml-auto inline-flex items-center gap-1 rounded-lg bg-emerald-50 px-2 py-1 text-xs text-emerald-700 ring-1 ring-emerald-200">
+                <i data-lucide="check-circle" class="h-3.5 w-3.5"></i> On track
+              </div>
+            </div>
+            <div class="mt-4 grid grid-cols-3 gap-3 text-sm">
+              <div class="rounded-lg border border-slate-100 p-3 bg-slate-50">
+                <div class="flex items-center gap-1.5 text-slate-600">
+                  <i data-lucide="droplet" class="h-4 w-4 text-emerald-600"></i> 54%
+                </div>
+                <p class="text-xs text-slate-500 mt-1">Moisture</p>
+              </div>
+              <div class="rounded-lg border border-slate-100 p-3 bg-slate-50">
+                <div class="flex items-center gap-1.5 text-slate-600">
+                  <i data-lucide="calendar" class="h-4 w-4 text-emerald-600"></i> 3d ago
+                </div>
+                <p class="text-xs text-slate-500 mt-1">Last watered</p>
+              </div>
+              <div class="rounded-lg border border-slate-100 p-3 bg-slate-50">
+                <div class="flex items-center gap-1.5 text-slate-600">
+                  <i data-lucide="leaf" class="h-4 w-4 text-emerald-600"></i> 82%
+                </div>
+                <p class="text-xs text-slate-500 mt-1">Health</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="rounded-2xl border border-emerald-100 bg-white shadow-sm p-4">
+            <div class="flex items-center gap-3">
+              <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=160&q=80" alt="Snake Plant" class="h-12 w-12 rounded-lg object-cover ring-1 ring-emerald-200">
+              <div class="min-w-0">
+                <h4 class="text-base tracking-tight font-semibold text-slate-900 truncate">Snake Plant</h4>
+                <p class="text-xs text-slate-500">Sansevieria</p>
+              </div>
+              <div class="ml-auto inline-flex items-center gap-1 rounded-lg bg-amber-50 px-2 py-1 text-xs text-amber-700 ring-1 ring-amber-200">
+                <i data-lucide="alert-triangle" class="h-3.5 w-3.5"></i> Needs water
+              </div>
+            </div>
+            <div class="mt-4 grid grid-cols-3 gap-3 text-sm">
+              <div class="rounded-lg border border-slate-100 p-3 bg-slate-50">
+                <div class="flex items-center gap-1.5 text-slate-600">
+                  <i data-lucide="droplet" class="h-4 w-4 text-emerald-600"></i> 28%
+                </div>
+                <p class="text-xs text-slate-500 mt-1">Moisture</p>
+              </div>
+              <div class="rounded-lg border border-slate-100 p-3 bg-slate-50">
+                <div class="flex items-center gap-1.5 text-slate-600">
+                  <i data-lucide="calendar" class="h-4 w-4 text-emerald-600"></i> 8d ago
+                </div>
+                <p class="text-xs text-slate-500 mt-1">Last watered</p>
+              </div>
+              <div class="rounded-lg border border-slate-100 p-3 bg-slate-50">
+                <div class="flex items-center gap-1.5 text-slate-600">
+                  <i data-lucide="leaf" class="h-4 w-4 text-emerald-600"></i> 64%
+                </div>
+                <p class="text-xs text-slate-500 mt-1">Health</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="rounded-2xl border border-emerald-100 bg-white shadow-sm p-4">
+            <div class="flex items-center gap-3">
+              <img src="https://images.unsplash.com/photo-1621619856624-42fd193a0661?w=1080&q=80" alt="Monstera" class="h-12 w-12 rounded-lg object-cover ring-1 ring-emerald-200">
+              <div class="min-w-0">
+                <h4 class="text-base tracking-tight font-semibold text-slate-900 truncate">Monstera deliciosa</h4>
+                <p class="text-xs text-slate-500">Swiss Cheese Plant</p>
+              </div>
+              <div class="ml-auto inline-flex items-center gap-1 rounded-lg bg-emerald-50 px-2 py-1 text-xs text-emerald-700 ring-1 ring-emerald-200">
+                <i data-lucide="check-circle" class="h-3.5 w-3.5"></i> On track
+              </div>
+            </div>
+            <div class="mt-4 grid grid-cols-3 gap-3 text-sm">
+              <div class="rounded-lg border border-slate-100 p-3 bg-slate-50">
+                <div class="flex items-center gap-1.5 text-slate-600">
+                  <i data-lucide="droplet" class="h-4 w-4 text-emerald-600"></i> 47%
+                </div>
+                <p class="text-xs text-slate-500 mt-1">Moisture</p>
+              </div>
+              <div class="rounded-lg border border-slate-100 p-3 bg-slate-50">
+                <div class="flex items-center gap-1.5 text-slate-600">
+                  <i data-lucide="calendar" class="h-4 w-4 text-emerald-600"></i> 2d ago
+                </div>
+                <p class="text-xs text-slate-500 mt-1">Last watered</p>
+              </div>
+              <div class="rounded-lg border border-slate-100 p-3 bg-slate-50">
+                <div class="flex items-center gap-1.5 text-slate-600">
+                  <i data-lucide="leaf" class="h-4 w-4 text-emerald-600"></i> 76%
+                </div>
+                <p class="text-xs text-slate-500 mt-1">Health</p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+      // Icons
+      lucide.createIcons();
+
+      // Colors
+      const emerald = {
+        50: '#ecfdf5',
+        100: '#d1fae5',
+        200: '#a7f3d0',
+        400: '#34d399',
+        500: '#10b981',
+        600: '#059669',
+        700: '#047857'
+      };
+      const slate = { 400: '#94a3b8', 500: '#64748b' };
+      const amber = { 400: '#f59e0b' };
+      const sky = { 400: '#38bdf8' };
+
+      // Health Donut
+      const healthCtx = document.getElementById('healthDonut').getContext('2d');
+      new Chart(healthCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Health', 'Remaining'],
+          datasets: [{
+            data: [78, 22],
+            backgroundColor: [emerald[500], '#E5E7EB'],
+            borderWidth: 0,
+            hoverOffset: 2,
+            cutout: '72%'
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: true }
+          }
+        },
+        plugins: [{
+          id: 'centerText',
+          afterDraw(chart, args, opts) {
+            const { ctx, chartArea: { width, height } } = chart;
+            ctx.save();
+            ctx.font = '600 26px Inter';
+            ctx.fillStyle = emerald[600];
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('78%', width / 2, height / 2 - 6);
+            ctx.font = '500 12px Inter';
+            ctx.fillStyle = slate[500];
+            ctx.fillText('Overall', width / 2, height / 2 + 14);
+            ctx.restore();
+          }
+        }]
+      });
+
+      // Moisture Line
+      const moistureCtx = document.getElementById('moistureLine').getContext('2d');
+      const days = Array.from({length: 30}, (_, i) => `D${i+1}`);
+      const moistureData = [48,52,55,57,53,50,46,44,42,40,45,47,49,51,54,56,58,55,52,50,48,47,45,43,46,49,52,54,53,51];
+      const gradient = moistureCtx.createLinearGradient(0, 0, 0, 260);
+      gradient.addColorStop(0, 'rgba(16,185,129,0.25)');
+      gradient.addColorStop(1, 'rgba(16,185,129,0.02)');
+      new Chart(moistureCtx, {
+        type: 'line',
+        data: {
+          labels: days,
+          datasets: [{
+            label: 'Moisture %',
+            data: moistureData,
+            borderColor: emerald[500],
+            backgroundColor: gradient,
+            fill: true,
+            tension: 0.35,
+            pointRadius: 0,
+            borderWidth: 2
+          },
+          {
+            label: 'Target Min',
+            data: days.map(() => 35),
+            borderColor: '#E5E7EB',
+            borderDash: [6,6],
+            pointRadius: 0
+          },
+          {
+            label: 'Target Max',
+            data: days.map(() => 60),
+            borderColor: '#E5E7EB',
+            borderDash: [6,6],
+            pointRadius: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
+          scales: {
+            x: { grid: { display: false }, ticks: { maxTicksLimit: 8, font: { family: 'Inter' } } },
+            y: { min: 20, max: 80, ticks: { stepSize: 10, font: { family: 'Inter' } }, grid: { color: 'rgba(148,163,184,0.15)' } }
+          }
+        }
+      });
+
+      // Watering Bar
+      const wateringCtx = document.getElementById('wateringBar').getContext('2d');
+      new Chart(wateringCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Wk 1', 'Wk 2', 'Wk 3', 'Wk 4', 'Wk 5', 'Wk 6'],
+          datasets: [{
+            label: 'Times watered',
+            data: [1, 0, 1, 1, 0, 1],
+            backgroundColor: emerald[500],
+            borderRadius: 10,
+            maxBarThickness: 24
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false }, tooltip: { enabled: true } },
+          scales: {
+            x: { grid: { display: false }, ticks: { font: { family: 'Inter' } } },
+            y: { beginAtZero: true, suggestedMax: 3, ticks: { stepSize: 1, font: { family: 'Inter' } }, grid: { color: 'rgba(148,163,184,0.15)' } }
+          }
+        }
+      });
+
+      // pH Sparkline
+      const phCtx = document.getElementById('phLine').getContext('2d');
+      const phData = [6.2, 6.1, 6.0, 5.9, 6.1, 6.2, 6.0, 6.1, 6.3, 6.2, 6.1, 6.0];
+      new Chart(phCtx, {
+        type: 'line',
+        data: {
+          labels: Array.from({length: phData.length}, (_, i) => `M${i+1}`),
+          datasets: [{
+            data: phData,
+            borderColor: sky[400],
+            backgroundColor: 'rgba(56,189,248,0.12)',
+            fill: true,
+            tension: 0.35,
+            pointRadius: 0,
+            borderWidth: 2
+          },
+          {
+            label: 'Min',
+            data: phData.map(() => 5.5),
+            borderColor: '#E5E7EB',
+            borderDash: [5,5],
+            pointRadius: 0
+          },
+          {
+            label: 'Max',
+            data: phData.map(() => 6.5),
+            borderColor: '#E5E7EB',
+            borderDash: [5,5],
+            pointRadius: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false }, tooltip: { enabled: true } },
+          scales: {
+            x: { display: false },
+            y: { min: 5, max: 7, ticks: { stepSize: 0.5, font: { family: 'Inter' } }, grid: { color: 'rgba(148,163,184,0.15)' } }
+          }
+        }
+      });
+
+      // Temperature Donut
+      const tempCtx = document.getElementById('tempDonut').getContext('2d');
+      const tempValue = 27.9, tempMax = 35;
+      new Chart(tempCtx, {
+        type: 'doughnut',
+        data: {
+          datasets: [{
+            data: [tempValue, Math.max(tempMax - tempValue, 0)],
+            backgroundColor: [amber[400], '#E5E7EB'],
+            borderWidth: 0,
+            cutout: '72%'
+          }]
+        },
+        options: { plugins: { legend: { display: false }, tooltip: { enabled: false } } },
+        plugins: [{
+          id: 'tempCenter',
+          afterDraw(chart) {
+            const { ctx, chartArea: { width, height } } = chart;
+            ctx.save();
+            ctx.font = '600 18px Inter';
+            ctx.fillStyle = '#111827';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(`${tempValue.toFixed(1)}°C`, width/2, height/2 - 2);
+            ctx.font = '500 11px Inter';
+            ctx.fillStyle = slate[500];
+            ctx.fillText('Current', width/2, height/2 + 12);
+            ctx.restore();
+          }
+        }]
+      });
+
+      // Humidity Donut
+      const humCtx = document.getElementById('humidityDonut').getContext('2d');
+      const humidity = 69;
+      new Chart(humCtx, {
+        type: 'doughnut',
+        data: {
+          datasets: [{
+            data: [humidity, 100 - humidity],
+            backgroundColor: [emerald[500], '#E5E7EB'],
+            borderWidth: 0,
+            cutout: '72%'
+          }]
+        },
+        options: { plugins: { legend: { display: false }, tooltip: { enabled: false } } },
+        plugins: [{
+          id: 'humCenter',
+          afterDraw(chart) {
+            const { ctx, chartArea: { width, height } } = chart;
+            ctx.save();
+            ctx.font = '600 18px Inter';
+            ctx.fillStyle = emerald[600];
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(`${humidity}%`, width/2, height/2 - 2);
+            ctx.font = '500 11px Inter';
+            ctx.fillStyle = slate[500];
+            ctx.fillText('Humidity', width/2, height/2 + 12);
+            ctx.restore();
+          }
+        }]
+      });
+    </script>
+  </body>
+</html>
