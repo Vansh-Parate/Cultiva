@@ -4,6 +4,7 @@ import FeaturedPlantCard from "../components/widgets/FeaturedPlantCard";
 import PlantAnalyticsCharts from "../components/widgets/PlantAnalyticsCharts";
 import EnhancedAnalyticsDashboard from "../components/widgets/EnhancedAnalyticsDashboard";
 import apiClient from "../lib/axios";
+import { useAuthContext } from "../contexts/AuthContext";
 
 // Minimalistic MVP Health Dashboard
 const HealthDashboard = ({ plant }) => {

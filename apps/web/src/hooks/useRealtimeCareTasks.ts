@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useRealtimeUpdates, RealTimeEvents } from './useRealtimeUpdates';
-import { useAuthContext } from '@/contexts/AuthContext';
+import { useAuthContext } from '../contexts/AuthContext';
 
 export interface CareTask {
   id: string;

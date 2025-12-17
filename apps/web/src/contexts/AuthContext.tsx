@@ -6,6 +6,7 @@ export interface User {
   fullName?: string;
   username?: string;
   avatarUrl?: string;
+  location?: string;
 }
 
 interface AuthContextType {
