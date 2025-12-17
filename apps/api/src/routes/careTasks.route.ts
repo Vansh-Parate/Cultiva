@@ -1,6 +1,7 @@
 import express, { Router } from 'express';
 import { authenticateJWT } from '@/middleware/authMiddleware';
 import { prisma } from '@/db';
+import { eventEmitterService } from '@/services/eventEmitter.service';
 
 const router: Router = express.Router();
 
@@ -224,6 +225,9 @@ router.post('/', authenticateJWT, async (req, res) => {
       }
     });
 
+    // Emit real-time event
+    eventEmitterService.emitCareTaskCreated(userId, task);
+
     res.status(201).json(task);
   } catch (err) {
     console.error(err);
@@ -258,6 +262,9 @@ router.patch('/:id/complete', authenticateJWT, async (req, res) => {
       data: { completed: true }
     });
 
+    // Emit real-time event
+    eventEmitterService.emitCareTaskCompleted(userId, taskId, updatedTask);
+
     res.json(updatedTask);
   } catch (err) {
     console.error(err);
@@ -286,6 +293,9 @@ router.patch('/:id/snooze', authenticateJWT, async (req, res) => {
       where: { id: taskId },
       data: { dueDate: newDue }
     });
+
+    // Emit real-time event
+    eventEmitterService.emitCareTaskSnoozed(userId, taskId, newDue);
 
     res.json(updated);
   } catch (err) {
@@ -356,6 +366,9 @@ router.put('/:id', authenticateJWT, async (req, res) => {
       }
     });
 
+    // Emit real-time event
+    eventEmitterService.emitCareTaskUpdated(userId, updatedTask);
+
     res.json(updatedTask);
   } catch (err) {
     console.error(err);
@@ -388,6 +401,9 @@ router.delete('/:id', authenticateJWT, async (req, res) => {
     await (prisma as any).careTask.delete({
       where: { id: taskId }
     });
+
+    // Emit real-time event
+    eventEmitterService.emitCareTaskDeleted(userId, taskId);
 
     res.json({ message: 'Task deleted successfully' });
   } catch (err) {

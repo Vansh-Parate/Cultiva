@@ -29,6 +29,7 @@ import apiClient from '../lib/axios';
 import CustomToast from '../components/CustomToast';
 import { useWeather } from '../hooks/useWeather';
 import Calendar from '../components/widgets/Calendar';
+import { useAuthContext } from '../contexts/AuthContext';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -64,6 +65,7 @@ type CommunityPost = {
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuthContext();
   const [tasks, setTasks] = useState<CareTask[]>([]);
   const [tasksLoading, setTasksLoading] = useState(true);
   const [plants, setPlants] = useState<PlantItem[]>([]);
@@ -76,6 +78,18 @@ const Dashboard: React.FC = () => {
   const [toast, setToast] = useState<{ show: boolean; title: string; message: string }>({ show: false, title: '', message: '' });
 
   const { weather, loading: weatherLoading } = useWeather();
+  
+  // Get user display name
+  const displayName = user?.fullName || user?.username || 'User';
+  const firstName = displayName.split(' ')[0];
+  
+  // Get greeting based on time of day
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -303,7 +317,7 @@ const Dashboard: React.FC = () => {
               </button>
               <Link to="/" className="flex items-center gap-3">
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-teal-600 text-white shadow-sm ring-1 ring-teal-500/30">
-                  <img src="./public/Cultiva-Photoroom.png" alt="Cultiva Logo" className="text-sm font-semibold tracking-tight"></img>
+                  <img src="/Cultiva-Photoroom.png" alt="Cultiva Logo" className="h-full w-full object-contain"></img>
                 </div>
                 <span className="text-sm font-medium tracking-tight text-teal-100">Cultiva</span>
               </Link>
@@ -330,8 +344,12 @@ const Dashboard: React.FC = () => {
                 onClick={() => setShowQuickActions(!showQuickActions)}
                 className="inline-flex items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900 px-2.5 py-1.5 text-sm font-medium text-slate-100 hover:border-slate-600 transition cursor-pointer"
               >
-                <img className="h-6 w-6 rounded-full object-cover ring-1 ring-slate-800" src="https://images.unsplash.com/photo-1554151228-14d9def656e4?q=80&w=80&auto=format&fit=crop" alt="Profile" />
-                <span className="hidden sm:block">Alex</span>
+                <img 
+                  className="h-6 w-6 rounded-full object-cover ring-1 ring-slate-800" 
+                  src={user?.avatarUrl || "https://images.unsplash.com/photo-1554151228-14d9def656e4?q=80&w=80&auto=format&fit=crop"} 
+                  alt={displayName} 
+                />
+                <span className="hidden sm:block">{firstName}</span>
                 <ChevronDown className="h-4 w-4 text-slate-400" />
               </button>
             </div>
@@ -344,7 +362,7 @@ const Dashboard: React.FC = () => {
           <div className="rounded-2xl border border-teal-500/15 bg-slate-900/60 p-4 sm:p-6 backdrop-blur">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <h1 className="text-2xl sm:text-3xl tracking-tight text-teal-50 font-medium">Good morning, Alex</h1>
+                <h1 className="text-2xl sm:text-3xl tracking-tight text-teal-50 font-medium">{getGreeting()}, {firstName}</h1>
                 <p className="mt-1 text-sm text-slate-300">Here's what needs your care today.</p>
               </div>
               <div className="flex items-center gap-2">

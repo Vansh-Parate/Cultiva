@@ -3,6 +3,7 @@ import { Droplet, Sparkles, Sun } from "lucide-react";
 import { Plant } from "~/utils/types";
 import { useWeather } from '~/hooks/useWeather';
 import { getWaterPHFromGemini } from '~/lib/gemini';
+import { useAuthContext } from '../../contexts/AuthContext';
 
 const PlantStat = ({
   icon,
@@ -31,36 +32,61 @@ interface FeaturedPlantCardProps {
 }
 
 const FeaturedPlantCard: React.FC<FeaturedPlantCardProps> = ({ plant }) => {
-  const { weather, loading } = useWeather(plant.location);
+  const { user } = useAuthContext();
+  // Use plant location, fallback to user location, or null (will use geolocation)
+  const location = plant.location || user?.location || null;
+  const { weather, loading } = useWeather(location);
   const [phAdvice, setPhAdvice] = useState<string | null>(null);
+  const [phLoading, setPhLoading] = useState(false);
 
   useEffect(() => {
-    if (!plant.waterPH && plant.species) {
-      getWaterPHFromGemini(plant.species, plant.location).then(setPhAdvice);
+    // Fetch pH from Gemini if not available in database
+    if ((!plant.waterPH || plant.waterPH === 0) && plant.species) {
+      setPhLoading(true);
+      getWaterPHFromGemini(plant.species, location || undefined)
+        .then(setPhAdvice)
+        .catch(err => {
+          console.error('Failed to get pH from Gemini:', err);
+          setPhAdvice(null);
+        })
+        .finally(() => setPhLoading(false));
     }
-  }, [plant.waterPH, plant.species, plant.location]);
+  }, [plant.waterPH, plant.species, location]);
 
   const getHumidityValue = () => {
     if (loading) return 'Loading...';
-    return (weather.humidity ?? plant.humidity ?? 'N/A') + '%';
+    // Prioritize real-time weather data over database values
+    if (weather.humidity !== undefined && weather.humidity !== null) {
+      return `${weather.humidity}%`;
+    }
+    // Fallback to database value only if weather is not available
+    if (plant.humidity !== undefined && plant.humidity !== null) {
+      return `${plant.humidity}%`;
+    }
+    return 'N/A';
   };
 
   const getWaterPHValue = () => {
-    if (loading) return 'Loading...';
+    // pH doesn't come from weather API, so use database or Gemini
+    if (phLoading) return 'Loading...';
     if (plant.waterPH !== undefined && plant.waterPH !== null && plant.waterPH !== 0) {
       return plant.waterPH.toString();
     }
     if (phAdvice && phAdvice !== 'No answer found') {
-      return phAdvice;
+      // Clean up Gemini response (remove any extra text, keep only number)
+      const phMatch = phAdvice.match(/[\d.]+/);
+      return phMatch ? phMatch[0] : phAdvice;
     }
     return 'N/A';
   };
 
   const getTemperatureValue = () => {
     if (loading) return 'Loading...';
-    if (weather.temperature !== undefined) {
+    // Prioritize real-time weather data over database values
+    if (weather.temperature !== undefined && weather.temperature !== null) {
       return `${weather.temperature.toFixed(1)}°C`;
     }
+    // Fallback to database value only if weather is not available
     if (plant.temperature !== undefined && plant.temperature !== null) {
       return `${Number(plant.temperature).toFixed(1)}°C`;
     }

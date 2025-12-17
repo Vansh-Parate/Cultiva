@@ -18,10 +18,11 @@
   },
   "dependencies": {
     "@prisma/client": "5.19.1",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
-    "@types/node": "^22.5.0",
+    "@types/node": "^22.19.1",
     "prisma": "^5.19.1",
     "tsx": "^4.20.3"
   }

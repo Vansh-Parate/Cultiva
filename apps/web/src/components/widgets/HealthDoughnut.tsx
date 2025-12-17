@@ -1,4 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+'use client';
+
+import React from 'react';
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 interface HealthDoughnutProps {
   value: number;
@@ -7,66 +10,10 @@ interface HealthDoughnutProps {
 }
 
 const HealthDoughnut: React.FC<HealthDoughnutProps> = ({ value, label = 'Overall', size = 'medium' }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    if (!canvasRef.current) return;
-
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    // Set canvas size
-    const rect = canvas.parentElement?.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
-    const width = rect?.width || 200;
-    const height = rect?.height || 200;
-
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
-    ctx.scale(dpr, dpr);
-
-    // Colors
-    const emerald500 = '#10b981';
-    const gray200 = '#E5E7EB';
-
-    // Draw doughnut
-    const centerX = width / 2;
-    const centerY = height / 2;
-    const radius = Math.min(width, height) / 2 - 10;
-    const innerRadius = radius * 0.72;
-
-    // Calculate angles
-    const healthAngle = (value / 100) * 2 * Math.PI - Math.PI / 2;
-
-    // Draw remaining (background)
-    ctx.fillStyle = gray200;
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, radius, -Math.PI / 2, Math.PI * 1.5);
-    ctx.arc(centerX, centerY, innerRadius, Math.PI * 1.5, -Math.PI / 2, true);
-    ctx.fill();
-
-    // Draw health (colored)
-    ctx.fillStyle = emerald500;
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, radius, -Math.PI / 2, healthAngle);
-    ctx.lineTo(centerX + Math.cos(healthAngle) * innerRadius, centerY + Math.sin(healthAngle) * innerRadius);
-    ctx.arc(centerX, centerY, innerRadius, healthAngle, -Math.PI / 2, true);
-    ctx.fill();
-
-    // Draw center text
-    ctx.save();
-    ctx.font = `600 ${size === 'large' ? 26 : size === 'medium' ? 22 : 18}px Inter, sans-serif`;
-    ctx.fillStyle = '#059669';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(`${value}%`, centerX, centerY - 6);
-
-    ctx.font = `500 ${size === 'large' ? 12 : 11}px Inter, sans-serif`;
-    ctx.fillStyle = '#64748b';
-    ctx.fillText(label, centerX, centerY + 14);
-    ctx.restore();
-  }, [value, label, size]);
+  const data = [
+    { name: 'Health', value: value },
+    { name: 'Remaining', value: 100 - value }
+  ];
 
   const sizeMap = {
     small: 'h-28',
@@ -74,9 +21,44 @@ const HealthDoughnut: React.FC<HealthDoughnutProps> = ({ value, label = 'Overall
     large: 'h-56'
   };
 
+  const fontSizes = {
+    small: { main: 18, label: 11 },
+    medium: { main: 22, label: 12 },
+    large: { main: 26, label: 13 }
+  };
+
+  const CustomLabel = () => (
+    <div className="absolute inset-0 flex flex-col items-center justify-center">
+      <div style={{ fontSize: `${fontSizes[size].main}px`, fontWeight: 600, color: '#059669' }}>
+        {value}%
+      </div>
+      <div style={{ fontSize: `${fontSizes[size].label}px`, fontWeight: 500, color: '#64748b', marginTop: '4px' }}>
+        {label}
+      </div>
+    </div>
+  );
+
   return (
     <div className={`relative w-full ${sizeMap[size]}`}>
-      <canvas ref={canvasRef} className="w-full h-full" />
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart>
+          <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            innerRadius={size === 'small' ? 30 : size === 'medium' ? 40 : 60}
+            outerRadius={size === 'small' ? 45 : size === 'medium' ? 60 : 90}
+            fill="#8884d8"
+            dataKey="value"
+            startAngle={90}
+            endAngle={450}
+          >
+            <Cell fill="rgb(16, 185, 129)" />
+            <Cell fill="#E5E7EB" />
+          </Pie>
+        </PieChart>
+      </ResponsiveContainer>
+      <CustomLabel />
     </div>
   );
 };

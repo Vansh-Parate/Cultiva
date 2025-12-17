@@ -31,6 +31,9 @@ const Signin = () => {
             password
         });
         localStorage.setItem('token',res.data.token);
+        if (res.data.user) {
+          localStorage.setItem('user', JSON.stringify(res.data.user));
+        }
         navigate('/dashboard');
     }catch(err){
         if (axios.isAxiosError(err)){

@@ -13,11 +13,14 @@ import communityRoute from './routes/community.route';
 import plantShopRoute from './routes/plantShop.route';
 import aiRoute from './routes/ai.route';
 import { prisma } from './db';
+import { createServer } from 'http';
+import { webSocketService } from './services/websocket.service';
 
 dotenv.config({ path: '.env' })
 
 const PORT = process.env.PORT || 6969
 const app = express()
+const httpServer = createServer(app)
 
 app.use(express.json({ limit: '10mb' })); 
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
@@ -87,6 +90,10 @@ app.get('/', (_req: Request, res: Response) => {
   })
 })
 
-app.listen(PORT, () => {
+// Initialize WebSocket server
+webSocketService.initialize(httpServer);
+
+httpServer.listen(PORT, () => {
   console.log(`Server is running on port: ${PORT}`)
+  console.log(`WebSocket server ready for connections`)
 })

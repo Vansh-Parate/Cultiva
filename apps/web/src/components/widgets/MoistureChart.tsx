@@ -1,4 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+'use client';
+
+import React from 'react';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { Droplets } from 'lucide-react';
 
 interface MoistureChartProps {
@@ -12,126 +15,14 @@ const MoistureChart: React.FC<MoistureChartProps> = ({
   minTarget = 35,
   maxTarget = 60
 }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    if (!canvasRef.current) return;
-
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    // Set canvas size based on container
-    const container = canvas.parentElement;
-    const rect = container?.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
-    const width = rect?.width || 500;
-    const height = rect?.height || 180;
-
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
-    ctx.scale(dpr, dpr);
-
-    // Colors
-    const emerald500 = '#10b981';
-    const gray300 = '#d1d5db';
-
-    // Dimensions
-    const padding = 40;
-    const chartWidth = width - padding * 2;
-    const chartHeight = height - padding * 2;
-    const minValue = 20;
-    const maxValue = 80;
-
-    // Draw grid
-    ctx.strokeStyle = 'rgba(148,163,184,0.15)';
-    ctx.lineWidth = 1;
-    for (let i = 0; i <= 6; i++) {
-      const y = padding + (i / 6) * chartHeight;
-      ctx.beginPath();
-      ctx.moveTo(padding, y);
-      ctx.lineTo(width - padding, y);
-      ctx.stroke();
-    }
-
-    // Draw target lines (min and max)
-    ctx.strokeStyle = gray300;
-    ctx.setLineDash([6, 6]);
-    ctx.lineWidth = 1;
-
-    const minY = padding + chartHeight - ((minTarget - minValue) / (maxValue - minValue)) * chartHeight;
-    ctx.beginPath();
-    ctx.moveTo(padding, minY);
-    ctx.lineTo(width - padding, minY);
-    ctx.stroke();
-
-    const maxY = padding + chartHeight - ((maxTarget - minValue) / (maxValue - minValue)) * chartHeight;
-    ctx.beginPath();
-    ctx.moveTo(padding, maxY);
-    ctx.lineTo(width - padding, maxY);
-    ctx.stroke();
-
-    ctx.setLineDash([]);
-
-    // Calculate points
-    const points = data.map((value, index) => {
-      const x = padding + (index / (data.length - 1)) * chartWidth;
-      const y = padding + chartHeight - ((value - minValue) / (maxValue - minValue)) * chartHeight;
-      return { x, y, value };
-    });
-
-    // Draw area under curve
-    const gradient = ctx.createLinearGradient(0, padding, 0, padding + chartHeight);
-    gradient.addColorStop(0, 'rgba(16,185,129,0.25)');
-    gradient.addColorStop(1, 'rgba(16,185,129,0.02)');
-
-    ctx.fillStyle = gradient;
-    ctx.beginPath();
-    ctx.moveTo(points[0].x, points[0].y);
-    for (let i = 1; i < points.length; i++) {
-      ctx.lineTo(points[i].x, points[i].y);
-    }
-    ctx.lineTo(width - padding, padding + chartHeight);
-    ctx.lineTo(padding, padding + chartHeight);
-    ctx.closePath();
-    ctx.fill();
-
-    // Draw line
-    ctx.strokeStyle = emerald500;
-    ctx.lineWidth = 2;
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(points[0].x, points[0].y);
-    for (let i = 1; i < points.length; i++) {
-      ctx.lineTo(points[i].x, points[i].y);
-    }
-    ctx.stroke();
-
-    // Draw Y-axis labels
-    ctx.fillStyle = '#6b7280';
-    ctx.font = '12px Inter, sans-serif';
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'middle';
-    for (let i = 0; i <= 6; i++) {
-      const value = minValue + (i / 6) * (maxValue - minValue);
-      const y = padding + (1 - i / 6) * chartHeight;
-      ctx.fillText(`${Math.round(value)}%`, padding - 10, y);
-    }
-
-    // Draw X-axis labels
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-    const tickInterval = Math.ceil(data.length / 8);
-    for (let i = 0; i < data.length; i += tickInterval) {
-      const x = padding + (i / (data.length - 1)) * chartWidth;
-      ctx.fillText(`D${i + 1}`, x, height - padding + 5);
-    }
-  }, [data, minTarget, maxTarget]);
+  const chartData = data.map((value, index) => ({
+    day: `D${index + 1}`,
+    moisture: value
+  }));
 
   return (
-    <>
-      <div className="flex items-start justify-between mb-3">
+    <div className="rounded-lg border border-emerald-100 bg-white shadow-sm p-4">
+      <div className="flex items-start justify-between mb-4">
         <div>
           <h3 className="text-sm font-semibold text-slate-900">Soil Moisture</h3>
           <p className="text-xs text-slate-500 mt-0.5">Target: {minTarget}–{maxTarget}%</p>
@@ -141,12 +32,68 @@ const MoistureChart: React.FC<MoistureChartProps> = ({
           Stable
         </span>
       </div>
-      <div className="rounded-lg bg-slate-50 p-2 overflow-hidden">
-        <div className="relative w-full" style={{ height: '180px' }}>
-          <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
-        </div>
+      <div className="h-64">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+            <defs>
+              <linearGradient id="colorMoisture" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="rgb(16, 185, 129)" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="rgb(16, 185, 129)" stopOpacity={0.05} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="rgba(226, 232, 240, 0.5)" />
+            <XAxis
+              dataKey="day"
+              tickLine={false}
+              axisLine={false}
+              tick={{ fill: '#94a3b8', fontSize: 11 }}
+              interval={Math.ceil(data.length / 8) - 1}
+            />
+            <YAxis
+              domain={[20, 80]}
+              tickLine={false}
+              axisLine={false}
+              tick={{ fill: '#94a3b8', fontSize: 11 }}
+              tickFormatter={(value) => `${value}%`}
+            />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                border: '1px solid rgba(16, 185, 129, 0.3)',
+                borderRadius: '6px',
+                padding: '8px 12px'
+              }}
+              formatter={(value: number) => [`${value}%`, 'Moisture']}
+              labelStyle={{ color: 'rgb(255, 255, 255)' }}
+              cursor={{ strokeDasharray: '3 3' }}
+            />
+            <ReferenceLine
+              y={minTarget}
+              stroke="rgb(203, 213, 225)"
+              strokeDasharray="5 5"
+              strokeWidth={1}
+              label={{ value: `Min: ${minTarget}%`, position: 'right', fill: '#64748b', fontSize: 11, offset: 5 }}
+            />
+            <ReferenceLine
+              y={maxTarget}
+              stroke="rgb(203, 213, 225)"
+              strokeDasharray="5 5"
+              strokeWidth={1}
+              label={{ value: `Max: ${maxTarget}%`, position: 'right', fill: '#64748b', fontSize: 11, offset: -5 }}
+            />
+            <Area
+              type="monotone"
+              dataKey="moisture"
+              stroke="rgb(16, 185, 129)"
+              fill="url(#colorMoisture)"
+              strokeWidth={2.5}
+              dot={false}
+              isAnimationActive={true}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
       </div>
-    </>
+    </div>
   );
 };
 

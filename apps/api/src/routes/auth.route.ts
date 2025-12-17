@@ -35,7 +35,7 @@ router.post("/signup", async(req,res) => {
 
     res.status(201).json({
         token,
-        user: { id: user.id, fullName: user.fullName, email: user.email}
+        user: { id: user.id, fullName: user.fullName, email: user.email, username: user.username, avatarUrl: user.avatarUrl}
     });
 });
 
@@ -61,7 +61,7 @@ router.post("/signin", async(req,res) => {
 
     res.json({
         token,
-        user: { id: user.id, fullName: user.fullName, email: user.email } 
+        user: { id: user.id, fullName: user.fullName, email: user.email, username: user.username, avatarUrl: user.avatarUrl } 
     })
 });
 

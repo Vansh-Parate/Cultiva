@@ -1,4 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+'use client';
+
+import React from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { CalendarCheck } from 'lucide-react';
 
 interface WateringChartProps {
@@ -8,83 +11,12 @@ interface WateringChartProps {
 const WateringChart: React.FC<WateringChartProps> = ({
   data = [1, 0, 1, 1, 0, 1]
 }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const chartData = data.map((value, index) => ({
+    week: `Wk ${index + 1}`,
+    frequency: value
+  }));
 
-  useEffect(() => {
-    if (!canvasRef.current) return;
-
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    // Set canvas size based on container
-    const container = canvas.parentElement;
-    const rect = container?.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
-    const width = rect?.width || 300;
-    const height = rect?.height || 180;
-
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
-    ctx.scale(dpr, dpr);
-
-    // Colors
-    const emerald500 = '#10b981';
-
-    // Dimensions
-    const padding = 40;
-    const chartWidth = width - padding * 2;
-    const chartHeight = height - padding * 2;
-    const barWidth = Math.max(20, Math.min(40, chartWidth / (data.length * 1.5)));
-    const maxValue = Math.max(...data, 3);
-
-    // Draw grid
-    ctx.strokeStyle = 'rgba(148,163,184,0.15)';
-    ctx.lineWidth = 1;
-    for (let i = 0; i <= 3; i++) {
-      const y = padding + (i / 3) * chartHeight;
-      ctx.beginPath();
-      ctx.moveTo(padding, y);
-      ctx.lineTo(width - padding, y);
-      ctx.stroke();
-    }
-
-    // Draw bars
-    ctx.fillStyle = emerald500;
-    const spacing = chartWidth / data.length;
-    data.forEach((value, index) => {
-      const barHeight = (value / maxValue) * chartHeight;
-      const x = padding + (index + 0.5) * spacing - barWidth / 2;
-      const y = padding + chartHeight - barHeight;
-
-      // Draw rounded rectangle
-      ctx.fillRect(x, y, barWidth, barHeight);
-
-      // Rounded corners approximation
-      const radius = 4;
-      ctx.clearRect(x, y, radius, radius);
-      ctx.clearRect(x + barWidth - radius, y, radius, radius);
-    });
-
-    // Draw Y-axis labels
-    ctx.fillStyle = '#6b7280';
-    ctx.font = '12px Inter, sans-serif';
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'middle';
-    for (let i = 0; i <= 3; i++) {
-      const y = padding + (1 - i / 3) * chartHeight;
-      ctx.fillText(`${i}`, padding - 10, y);
-    }
-
-    // Draw X-axis labels
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-    const labels = ['Wk 1', 'Wk 2', 'Wk 3', 'Wk 4', 'Wk 5', 'Wk 6'];
-    labels.forEach((label, index) => {
-      const x = padding + (index + 0.5) * spacing;
-      ctx.fillText(label, x, height - padding + 5);
-    });
-  }, [data]);
+  const maxValue = Math.max(...data, 3);
 
   return (
     <>
@@ -97,7 +29,36 @@ const WateringChart: React.FC<WateringChartProps> = ({
       </div>
       <div className="rounded-lg bg-slate-50 p-2 overflow-hidden">
         <div className="relative w-full" style={{ height: '180px' }}>
-          <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData} margin={{ top: 5, right: 10, left: 30, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.15)" />
+              <XAxis
+                dataKey="week"
+                tick={{ fill: '#6b7280', fontSize: 11 }}
+                stroke="transparent"
+              />
+              <YAxis
+                domain={[0, maxValue]}
+                tick={{ fill: '#6b7280', fontSize: 11 }}
+                stroke="transparent"
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                  border: '1px solid rgba(16, 185, 129, 0.3)',
+                  borderRadius: '4px'
+                }}
+                formatter={(value: number) => `${value} times`}
+                labelStyle={{ color: 'rgb(255, 255, 255)' }}
+              />
+              <Bar
+                dataKey="frequency"
+                fill="rgb(16, 185, 129)"
+                radius={[4, 4, 0, 0]}
+                isAnimationActive={true}
+              />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
     </>

@@ -9,5 +9,8 @@
     "@repo/typescript-config": "workspace:*",
     "tailwindcss": "^4.1.11",
     "tailwindcss-animate": "^1.0.7"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.8.1"
   }
 }

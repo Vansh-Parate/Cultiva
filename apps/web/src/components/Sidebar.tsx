@@ -10,9 +10,8 @@ import {
   Plus,
   Camera,
   LogOut,
-  Brain,
-  Zap
 } from 'lucide-react';
+import { useAuthContext } from '../contexts/AuthContext';
 
 type SidebarProps = {
   mobile?: boolean;
@@ -22,6 +21,7 @@ type SidebarProps = {
 const Sidebar: React.FC<SidebarProps> = ({ mobile = false, onNavigate }) => {
   const location = useLocation();
   const [notifications] = useState(3);
+  const { user } = useAuthContext();
 
   const navItems = [
     { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -37,9 +37,9 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile = false, onNavigate }) => {
   return (
     <aside className={`${mobile ? 'flex h-full' : 'hidden lg:flex h-screen'} w-72 flex-col border-r border-slate-800 bg-slate-900/70 backdrop-blur overflow-hidden`}>
       {/* Brand */}
-      <div className="flex items-center gap-3 px-6 h-16 flex-shrink-0">
+        <div className="flex items-center gap-3 px-6 h-16 flex-shrink-0">
         <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-teal-600 to-teal-400 flex items-center justify-center shadow-sm">
-          <img src="./public/Cultiva-Photoroom.png" alt="Cultiva Logo" className="text-sm font-semibold tracking-tight"></img>
+          <img src="/Cultiva-Photoroom.png" alt="Cultiva Logo" className="h-full w-full object-contain"></img>
         </div>
         <div>
           <p className="text-xl tracking-tight font-semibold text-teal-100">Cultiva</p>
@@ -104,10 +104,16 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile = false, onNavigate }) => {
           <div className="mt-3 px-3">
             <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/60 p-3">
               <div className="flex items-center gap-2">
-                <img className="h-8 w-8 rounded-full object-cover ring-1 ring-slate-800" src="https://images.unsplash.com/photo-1554151228-14d9def656e4?q=80&w=80&auto=format&fit=crop" alt="User" />
+                <img 
+                  className="h-8 w-8 rounded-full object-cover ring-1 ring-slate-800" 
+                  src={user?.avatarUrl || "https://images.unsplash.com/photo-1554151228-14d9def656e4?q=80&w=80&auto=format&fit=crop"} 
+                  alt={user?.fullName || "User"} 
+                />
                 <div>
-                  <p className="text-xs font-medium text-teal-100">Alex Rivera</p>
-                  <p className="text-[11px] text-slate-400">Pro · 64 plants</p>
+                  <p className="text-xs font-medium text-teal-100">
+                    {user?.fullName || user?.username || "User"}
+                  </p>
+                  <p className="text-[11px] text-slate-400">Plant Enthusiast</p>
                 </div>
               </div>
               <button className="inline-flex items-center justify-center rounded-lg border border-slate-700/60 bg-slate-900 p-2 text-slate-300 hover:text-teal-300">

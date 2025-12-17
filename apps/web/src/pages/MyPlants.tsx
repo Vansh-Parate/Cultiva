@@ -88,6 +88,7 @@ const HealthDashboard = ({ plant }) => {
 };
 
 const MyPlants = () => {
+  const { user } = useAuthContext();
   const [plants, setPlants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -122,13 +123,15 @@ const MyPlants = () => {
           id: plant.id,
           name: plant.name,
           species: plant.species?.commonName || plant.speciesId || '', // fallback if missing
-          photoUrl: plant.images?.[0]?.imageUrl || '/placeholder-plant.png', // use first image or placeholder
+          photoUrl: plant.images?.[0]?.imageUrl || plant.primaryImageUrl || '/placeholder-plant.png', // use first image or placeholder
           healthStatus: plant.healthStatus || 'Good', // fallback/default
           nextCare: plant.nextCare || 'N/A',
-          humidity: plant.humidity || 0,
-          waterPH: plant.waterPH || 0,
-          temperature: plant.temperature || '',
+          humidity: plant.humidity || null,
+          waterPH: plant.waterPH || null,
+          temperature: plant.temperature || null,
+          location: plant.location || user?.location || null, // Use plant location, fallback to user location
         }));
+        console.log('Mapped plants:', mappedPlants);
         setPlants(mappedPlants);
       } catch (err) {
         console.error('Failed to fetch plants:', err);

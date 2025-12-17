@@ -1,4 +1,7 @@
-import React, { useState, useMemo } from 'react';
+'use client';
+
+import React, { useMemo } from 'react';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { TrendingUp, Calendar, Droplet, Leaf, Activity } from 'lucide-react';
 
 interface HealthDataPoint {
@@ -56,16 +59,24 @@ const generateCareActivityData = (careHistory?: any[]) => {
 };
 
 const CareActivityChart: React.FC<{ activities: Record<string, number> }> = ({ activities }) => {
-  const maxValue = Math.max(...Object.values(activities), 1);
-  const barHeight = 200;
-
-  const activityLabels = {
-    watering: { label: 'Watering', icon: '💧', color: 'bg-blue-500' },
-    fertilizing: { label: 'Fertilizing', icon: '🌱', color: 'bg-emerald-500' },
-    pruning: { label: 'Pruning', icon: '✂️', color: 'bg-amber-500' },
-    repotting: { label: 'Repotting', icon: '🪴', color: 'bg-orange-500' },
-    'pest-control': { label: 'Pest Control', icon: '🛡️', color: 'bg-red-500' }
-  };
+  const chartData = Object.entries(activities).map(([type, count]) => ({
+    name: type.charAt(0).toUpperCase() + type.slice(1).replace('-', ' '),
+    value: count,
+    emoji: {
+      watering: '💧',
+      fertilizing: '🌱',
+      pruning: '✂️',
+      repotting: '🪴',
+      'pest-control': '🛡️'
+    }[type as keyof typeof activities] || '📊',
+    color: {
+      watering: '#3b82f6',
+      fertilizing: '#10b981',
+      pruning: '#f59e0b',
+      repotting: '#f97316',
+      'pest-control': '#ef4444'
+    }[type as keyof typeof activities] || '#6b7280'
+  }));
 
   return (
     <div className="space-y-4">
@@ -74,51 +85,32 @@ const CareActivityChart: React.FC<{ activities: Record<string, number> }> = ({ a
         Care Activity (Last 30 Days)
       </h3>
 
-      <div className="flex items-end justify-around h-64 bg-gray-50 rounded-lg p-4 gap-2">
-        {(Object.entries(activities) as [string, number][]).map(([type, count]) => {
-          const barValue = count === 0 ? 0 : (count / maxValue) * barHeight;
-          const typeKey = type as keyof typeof activityLabels;
-          const config = activityLabels[typeKey];
-
-          return (
-            <div key={type} className="flex flex-col items-center flex-1 gap-2">
-              <div className="relative h-48 w-full flex items-end justify-center">
-                <div
-                  className={`${config.color} rounded-t transition-all duration-300 hover:opacity-80 cursor-pointer w-3/4 min-h-4`}
-                  style={{ height: `${Math.max(barValue, 4)}px` }}
-                  title={`${config.label}: ${count}`}
-                />
-              </div>
-              <span className="text-2xl">{config.icon}</span>
-              <span className="text-xs font-medium text-gray-600 text-center">{config.label}</span>
-              <span className="text-sm font-bold text-gray-900">{count}</span>
-            </div>
-          );
-        })}
+      <div className="bg-gray-50 rounded-lg p-4">
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Bar dataKey="value" fill="#10b981" radius={[8, 8, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
 
-      <p className="text-xs text-gray-500 text-center">Bar height represents relative activity frequency</p>
+      <div className="grid grid-cols-5 gap-2">
+        {chartData.map((item) => (
+          <div key={item.name} className="text-center">
+            <div className="text-2xl mb-1">{item.emoji}</div>
+            <div className="text-xs font-medium text-gray-600">{item.name}</div>
+            <div className="text-sm font-bold text-gray-900">{item.value}</div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
 
 const HealthTrendChart: React.FC<{ data: HealthDataPoint[] }> = ({ data }) => {
-  const chartWidth = 480;
-  const chartHeight = 200;
-  const padding = 40;
-  const innerWidth = chartWidth - padding * 2;
-  const innerHeight = chartHeight - padding * 2;
-
-  // Create SVG path for the trend line
-  const points = data.map((point, index) => {
-    const x = (index / (data.length - 1)) * innerWidth + padding;
-    const y = chartHeight - ((point.score / 100) * innerHeight + padding);
-    return { x, y, ...point };
-  });
-
-  const pathD = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
-  const areaD = `${pathD} L ${points[points.length - 1].x} ${chartHeight - padding} L ${padding} ${chartHeight - padding} Z`;
-
   return (
     <div className="space-y-4">
       <h3 className="font-semibold text-gray-900 flex items-center gap-2">
@@ -126,60 +118,31 @@ const HealthTrendChart: React.FC<{ data: HealthDataPoint[] }> = ({ data }) => {
         Health Score Trend (Last 30 Days)
       </h3>
 
-      <div className="bg-gray-50 rounded-lg p-4 overflow-x-auto">
-        <svg width={chartWidth} height={chartHeight} className="mx-auto">
-          {/* Grid lines */}
-          {[0, 25, 50, 75, 100].map(percent => (
-            <line
-              key={`grid-${percent}`}
-              x1={padding}
-              y1={chartHeight - (percent / 100) * innerHeight - padding}
-              x2={chartWidth - padding}
-              y2={chartHeight - (percent / 100) * innerHeight - padding}
-              stroke="#e5e7eb"
-              strokeDasharray="4"
-              strokeWidth="1"
+      <div className="bg-gray-50 rounded-lg p-4">
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={data} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+            <defs>
+              <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="label" tick={{ fontSize: 11 }} />
+            <YAxis domain={[0, 100]} />
+            <Tooltip formatter={(value: any) => `${value}%`} />
+            <Line
+              type="monotone"
+              dataKey="score"
+              stroke="#10b981"
+              fill="url(#colorScore)"
+              strokeWidth={2}
+              dot={{ fill: '#10b981', r: 4 }}
+              activeDot={{ r: 6 }}
+              isAnimationActive={true}
             />
-          ))}
-
-          {/* Area under curve */}
-          <path d={areaD} fill="#10b981" fillOpacity="0.1" />
-
-          {/* Trend line */}
-          <path d={pathD} stroke="#10b981" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-
-          {/* Data points */}
-          {points.map((point, index) => (
-            index % Math.ceil(data.length / 8) === 0 && (
-              <circle
-                key={`point-${index}`}
-                cx={point.x}
-                cy={point.y}
-                r="4"
-                fill="#10b981"
-                strokeWidth="2"
-                stroke="white"
-              />
-            )
-          ))}
-
-          {/* Y-axis labels */}
-          {[0, 25, 50, 75, 100].map(percent => (
-            <text
-              key={`label-${percent}`}
-              x={padding - 10}
-              y={chartHeight - (percent / 100) * innerHeight - padding + 4}
-              textAnchor="end"
-              fontSize="12"
-              fill="#6b7280"
-            >
-              {percent}%
-            </text>
-          ))}
-
-          {/* X-axis */}
-          <line x1={padding} y1={chartHeight - padding} x2={chartWidth - padding} y2={chartHeight - padding} stroke="#d1d5db" strokeWidth="1" />
-        </svg>
+          </LineChart>
+        </ResponsiveContainer>
       </div>
 
       <div className="grid grid-cols-3 gap-2 text-sm">
@@ -275,7 +238,7 @@ const PlantAnalyticsCharts: React.FC<PlantAnalyticsChartsProps> = ({ plant, care
 
         <div className="bg-white rounded-lg p-4 border border-gray-200 text-center">
           <p className="text-2xl font-bold text-blue-600">
-            {careActivityData.watering}
+            {(careActivityData as any).watering}
           </p>
           <p className="text-xs text-gray-600 mt-1">Times Watered</p>
         </div>
